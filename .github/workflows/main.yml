@@ -1,0 +1,42 @@
+name: Build and Deploy Flutter Web
+
+on:
+  push:
+    branches:
+      - master # Trigger on pushes to the main branch
+
+jobs:
+  build:
+    name: Build Flutter Web and Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          architecture: x64
+
+      # Get Flutter dependencies
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Build the Flutter web app
+      - name: Build Flutter web
+        run: flutter build web --release
+
+      # Adjust the base href for GitHub Pages
+      - name: Adjust base href
+        run: sed -i 's|<base href="/">|<base href="/journal_admin/">|' build/web/index.html
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/web
