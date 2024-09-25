@@ -2,21 +2,22 @@ import 'package:journal_web/features/login/domain/entities/author_entity.dart';
 
 class AuthorModel extends AuthorEntity {
   AuthorModel({
-    required super.title,
-    required super.city,
-    required super.country,
-    required super.firstName,
-    required super.lastName,
-    required super.mail,
-    required super.orcId,
-    required super.username,
-    required super.password,
-    required super.designation,
-    required super.specialization,
-    required super.fieldOfStudy,
-    required super.mobile,
-    required super.state,
-    required super.pinCode,
+     super.title,
+     super.address,
+     super.city,
+     super.country,
+     super.firstName,
+     super.lastName,
+     super.mail,
+     super.orcId,
+     super.username,
+     super.password,
+     super.designation,
+     super.specialization,
+     super.fieldOfStudy,
+     super.mobile,
+     super.state,
+     super.pinCode,
   });
 
   factory AuthorModel.fromJson(Map<String, dynamic> json) {

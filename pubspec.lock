@@ -81,6 +81,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  csc_picker:
+    dependency: "direct main"
+    description:
+      name: csc_picker
+      sha256: "7e5d6023a81f53b89a7fb0369953fd4dc676f7ea20e9a0c0707973a5f0aedf14"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.7"
   equatable:
     dependency: "direct main"
     description:
@@ -168,6 +176,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.0.0"
+  getwidget:
+    dependency: "direct main"
+    description:
+      name: getwidget
+      sha256: "91df14a8d80e21f3ec02759295b90cc8badb8a872b90d34ad4aeb4085d833b5c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -256,6 +272,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
+  responsive_builder:
+    dependency: "direct main"
+    description:
+      name: responsive_builder
+      sha256: "64a5ef3fbe3628e4588a0c2391c3186300e76f58621d8135cc77aac816255a3e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1"
   sky_engine:
     dependency: transitive
     description: flutter
