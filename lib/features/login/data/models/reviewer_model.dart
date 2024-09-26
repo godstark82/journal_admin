@@ -2,18 +2,19 @@ import 'package:journal_web/features/login/domain/entities/reviewer_entity.dart'
 
 class ReviewerModel extends ReviewerEntity {
   ReviewerModel(
-      {required super.title,
-      required super.firstName,
-      required super.lastName,
-      required super.email,
-      required super.journal,
-      required super.username,
-      required super.password,
-      required super.country,
-      required super.mobile,
-      required super.correspondingAddress,
-      required super.detailsCV,
-      required super.researchDomain});
+      {super.title,
+      super.firstName,
+      super.lastName,
+      super.email,
+      super.journal,
+      super.role,
+      super.username,
+      super.password,
+      super.country,
+      super.mobile,
+      super.correspondingAddress,
+      super.detailsCV,
+      super.researchDomain});
 
   Map<String, dynamic> toJson() {
     return {
@@ -21,6 +22,7 @@ class ReviewerModel extends ReviewerEntity {
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
+      'role': role,
       'journal': journal,
       'username': username,
       'password': password,
@@ -38,6 +40,7 @@ class ReviewerModel extends ReviewerEntity {
         firstName: json['firstName'],
         lastName: json['lastName'],
         email: json['email'],
+        role: json['role'],
         journal: json['journal'],
         username: json['username'],
         password: json['password'],

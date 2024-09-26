@@ -1,4 +1,6 @@
-class AuthorEntity {
+import 'package:journal_web/features/login/domain/entities/journal_user_entity.dart';
+
+class AuthorEntity extends JournalUserEntity {
   String? title;
   String? firstName;
   String? middle;
@@ -17,9 +19,11 @@ class AuthorEntity {
   String? city;
   String? pinCode;
   String? address;
+  String? role;
 
   AuthorEntity({
     this.title,
+    this.role,
     this.address,
     this.firstName,
     this.middle,

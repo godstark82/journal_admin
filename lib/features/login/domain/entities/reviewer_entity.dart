@@ -1,29 +1,33 @@
-class ReviewerEntity {
-  final String title;
-  final String firstName;
-  final String lastName;
-  final String email;
-  final String journal;
-  final String username;
-  final String password;
-  final String country;
-  final String mobile;
-  final String correspondingAddress;
-  final String detailsCV;
-  final String researchDomain;
+import 'package:journal_web/features/login/domain/entities/journal_user_entity.dart';
+
+class ReviewerEntity extends JournalUserEntity {
+  String? title;
+  String? firstName;
+  String? lastName;
+  String? email;
+  String? journal;
+  String? username;
+  String? password;
+  String? country;
+  String? mobile;
+  String? correspondingAddress;
+  String? detailsCV;
+  String? researchDomain;
+  String? role;
 
   ReviewerEntity({
-    required this.title,
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-    required this.journal,
-    required this.username,
-    required this.password,
-    required this.country,
-    required this.mobile,
-    required this.correspondingAddress,
-    required this.detailsCV,
-    required this.researchDomain,
+    this.title,
+    this.role,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.journal,
+    this.username,
+    this.password,
+    this.country,
+    this.mobile,
+    this.correspondingAddress,
+    this.detailsCV,
+    this.researchDomain,
   });
 }

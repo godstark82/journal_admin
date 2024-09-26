@@ -2,17 +2,18 @@ import 'package:journal_web/features/login/domain/entities/editor_entity.dart';
 
 class EditorModel extends EditorEntity {
   EditorModel(
-      {required super.correspondingAddress,
-      required super.country,
-      required super.detailsCV,
-      required super.email,
-      required super.fullName,
-      required super.journalName,
-      required super.mobile,
-      required super.password,
-      required super.researchDomain,
-      required super.title,
-      required super.username});
+      {super.correspondingAddress,
+      super.country,
+      super.detailsCV,
+      super.email,
+      super.role,
+      super.fullName,
+      super.journalName,
+      super.mobile,
+      super.password,
+      super.researchDomain,
+      super.title,
+      super.username});
 
   factory EditorModel.fromJson(Map<String, dynamic> json) {
     return EditorModel(
@@ -20,6 +21,7 @@ class EditorModel extends EditorEntity {
       country: json['country'],
       detailsCV: json['detailsCV'],
       email: json['email'],
+      role: json['role'],
       fullName: json['fullName'],
       journalName: json['journalName'],
       mobile: json['mobile'],
@@ -36,6 +38,7 @@ class EditorModel extends EditorEntity {
       'country': country,
       'detailsCV': detailsCV,
       'email': email,
+      'role': role,
       'fullName': fullName,
       'journalName': journalName,
       'mobile': mobile,
