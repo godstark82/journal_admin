@@ -12,7 +12,7 @@ const RESOURCES = {"icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2e
 "version.json": "3b89c966ad658b4b8f9a89cfda844d67",
 "manifest.json": "8e61b266a22a306237d0553151d3f1ec",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"flutter_bootstrap.js": "2f9acde80b45b482928dfdc745c64f99",
+"flutter_bootstrap.js": "2f7d9a780070d7cb4218c0ceb8cda266",
 "canvaskit/skwasm.wasm": "9f0c0c02b82a910d12ce0543ec130e60",
 "canvaskit/skwasm.js.symbols": "262f4827a1317abb59d71d6c587a93e2",
 "canvaskit/canvaskit.js.symbols": "48c83a2ce573d9692e8d970e288d75f7",
@@ -38,12 +38,12 @@ const RESOURCES = {"icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2e
 "assets/packages/getwidget/icons/whatsapp.png": "30632e569686a4b84cc68169fb9ce2e1",
 "assets/packages/csc_picker/lib/assets/country.json": "11b8187fd184a2d648d6b5be8c5e9908",
 "assets/FontManifest.json": "7b2a36307916a9721811788013e65289",
-"assets/fonts/MaterialIcons-Regular.otf": "8627768056c67aa577f1799ff465e93c",
+"assets/fonts/MaterialIcons-Regular.otf": "fe42f674aae1a4d4225f1cb53515c04b",
 "assets/AssetManifest.bin": "19ecc217a4c90c2f00eab03c02ac9c2b",
 "assets/AssetManifest.bin.json": "237fb54ce2a9a09bbdd2e55d3cd67ae2",
-"assets/NOTICES": "49cce29730da732618cffabbcbbf8235",
+"assets/NOTICES": "86c0415f88e8e92e4dccbc9d15c6bffa",
 "assets/AssetManifest.json": "8a40e3e93ad572b80d4bc783bd106b2b",
-"main.dart.js": "a1c0a726d6580855506b4b4488f84160"};
+"main.dart.js": "e3ff0caea620bc15d4c50dd68ad6df75"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
