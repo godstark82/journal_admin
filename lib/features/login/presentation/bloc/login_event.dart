@@ -30,3 +30,5 @@ class LoginInitiateLoginEvent extends LoginEvent {
 
   const LoginInitiateLoginEvent(this.emailPass);
 }
+
+class LogoutEvent extends LoginEvent {}

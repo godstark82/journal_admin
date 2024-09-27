@@ -4,6 +4,7 @@ import 'package:journal_web/features/login/domain/repositories/login_repo.dart';
 import 'package:journal_web/features/login/domain/usecases/author_signup_usecase.dart';
 import 'package:journal_web/features/login/domain/usecases/editor_signup_usecase.dart';
 import 'package:journal_web/features/login/domain/usecases/login_usecase.dart';
+import 'package:journal_web/features/login/domain/usecases/logout_usecase.dart';
 import 'package:journal_web/features/login/domain/usecases/reviewer_signup_usecase.dart';
 import 'package:journal_web/features/login/presentation/bloc/login_bloc.dart';
 import 'package:journal_web/services/author_services.dart';
@@ -16,7 +17,7 @@ final sl = GetIt.instance;
 Future<void> initializeDependencies() async {
   //! Services
   sl.registerSingleton<AuthorServices>(AuthorServices());
-  sl.registerSingleton(LoginService());
+  sl.registerSingleton<LoginService>(LoginService());
   sl.registerSingleton<EditorServices>(EditorServices());
   sl.registerSingleton<ReviewerService>(ReviewerService());
 
@@ -28,7 +29,8 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<EditorSignupUsecase>(EditorSignupUsecase(sl()));
   sl.registerSingleton<ReviewerSignupUsecase>(ReviewerSignupUsecase(sl()));
   sl.registerSingleton<LoginUsecase>(LoginUsecase(sl()));
+  sl.registerSingleton<LogoutUsecase>(LogoutUsecase(sl()));
 
   //! Blocs
-  sl.registerFactory<LoginBloc>(() => LoginBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory<LoginBloc>(() => LoginBloc(sl(), sl(), sl(), sl(), sl()));
 }

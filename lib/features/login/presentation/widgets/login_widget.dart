@@ -5,7 +5,6 @@ import 'package:getwidget/components/button/gf_button.dart';
 import 'package:journal_web/core/common/widgets/custom_text_field.dart';
 import 'package:journal_web/features/login/data/repositories/login_repo_impl.dart';
 import 'package:journal_web/features/login/presentation/bloc/login_bloc.dart';
-import 'package:journal_web/main.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class LoginWidget extends StatelessWidget {

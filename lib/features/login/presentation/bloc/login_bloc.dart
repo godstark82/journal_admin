@@ -3,8 +3,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get/get.dart';
-import 'package:journal_web/core/const/login_const.dart';
-import 'package:journal_web/features/home/presentation/pages/home.dart';
+import 'package:journal_web/core/const/roles.dart';
 import 'package:journal_web/features/login/data/models/author_model.dart';
 import 'package:journal_web/features/login/data/models/editor_model.dart';
 import 'package:journal_web/features/login/data/models/reviewer_model.dart';
@@ -12,8 +11,8 @@ import 'package:journal_web/features/login/data/repositories/login_repo_impl.dar
 import 'package:journal_web/features/login/domain/usecases/author_signup_usecase.dart';
 import 'package:journal_web/features/login/domain/usecases/editor_signup_usecase.dart';
 import 'package:journal_web/features/login/domain/usecases/login_usecase.dart';
+import 'package:journal_web/features/login/domain/usecases/logout_usecase.dart';
 import 'package:journal_web/features/login/domain/usecases/reviewer_signup_usecase.dart';
-import 'package:journal_web/features/login/presentation/pages/login_page.dart';
 import 'package:journal_web/routes.dart';
 
 part 'login_event.dart';
@@ -24,14 +23,28 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final EditorSignupUsecase editorSignupUsecase;
   final ReviewerSignupUsecase reviewerSignupUsecase;
   final LoginUsecase loginUsecase;
+  final LogoutUsecase logoutUsecase;
   LoginBloc(this.authorSignupUsecase, this.editorSignupUsecase,
-      this.reviewerSignupUsecase, this.loginUsecase)
+      this.reviewerSignupUsecase, this.loginUsecase, this.logoutUsecase)
       : super(LoginInitial()) {
     //
     on<LoginAuthorSignupEvent>(onAuthorSignup);
     on<LoginEditorSignupEvent>(onEditorSignup);
     on<LoginReviewerSignupEvent>(onReviewerSignup);
     on<LoginInitiateLoginEvent>(onLogin);
+    on<LogoutEvent>(onLogout);
+  }
+
+  void onLogout(LogoutEvent event, Emitter<LoginState> emit) async {
+    try {
+      await logoutUsecase.call({}).whenComplete(() {
+        Get.offAllNamed(Routes.login);
+      });
+
+      emit(LoginInitial());
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   void onLogin(LoginInitiateLoginEvent event, Emitter<LoginState> emit) async {
@@ -43,19 +56,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       return null;
     });
     if (user != null) {
-      emit(LoginDoneState());
-      if (user is AuthorModel) {
-        AuthorModel author = user;
-        LoginConst.currentRole = author.role!;
-      } else if (user is EditorModel) {
-        EditorModel editor = user;
-        LoginConst.currentRole = editor.role!;
-      } else if (user is ReviewerModel) {
-        ReviewerModel reviewer = user;
-        LoginConst.currentRole = reviewer.role!;
-      } else {
-        LoginConst.currentRole = 'ADMIN';
-      }
+      emit(LoginDoneState(role: user.role!));
+      // if (user is AuthorModel) {
+      //   AuthorModel author = user;
+
+      //   LoginConst.currentRole = author.role!;
+      // } else if (user is EditorModel) {
+      //   EditorModel editor = user;
+      //   LoginConst.currentRole = editor.role!;
+      // } else if (user is ReviewerModel) {
+      //   ReviewerModel reviewer = user;
+      //   LoginConst.currentRole = reviewer.role!;
+      // } else {
+      //   LoginConst.currentRole = 'ADMIN';
+      // }
       Get.offAllNamed(Routes.dashboard);
     } else {
       emit(LoginInitial());
@@ -76,7 +90,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         return null;
       });
       if (user != null) {
-        emit(LoginDoneState());
+        emit(LoginDoneState(role: Role.author));
         Get.offAllNamed(Routes.login);
       } else {
         emit(LoginInitial());
@@ -98,7 +112,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         return null;
       });
       if (user != null) {
-        emit(LoginDoneState());
+        emit(LoginDoneState(role: Role.editor));
         Get.offAllNamed(Routes.login);
       } else {
         emit(LoginInitial());
@@ -121,7 +135,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         return null;
       });
       if (user != null) {
-        emit(LoginDoneState());
+        emit(LoginDoneState(role: Role.reviewer));
         Get.offAllNamed(Routes.login);
       } else {
         emit(LoginInitial());

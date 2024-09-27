@@ -12,4 +12,6 @@ abstract class LoginRepo {
   Future<User?> editorSignup(EditorModel editor);
 
   Future loginUser(EmailPassModel emailPass);
+
+  Future<void> logOut();
 }

@@ -36,6 +36,11 @@ class LoginRepoImpl implements LoginRepo {
     final user = await loginService.signIn(emailPass.email, emailPass.password);
     return user;
   }
+
+  @override
+  Future<void> logOut() async {
+    await loginService.logout();
+  }
 }
 
 class EmailPassModel {
