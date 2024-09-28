@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:journal_web/dependency_injection.dart';
+import 'package:journal_web/features/article/presentation/bloc/article_bloc.dart';
 import 'package:journal_web/features/login/presentation/bloc/login_bloc.dart';
 import 'package:journal_web/features/login/presentation/pages/login_page.dart';
 import 'package:journal_web/firebase_options.dart';
@@ -22,8 +23,10 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider(
+          BlocProvider<LoginBloc>(
               create: (context) => LoginBloc(sl(), sl(), sl(), sl(), sl())),
+          BlocProvider<ArticleBloc>(
+              create: (context) => ArticleBloc(sl(), sl(), sl(), sl()))
         ],
         child: GetMaterialApp(
           debugShowCheckedModeBanner: false,

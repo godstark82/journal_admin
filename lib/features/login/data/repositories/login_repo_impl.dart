@@ -3,10 +3,10 @@ import 'package:journal_web/features/login/data/models/author_model.dart';
 import 'package:journal_web/features/login/data/models/editor_model.dart';
 import 'package:journal_web/features/login/data/models/reviewer_model.dart';
 import 'package:journal_web/features/login/domain/repositories/login_repo.dart';
-import 'package:journal_web/services/author_services.dart';
-import 'package:journal_web/services/editor_service.dart';
-import 'package:journal_web/services/login_service.dart';
-import 'package:journal_web/services/reviewer_service.dart';
+import 'package:journal_web/services/login/author_services.dart';
+import 'package:journal_web/services/login/editor_service.dart';
+import 'package:journal_web/services/login/login_service.dart';
+import 'package:journal_web/services/login/reviewer_service.dart';
 
 class LoginRepoImpl implements LoginRepo {
   AuthorServices authorServices;
