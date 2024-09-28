@@ -15,23 +15,17 @@ import 'package:journal_web/features/login/domain/usecases/logout_usecase.dart';
 import 'package:journal_web/features/login/domain/usecases/reviewer_signup_usecase.dart';
 import 'package:journal_web/features/login/presentation/bloc/login_bloc.dart';
 import 'package:journal_web/services/article/article_service.dart';
-import 'package:journal_web/services/login/author_services.dart';
-import 'package:journal_web/services/login/editor_service.dart';
 import 'package:journal_web/services/login/login_service.dart';
-import 'package:journal_web/services/login/reviewer_service.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
   //! Services
-  sl.registerSingleton<AuthorServices>(AuthorServices());
   sl.registerSingleton<LoginService>(LoginService());
-  sl.registerSingleton<EditorServices>(EditorServices());
-  sl.registerSingleton<ReviewerService>(ReviewerService());
   sl.registerSingleton<ArticleService>(ArticleService());
 
   //! Repositories
-  sl.registerSingleton<LoginRepo>(LoginRepoImpl(sl(), sl(), sl(), sl()));
+  sl.registerSingleton<LoginRepo>(LoginRepoImpl(sl()));
   sl.registerSingleton<ArticleRepo>(ArticleRepoImpl(sl()));
 
   //! Usecases

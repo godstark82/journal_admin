@@ -1,4 +1,3 @@
-
 import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,35 +55,22 @@ class AuthorSignup extends StatelessWidget {
                           },
                         ),
                         CustomTextField(
-                          label: 'First Name',
+                          label: 'Full Name',
                           width: 350,
-                          onChanged: (v) => tempAuthor.firstName = v,
+                          onChanged: (v) => tempAuthor.name = v,
                         ),
-                        CustomTextField(
-                          label: 'Middle',
-                          width: 200,
-                          onChanged: (v) => tempAuthor.middle = v,
-                        ),
-                        CustomTextField(
-                          label: 'Last Name',
-                          width: 350,
-                          onChanged: (v) => tempAuthor.lastName = v,
-                        ),
+
                         CustomTextField(
                           label: 'Email',
                           width: 400,
-                          onChanged: (v) => tempAuthor.mail = v,
+                          onChanged: (v) => tempAuthor.email = v,
                         ),
                         CustomTextField(
                           label: 'ORCID',
                           width: 200,
                           onChanged: (v) => tempAuthor.orcId = v,
                         ),
-                        CustomTextField(
-                          label: 'Username',
-                          width: 250,
-                          onChanged: (v) => tempAuthor.username = v,
-                        ),
+
                         CustomTextField(
                           label: 'Password',
                           width: 250,
@@ -107,9 +93,9 @@ class AuthorSignup extends StatelessWidget {
                           onChanged: (v) => tempAuthor.fieldOfStudy = v,
                         ),
                         CustomTextField(
-                          label: 'Phone',
+                          label: 'Mobile',
                           width: 150,
-                          onChanged: (v) => tempAuthor.phone = v,
+                          onChanged: (v) => tempAuthor.mobile = v,
                         ),
 
                         CSCPicker(

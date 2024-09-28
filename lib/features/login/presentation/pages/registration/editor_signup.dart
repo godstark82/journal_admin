@@ -56,19 +56,12 @@ class EditorSignup extends StatelessWidget {
                         CustomTextField(
                           label: 'Full Name',
                           width: 350,
-                          onChanged: (v) => tempEditor.fullName = v,
+                          onChanged: (v) => tempEditor.name = v,
                         ),
-
                         CustomTextField(
                           label: 'Journal Name',
                           width: 400,
                           onChanged: (v) => tempEditor.journalName = v,
-                        ),
-
-                        CustomTextField(
-                          label: 'Username',
-                          width: 250,
-                          onChanged: (v) => tempEditor.username = v,
                         ),
                         CustomTextField(
                           label: 'Password',
@@ -80,21 +73,16 @@ class EditorSignup extends StatelessWidget {
                           width: 200,
                           onChanged: (v) => tempEditor.email = v,
                         ),
-
                         CustomTextField(
                           label: 'Mobile',
                           width: 150,
                           onChanged: (v) => tempEditor.mobile = v,
                         ),
-
-                        // CSCPicker(
-                        //   onCountryChanged: (c) {
-                        //     tempEditor.country = c;
-                        //   },
-                        //   flagState: CountryFlag.DISABLE,
-                        // ),
-
-                        // Expanded(child: SizedBox()),
+                        CustomTextField(
+                          label: 'Country',
+                          width: 150,
+                          onChanged: (v) => tempEditor.country = v,
+                        ),
                         CustomTextField(
                           label: 'Address',
                           width: 300,
@@ -126,10 +114,10 @@ class EditorSignup extends StatelessWidget {
                                     tempEditor.title == '') {
                                   MySnacks.showErrorSnack(
                                       'Title Cant be empty');
-                                // } 
-                                // else if (tempEditor.country == null) {
+                                  // }
+                                  // else if (tempEditor.country == null) {
                                   // MySnacks.showErrorSnack(
-                                      // 'Country Cant be empty');
+                                  // 'Country Cant be empty');
                                 } else {
                                   context.read<LoginBloc>().add(
                                       LoginEditorSignupEvent(

@@ -1,5 +1,3 @@
-
-import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -21,7 +19,7 @@ class ReviewerSignup extends StatelessWidget {
     ReviewerModel tempReviewer = ReviewerModel();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register as Author'),
+        title: Text('Register as Reviewer'),
         centerTitle: true,
         elevation: 2,
       ),
@@ -56,16 +54,11 @@ class ReviewerSignup extends StatelessWidget {
                           },
                         ),
                         CustomTextField(
-                          label: 'First Name',
+                          label: 'Full Name',
                           width: 350,
-                          onChanged: (v) => tempReviewer.firstName = v,
+                          onChanged: (v) => tempReviewer.name = v,
                         ),
 
-                        CustomTextField(
-                          label: 'Last Name',
-                          width: 350,
-                          onChanged: (v) => tempReviewer.lastName = v,
-                        ),
                         CustomTextField(
                           label: 'Email',
                           width: 400,
@@ -73,20 +66,14 @@ class ReviewerSignup extends StatelessWidget {
                         ),
 
                         CustomTextField(
-                          label: 'Username',
-                          width: 250,
-                          onChanged: (v) => tempReviewer.username = v,
-                        ),
-                        CustomTextField(
                           label: 'Password',
                           width: 250,
                           onChanged: (v) => tempReviewer.password = v,
                         ),
-                        CustomDropdown(
+                        CustomTextField(
                           label: 'Journal Name',
                           width: 200,
-                          onSelected: (v) => tempReviewer.journal = v,
-                          items: designationMenuEntries,
+                          onChanged: (v) => tempReviewer.journal = v,
                         ),
 
                         CustomTextField(
@@ -95,11 +82,10 @@ class ReviewerSignup extends StatelessWidget {
                           onChanged: (v) => tempReviewer.mobile = v,
                         ),
 
-                        CSCPicker(
-                          onCountryChanged: (c) {
-                            tempReviewer.country = c;
-                          },
-                          flagState: CountryFlag.DISABLE,
+                        CustomTextField(
+                          label: 'Country',
+                          width: 150,
+                          onChanged: (v) => tempReviewer.country = v,
                         ),
 
                         // Expanded(child: SizedBox()),

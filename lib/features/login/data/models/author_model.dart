@@ -7,11 +7,10 @@ class AuthorModel extends AuthorEntity {
     super.role,
     super.city,
     super.country,
-    super.firstName,
-    super.lastName,
-    super.mail,
     super.orcId,
-    super.username,
+    super.email,
+    super.name,
+    super.id,
     super.password,
     super.designation,
     super.specialization,
@@ -27,32 +26,30 @@ class AuthorModel extends AuthorEntity {
       city: json['city'],
       role: json['role'],
       country: json['country'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      mail: json['mail'],
-      orcId: json['orcId'],
-      username: json['username'],
+      name: json['name'],
+      id: json['id'],
+      email: json['email'],
       password: json['password'],
+      orcId: json['orcId'],
       designation: json['designation'],
       specialization: json['specialization'],
       fieldOfStudy: json['fieldOfStudy'],
       mobile: json['mobile'],
       state: json['state'],
       pinCode: json['pinCode'],
+      address: json['address'],
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'title': title,
       'city': city,
       'country': country,
+      
       'role': role,
-      'firstName': firstName,
-      'lastName': lastName,
-      'mail': mail,
       'orcId': orcId,
-      'username': username,
       'password': password,
       'designation': designation,
       'specialization': specialization,
@@ -60,6 +57,10 @@ class AuthorModel extends AuthorEntity {
       'mobile': mobile,
       'state': state,
       'pinCode': pinCode,
+      'address': address,
+      'name': name,
+      'id': id,
+      'email': email,
     };
   }
 }

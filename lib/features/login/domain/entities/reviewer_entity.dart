@@ -1,33 +1,30 @@
-import 'package:journal_web/features/login/domain/entities/journal_user_entity.dart';
 
-class ReviewerEntity extends JournalUserEntity {
+import 'package:journal_web/features/login/domain/entities/my_user_entity.dart';
+
+class ReviewerEntity extends MyUser {
   String? title;
-  String? firstName;
-  String? lastName;
-  String? email;
+
   String? journal;
-  String? username;
-  String? password;
+
   String? country;
   String? mobile;
   String? correspondingAddress;
   String? detailsCV;
   String? researchDomain;
-  String? role;
+
 
   ReviewerEntity({
     this.title,
-    this.role,
-    this.firstName,
-    this.lastName,
-    this.email,
     this.journal,
-    this.username,
-    this.password,
     this.country,
     this.mobile,
     this.correspondingAddress,
     this.detailsCV,
     this.researchDomain,
+    super.email,
+    super.password,
+    super.role,
+    super.name,
+    super.id,
   });
 }
