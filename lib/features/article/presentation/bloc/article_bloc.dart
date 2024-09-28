@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:journal_web/core/const/login_const.dart';
 import 'package:journal_web/core/datastate/data_state.dart';
 import 'package:journal_web/features/article/data/models/article_model.dart';
 import 'package:journal_web/features/article/domain/usecases/add_article_usecase.dart';
@@ -33,7 +34,7 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
       if (articles is DataSuccess && articles.data != null) {
         emit(ArticleLoaded(articles.data!));
       } else {
-        emit(ArticleError('NULL'));
+        emit(ArticleError('No Articles Found'));
       }
     } catch (e) {
       emit(ArticleError(e.toString()));
@@ -43,6 +44,17 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
   void onAddArticle(ArticleAddEvent event, Emitter<ArticleState> emit) async {
     emit(ArticleLoading());
     try {
+      String currentUserName = LoginConst.currentUserName;
+
+      bool isCurrentUserIncluded =
+          event.article.authors?.any((author) => author == currentUserName) ??
+              false;
+
+      if (!isCurrentUserIncluded) {
+        event.article.authors ??= [];
+        event.article.authors!.add(currentUserName);
+      }
+
       final article = await addArticleUsecase.call(event.article);
       if (article is DataSuccess && article.data != null) {
         emit(ArticleAddNewArticleState(article.data!));

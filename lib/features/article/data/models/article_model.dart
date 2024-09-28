@@ -21,12 +21,12 @@ class ArticleModel extends ArticleEntity {
     return ArticleModel(
       id: json['id'],
       abstractString: json['abstractString'],
-      authors: List.from(json['authors'])
-          .map((item) => ArticleAuthor.fromJson(item))
-          .toList(),
+      authors:
+          List.from(json['authors']).map((item) => item.toString()).toList(),
       documentType: json['documentType'],
       image: json['image'],
-      keywords: json['keywords'],
+      keywords:
+          List.from(json['keywords']).map((item) => item.toString()).toList(),
       mainSubjects: List.from(json['mainSubjects'])
           .map((item) => item.toString())
           .toList(),
@@ -34,8 +34,8 @@ class ArticleModel extends ArticleEntity {
       references:
           List.from(json['references']).map((item) => item.toString()).toList(),
       title: json['title'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt: DateTime.tryParse(json['createdAt'].toString()),
+      updatedAt: DateTime.tryParse(json['updatedAt'].toString()),
     );
   }
 
@@ -43,7 +43,7 @@ class ArticleModel extends ArticleEntity {
     return {
       'id': id,
       'abstractString': abstractString,
-      'authors': (authors)?.map((item) => item.toJson()),
+      'authors': (authors)?.map((item) => item.toString()),
       'documentType': documentType,
       'image': image,
       'keywords': keywords,

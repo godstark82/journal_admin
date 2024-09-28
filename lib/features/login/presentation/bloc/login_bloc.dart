@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get/get.dart';
+import 'package:journal_web/core/const/login_const.dart';
 import 'package:journal_web/core/const/roles.dart';
 import 'package:journal_web/features/login/data/models/author_model.dart';
 import 'package:journal_web/features/login/data/models/editor_model.dart';
@@ -39,6 +40,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       await logoutUsecase.call({}).whenComplete(() {
         Get.offAllNamed(Routes.login);
+        LoginConst.clearLoginConsts();
       });
 
       emit(LoginInitial());
@@ -57,27 +59,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
     if (user != null) {
       emit(LoginDoneState(role: user.role!));
-      // if (user is AuthorModel) {
-      //   AuthorModel author = user;
-
-      //   LoginConst.currentRole = author.role!;
-      // } else if (user is EditorModel) {
-      //   EditorModel editor = user;
-      //   LoginConst.currentRole = editor.role!;
-      // } else if (user is ReviewerModel) {
-      //   ReviewerModel reviewer = user;
-      //   LoginConst.currentRole = reviewer.role!;
-      // } else {
-      //   LoginConst.currentRole = 'ADMIN';
-      // }
+      LoginConst.updateLoginConsts(
+          role: user.role,
+          userName: user.name,
+          userId: user.id,
+          userEmail: user.email);
+      LoginConst.printLoginConsts();
       Get.offAllNamed(Routes.dashboard);
     } else {
       emit(LoginInitial());
     }
-    // } catch (e) {
-    // emit(LoginInitial());
-    // log(e.toString());
-    // }
   }
 
   void onAuthorSignup(

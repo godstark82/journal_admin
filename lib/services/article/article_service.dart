@@ -24,15 +24,13 @@ class ArticleService {
   //! Add new Article
   Future<DataState<ArticleModel>> addArticle(ArticleModel article) async {
     try {
-      // Add a placeholder document to get the document reference
-      DocumentReference<Map<String, dynamic>> docRef = await firestore
-          .collection('articles')
-          .add({}); // Initially add an empty document
+      DocumentReference<Map<String, dynamic>> docRef =
+          await firestore.collection('articles').add({});
 
-      // Set the article ID to the generated document ID
       article.id = docRef.id;
+      article.createdAt = DateTime.now();
+      article.updatedAt = DateTime.now();
 
-      // Now update the document with the article data
       await docRef.set(article.toJson());
 
       // Retrieve the newly added article from Firestore
@@ -54,6 +52,7 @@ class ArticleService {
   //! Update Article
   Future<DataState<ArticleModel>> updateArticle(ArticleModel article) async {
     try {
+      article.updatedAt = DateTime.now();
       await firestore
           .collection('articles')
           .doc(article.id)

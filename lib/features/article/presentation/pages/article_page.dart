@@ -5,12 +5,22 @@ import 'package:journal_web/features/article/presentation/bloc/article_bloc.dart
 import 'package:journal_web/features/article/presentation/widgets/article_card.dart';
 import 'package:journal_web/routes.dart';
 
-class ArticlePage extends StatelessWidget {
+class ArticlePage extends StatefulWidget {
   const ArticlePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<ArticlePage> createState() => _ArticlePageState();
+}
+
+class _ArticlePageState extends State<ArticlePage> {
+  @override
+  void initState() {
+    super.initState();
     BlocProvider.of<ArticleBloc>(context).add(ArticleLoadEvent());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[500],
       appBar: AppBar(

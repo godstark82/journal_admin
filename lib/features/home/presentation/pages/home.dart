@@ -3,6 +3,7 @@ import 'package:flutter_admin_scaffold/admin_scaffold.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:journal_web/features/article/presentation/pages/article_page.dart';
+import 'package:journal_web/features/users/presentation/pages/users_page.dart';
 import 'package:journal_web/routes.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -17,6 +18,7 @@ class _HomeState extends State<Home> {
   final Map<String, Widget> screens = {
     '/dashboard': Center(child: Text('Dashboard')),
     '/articles': ArticlePage(),
+    '/users': UsersPage(),
   };
   String currentIndex = '/dashboard';
   @override
@@ -30,7 +32,6 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: GFButton(
-                
                 icon: Icon(Icons.person),
                 text: 'Profile',
                 onPressed: () {
@@ -51,6 +52,11 @@ class _HomeState extends State<Home> {
               title: 'articles',
               route: '/articles',
               icon: Icons.article,
+            ),
+            AdminMenuItem(
+              title: 'Users',
+              route: '/users',
+              icon: Icons.people,
             )
           ],
           selectedRoute: currentIndex,

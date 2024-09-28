@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Flutter Web",
+        "request": "launch",
+        "type": "dart",
+        "flutterMode": "debug",    // or "profile" or "release"
+        "deviceId": "chrome",      // Runs on Chrome, or use "edge" for Edge browser
+        "args": [
+          "--web-renderer", "html",  // Optionally specify renderer ("html" or "canvaskit")
+          "--dart-define=FLUTTER_WEB_CANVASKIT_URL=https://cdn.example.com/canvaskit/"
+        ]
+      }
+    ]
+  }
+  

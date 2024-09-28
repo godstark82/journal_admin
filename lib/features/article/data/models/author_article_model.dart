@@ -1,5 +1,5 @@
-
 class ArticleAuthor {
+  String? title;
   String? name;
   String? designation;
 

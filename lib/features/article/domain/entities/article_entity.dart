@@ -1,10 +1,8 @@
-import 'package:journal_web/features/article/data/models/author_article_model.dart';
-
 abstract class ArticleEntity {
   String? id;
   String? title;
   String? documentType;
-  List<ArticleAuthor>? authors;
+  List<String>? authors;
   String? pdf;
   String? abstractString;
   List<String>? keywords;

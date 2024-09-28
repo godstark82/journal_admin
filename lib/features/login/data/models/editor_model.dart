@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:journal_web/features/login/domain/entities/editor_entity.dart';
 
 class EditorModel extends EditorEntity {
@@ -49,5 +51,26 @@ class EditorModel extends EditorEntity {
       'id': id,
       'name': name,
     };
+  }
+
+  static Future<EditorModel?> fromUser(String userId) async {
+    try {
+      final DocumentSnapshot<Map<String, dynamic>> snapshot =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .get();
+
+      if (snapshot.exists) {
+        final userData = snapshot.data()!;
+        return EditorModel.fromJson(userData);
+      } else {
+        print('Editor not found');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching editor data: $e');
+      return null;
+    }
   }
 }

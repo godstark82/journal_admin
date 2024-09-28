@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:journal_web/features/login/domain/entities/reviewer_entity.dart';
 
 class ReviewerModel extends ReviewerEntity {
@@ -48,5 +49,26 @@ class ReviewerModel extends ReviewerEntity {
       id: json['id'],
       name: json['name'],
     );
+  }
+
+  static Future<ReviewerModel?> fromUser(String userId) async {
+    try {
+      final DocumentSnapshot<Map<String, dynamic>> snapshot =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .get();
+
+      if (snapshot.exists) {
+        final userData = snapshot.data()!;
+        return ReviewerModel.fromJson(userData);
+      } else {
+        print('Reviewer not found');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching reviewer data: $e');
+      return null;
+    }
   }
 }
