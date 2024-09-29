@@ -233,12 +233,12 @@ class _AddArticlePageState extends State<AddArticlePage> {
                                   fontWeight: FontWeight.bold),
                             ),
                             SizedBox(height: 8),
-                            // Image.network(
-                            //   article.image!,
-                            //   height: 100,
-                            //   width: 100,
-                            //   fit: BoxFit.cover,
-                            // ),
+                            Image.network(
+                              article.image!,
+                              height: 100,
+                              width: 100,
+                              fit: BoxFit.cover,
+                            ),
                           ],
                         ],
                       ),

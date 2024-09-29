@@ -11,6 +11,16 @@ class ArticleInitial extends ArticleState {}
 
 class ArticleLoading extends ArticleState {}
 
+class ArticleDeleteArticleState extends ArticleState {
+  final ArticleModel article;
+  const ArticleDeleteArticleState(this.article);
+}
+
+class ArticleUpdateArticleState extends ArticleState {
+  final ArticleModel article;
+  const ArticleUpdateArticleState(this.article);
+}
+
 class ArticleAddNewArticleState extends ArticleState {
   final ArticleModel article;
   const ArticleAddNewArticleState(this.article);

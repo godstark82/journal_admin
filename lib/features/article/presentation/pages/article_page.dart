@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:journal_web/features/article/data/models/article_model.dart';
 import 'package:journal_web/features/article/presentation/bloc/article_bloc.dart';
 import 'package:journal_web/features/article/presentation/widgets/article_card.dart';
 import 'package:journal_web/routes.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class ArticlePage extends StatefulWidget {
   const ArticlePage({super.key});
@@ -36,26 +38,40 @@ class _ArticlePageState extends State<ArticlePage> {
         tooltip: 'Add Article',
         child: Icon(Icons.add),
       ),
-      body: BlocBuilder<ArticleBloc, ArticleState>(
+      body: BlocConsumer<ArticleBloc, ArticleState>(
+        listener: (context, state) {
+          if (state is ArticleDeleteArticleState) {
+            context.read<ArticleBloc>().add(ArticleLoadEvent());
+          } else if (state is ArticleAddNewArticleState) {
+            context.read<ArticleBloc>().add(ArticleLoadEvent());
+          } else if (state is ArticleUpdateArticleState) {
+            context.read<ArticleBloc>().add(ArticleLoadEvent());
+          } else if (state is ArticleError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+              ),
+            );
+          }
+        },
         builder: (context, state) {
           if (state is ArticleLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is ArticleLoaded) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                return GridView.builder(
-                  padding: const EdgeInsets.all(16),
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 600,
-                    childAspectRatio: 3 / 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemCount: state.articles.length,
-                  itemBuilder: (context, index) {
-                    return ArticleCard(article: state.articles[index]);
-                  },
-                );
+            if (state.articles.isEmpty) {
+              return const Center(child: Text('No articles published yet'));
+            }
+            return ResponsiveBuilder(
+              builder: (context, sizingInformation) {
+                if (sizingInformation.deviceScreenType ==
+                    DeviceScreenType.desktop) {
+                  return _buildDesktopLayout(state.articles);
+                } else if (sizingInformation.deviceScreenType ==
+                    DeviceScreenType.tablet) {
+                  return _buildTabletLayout(state.articles);
+                } else {
+                  return _buildMobileLayout(state.articles);
+                }
               },
             );
           } else if (state is ArticleError) {
@@ -65,6 +81,51 @@ class _ArticlePageState extends State<ArticlePage> {
           }
         },
       ),
+    );
+  }
+
+  Widget _buildDesktopLayout(List<ArticleModel> articles) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        childAspectRatio: 0.8,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+      ),
+      itemCount: articles.length,
+      itemBuilder: (context, index) {
+        return ArticleCard(article: articles[index]);
+      },
+    );
+  }
+
+  Widget _buildTabletLayout(List<ArticleModel> articles) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.8,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+      ),
+      itemCount: articles.length,
+      itemBuilder: (context, index) {
+        return ArticleCard(article: articles[index]);
+      },
+    );
+  }
+
+  Widget _buildMobileLayout(List<ArticleModel> articles) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: articles.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: ArticleCard(article: articles[index]),
+        );
+      },
     );
   }
 }
