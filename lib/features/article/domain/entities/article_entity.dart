@@ -1,3 +1,5 @@
+import 'package:journal_web/features/article/data/models/comment_model.dart';
+
 abstract class ArticleEntity {
   String? id;
   String? title;
@@ -9,6 +11,7 @@ abstract class ArticleEntity {
   List<String>? mainSubjects;
   List<String>? references;
   String? image;
+  List<CommentModel>? comments;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -22,6 +25,7 @@ abstract class ArticleEntity {
     this.mainSubjects,
     this.createdAt,
     this.updatedAt,
+    this.comments,
     this.pdf,
     this.references,
     this.title,

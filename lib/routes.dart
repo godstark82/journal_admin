@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:journal_web/core/common/screens/profile.dart';
 import 'package:journal_web/features/article/presentation/pages/add_article_page.dart';
+import 'package:journal_web/features/article/presentation/pages/comments_page.dart';
 import 'package:journal_web/features/article/presentation/pages/edit_article_page.dart';
 import 'package:journal_web/features/home/presentation/pages/home.dart';
 import 'package:journal_web/features/login/presentation/pages/login_page.dart';
@@ -17,6 +18,7 @@ class Routes {
   static const String authorSignup = '/author_signup';
   static const String reviewerSignup = '/reviewer_signup';
   static const String editArticle = '/edit_article';
+  static const String comments = '/comments';
 }
 
 List<GetPage> routes = [
@@ -30,6 +32,9 @@ List<GetPage> routes = [
         name: Routes.editArticle,
         page: () => EditArticlePage(article: Get.arguments['article']),
       ),
+      GetPage(
+          name: Routes.comments,
+          page: () => CommentsPage(article: Get.arguments['article'])),
     ],
   ),
 

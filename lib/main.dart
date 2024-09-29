@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:journal_web/core/const/login_const.dart';
 import 'package:journal_web/dependency_injection.dart';
 import 'package:journal_web/features/article/presentation/bloc/article_bloc.dart';
 import 'package:journal_web/features/login/presentation/bloc/login_bloc.dart';
@@ -17,6 +18,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('cache');
   await initializeDependencies();
+  await LoginConst.getCurrentUser();
   runApp(const MainApp());
 }
 

@@ -1,4 +1,4 @@
-import 'package:journal_web/features/article/data/models/author_article_model.dart';
+import 'package:journal_web/features/article/data/models/comment_model.dart';
 import 'package:journal_web/features/article/domain/entities/article_entity.dart';
 
 class ArticleModel extends ArticleEntity {
@@ -15,10 +15,16 @@ class ArticleModel extends ArticleEntity {
     super.pdf,
     super.references,
     super.title,
+    super.comments,
   });
 
   factory ArticleModel.fromJson(Map<String, dynamic> json) {
     return ArticleModel(
+      comments: json['comments'] != null
+          ? List.from(json['comments'])
+              .map((item) => CommentModel.fromJson(item))
+              .toList()
+          : [],
       id: json['id'],
       abstractString: json['abstractString'],
       authors:
@@ -42,6 +48,7 @@ class ArticleModel extends ArticleEntity {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'comments': comments?.map((item) => item.toJson()),
       'abstractString': abstractString,
       'authors': (authors)?.map((item) => item.toString()),
       'documentType': documentType,

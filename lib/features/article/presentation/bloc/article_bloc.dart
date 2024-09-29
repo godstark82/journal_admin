@@ -44,7 +44,7 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
   void onAddArticle(ArticleAddEvent event, Emitter<ArticleState> emit) async {
     emit(ArticleLoading());
     try {
-      String currentUserName = LoginConst.currentUserName;
+      String currentUserName = LoginConst.currentUserName ?? 'Unknown User';
 
       bool isCurrentUserIncluded =
           event.article.authors?.any((author) => author == currentUserName) ??

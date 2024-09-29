@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class LoginConst {
-  static String currentRole = '';
-  static String currentUserName = '';
-  static String currentUserId = '';
-  static String currentUserEmail = '';
+  static String? currentRole;
+  static String? currentUserName;
+  static String? currentUserId;
+  static String? currentUserEmail;
 
   static void updateLoginConsts({
     String? role,
@@ -38,5 +38,14 @@ class LoginConst {
     log('currentUserName: $currentUserName');
     log('currentUserId: $currentUserId');
     log('currentUserEmail: $currentUserEmail');
+  }
+
+  static Future<void> getCurrentUser() async {
+    final hiveBox = Hive.box('cache');
+    currentRole = hiveBox.get('currentRole');
+    currentUserName = hiveBox.get('currentUserName');
+    currentUserId = hiveBox.get('currentUserId');
+    currentUserEmail = hiveBox.get('currentUserEmail');
+    printLoginConsts();
   }
 }

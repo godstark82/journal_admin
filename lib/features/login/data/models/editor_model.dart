@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:journal_web/features/login/domain/entities/editor_entity.dart';
 
 class EditorModel extends EditorEntity {
