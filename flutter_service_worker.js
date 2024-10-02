@@ -12,7 +12,7 @@ const RESOURCES = {"icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2e
 "version.json": "3b89c966ad658b4b8f9a89cfda844d67",
 "manifest.json": "8e61b266a22a306237d0553151d3f1ec",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"flutter_bootstrap.js": "1e69f94dbc047302ebbae6384f1cb8ef",
+"flutter_bootstrap.js": "658cd485339f1e8e0e95922cab780c55",
 "canvaskit/skwasm.wasm": "9f0c0c02b82a910d12ce0543ec130e60",
 "canvaskit/skwasm.js.symbols": "262f4827a1317abb59d71d6c587a93e2",
 "canvaskit/canvaskit.js.symbols": "48c83a2ce573d9692e8d970e288d75f7",
@@ -37,13 +37,16 @@ const RESOURCES = {"icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2e
 "assets/packages/getwidget/icons/slack.png": "19155b848beeb39c1ffcf743608e2fde",
 "assets/packages/getwidget/icons/whatsapp.png": "30632e569686a4b84cc68169fb9ce2e1",
 "assets/packages/csc_picker/lib/assets/country.json": "11b8187fd184a2d648d6b5be8c5e9908",
-"assets/FontManifest.json": "7b2a36307916a9721811788013e65289",
-"assets/fonts/MaterialIcons-Regular.otf": "56fb86afc93a14082b45ee5230b494a2",
-"assets/AssetManifest.bin": "19ecc217a4c90c2f00eab03c02ac9c2b",
-"assets/AssetManifest.bin.json": "237fb54ce2a9a09bbdd2e55d3cd67ae2",
-"assets/NOTICES": "48c04b789c051e91c3457aeb88181cc0",
-"assets/AssetManifest.json": "8a40e3e93ad572b80d4bc783bd106b2b",
-"main.dart.js": "1e75d25d413bb97cb8624bc016358b08"};
+"assets/packages/font_awesome_flutter/lib/fonts/fa-regular-400.ttf": "f3307f62ddff94d2cd8b103daf8d1b0f",
+"assets/packages/font_awesome_flutter/lib/fonts/fa-solid-900.ttf": "4f7b8336f5bbf9d7731fd1f6f203b863",
+"assets/packages/font_awesome_flutter/lib/fonts/fa-brands-400.ttf": "da59c17e7cab00aaf260355b87dd8c45",
+"assets/FontManifest.json": "3ddd9b2ab1c2ae162d46e3cc7b78ba88",
+"assets/fonts/MaterialIcons-Regular.otf": "e617002695eb43f15930c1ca9fd14fa4",
+"assets/AssetManifest.bin": "e192422f0ed47702e6e664a9ad74c6f4",
+"assets/AssetManifest.bin.json": "fc16367a897d5b08f2113fd4f6d5fa39",
+"assets/NOTICES": "95b5f2bf6475d6faaa8b5081b5c74502",
+"assets/AssetManifest.json": "d5a6dccfac20e07a84aedc843612749c",
+"main.dart.js": "00b7b16fc7c4606f1dd270f97ce46b37"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
