@@ -58,11 +58,7 @@ class EditorSignup extends StatelessWidget {
                           width: 350,
                           onChanged: (v) => tempEditor.name = v,
                         ),
-                        CustomTextField(
-                          label: 'Journal Name',
-                          width: 400,
-                          onChanged: (v) => tempEditor.journalName = v,
-                        ),
+                        // FutureBui
                         CustomTextField(
                           label: 'Password',
                           width: 250,
@@ -141,3 +137,5 @@ class EditorSignup extends StatelessWidget {
     );
   }
 }
+
+

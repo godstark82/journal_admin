@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:journal_web/core/datastate/data_state.dart';
-import 'package:journal_web/features/article/data/models/article_model.dart';
+import 'package:journal_web/features/volume/data/models/article_model.dart';
 
 class ArticleService {
   final firestore = FirebaseFirestore.instance;

@@ -3,6 +3,7 @@ analyzer:
   errors:
     avoid_print: ignore
     library_private_types_in_public_api: ignore
+    must_be_immutable: ignore
     prefer_const_constructors: ignore
     prefer_const_literals_to_create_immutables: ignore
     prefer_final_fields: ignore

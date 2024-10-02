@@ -582,7 +582,7 @@ Widget buildGenericUserDetails(AdminModel user) {
 
 Widget _buildDetailItem(
     IconData icon, String label, String? value, double width, bool isDesktop) {
-  return Container(
+  return SizedBox(
     width: width,
     child: Row(
       mainAxisAlignment:

@@ -28,7 +28,7 @@ jobs:
 
       # Build the Flutter web app
       - name: Build Flutter web
-        run: flutter build web --release
+        run: flutter build web --release --web-renderer html
 
       # Adjust the base href for GitHub Pages
       - name: Adjust base href
