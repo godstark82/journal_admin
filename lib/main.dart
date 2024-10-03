@@ -46,7 +46,7 @@ class MainApp extends StatelessWidget {
           BlocProvider<SingleissueBloc>(
               create: (context) => sl<SingleissueBloc>()),
           BlocProvider<SinglevolumeBloc>(
-              create: (context) => sl<SinglevolumeBloc>()),
+              create: (context) => sl<SinglevolumeBloc>())
         ],
         child: GetMaterialApp(
           defaultTransition: Get.defaultTransition,

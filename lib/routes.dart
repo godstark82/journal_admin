@@ -5,7 +5,6 @@ import 'package:journal_web/features/home/presentation/pages/add_editorial.dart'
 import 'package:journal_web/features/home/presentation/pages/edit_editorial.dart';
 import 'package:journal_web/features/pages/presentation/pages/add_page.dart';
 import 'package:journal_web/features/pages/presentation/pages/edit_page.dart';
-import 'package:journal_web/features/pages/presentation/pages/view_page.dart';
 import 'package:journal_web/features/volume/presentation/pages/add/add_article.dart';
 import 'package:journal_web/features/volume/presentation/pages/add/add_issue.dart';
 import 'package:journal_web/features/volume/presentation/pages/add/add_volume.dart';
@@ -58,7 +57,6 @@ class Routes {
   static const String pages = '/pages';
   static const String addPage = '/add_page';
   static const String editPage = '/edit_page';
-  static const String viewPage = '/view_page';
 }
 
 List<GetPage> routes = [
@@ -155,12 +153,7 @@ List<GetPage> routes = [
       page: () => EditEditorialPage(),
       parameters: {'memberId': ''}),
   
-  GetPage(
-    name: Routes.pages + Routes.viewPage,
-    page: () => ViewPage(),
-    parameters: {'pageId': ''},
-    middlewares: [AuthGuard()],
-  ),
+ 
 
   GetPage(
     name: Routes.pages + Routes.editPage,

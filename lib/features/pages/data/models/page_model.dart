@@ -4,14 +4,14 @@ class PageModel extends Equatable {
   final String id;
   final String name;
   final DateTime insertDate;
-  final String website;
+  final String url; 
   final String content;
 
   const PageModel({
     required this.id,
     required this.name,
     required this.insertDate,
-    required this.website,
+    required this.url,
     required this.content,
   });
 
@@ -19,7 +19,7 @@ class PageModel extends Equatable {
         'id': id,
         'name': name,
         'insertDate': insertDate.toIso8601String(),
-        'website': website,
+        'url': url,
         'content': content,
       };
 
@@ -27,7 +27,7 @@ class PageModel extends Equatable {
         id: json['id'],
         name: json['name'],
         insertDate: DateTime.parse(json['insertDate']),
-        website: json['website'],
+        url: json['url'],
         content: json['content'],
       );
 
@@ -36,17 +36,17 @@ class PageModel extends Equatable {
     String? id,
     String? name,
     DateTime? insertDate,
-    String? website,
+    String? url,
     String? content,
   }) =>
       PageModel(
         id: id ?? this.id,
         name: name ?? this.name,
         insertDate: insertDate ?? this.insertDate,
-        website: website ?? this.website,
+        url: url ?? this.url,
         content: content ?? this.content,
       );
 
   @override
-  List<Object?> get props => [id, name, insertDate, website, content];
+  List<Object?> get props => [id, name, insertDate, url, content];
 }

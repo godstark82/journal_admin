@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:journal_web/features/pages/presentation/bloc/pages_bloc.dart';
 import 'package:journal_web/routes.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PageManagementPage extends StatefulWidget {
   const PageManagementPage({super.key});
@@ -23,6 +24,7 @@ class _PageManagementPageState extends State<PageManagementPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Page Management'),
         actions: [
           IconButton(
@@ -62,11 +64,11 @@ class _PageManagementPageState extends State<PageManagementPage> {
                             },
                           ),
                           cells: [
-                            DataCell(Text((index+1).toString())),
+                            DataCell(Text((index + 1).toString())),
                             DataCell(Text(page.name)),
-                            DataCell(Text(
-                                DateFormat('yyyy-MM-dd').format(page.insertDate))),
-                            DataCell(Text(page.website)),
+                            DataCell(Text(DateFormat('yyyy-MM-dd')
+                                .format(page.insertDate))),
+                            DataCell(Text(page.url)),
                             DataCell(
                               Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -81,8 +83,9 @@ class _PageManagementPageState extends State<PageManagementPage> {
                                     ),
                                     onPressed: () {
                                       // Edit functionality
-                                      Get.toNamed(Routes.pages + Routes.editPage, parameters: {'pageId': page.id});
-
+                                      Get.toNamed(
+                                          Routes.pages + Routes.editPage,
+                                          parameters: {'pageId': page.id});
                                     },
                                     child: Text('Edit'),
                                   ),
@@ -96,7 +99,35 @@ class _PageManagementPageState extends State<PageManagementPage> {
                                       ),
                                     ),
                                     onPressed: () {
-                                      context.read<PagesBloc>().add(DeletePageEvent(id: page.id));
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Confirm Delete'),
+                                            content: Text(
+                                                'Are you sure you want to delete this page?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: Text('Cancel'),
+                                                onPressed: () {
+                                                  Get.back();
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: Text('Delete'),
+                                                onPressed: () {
+                                                  context.read<PagesBloc>().add(
+                                                      DeletePageEvent(
+                                                          id: page.id));
+                                                  Get.back();
+                                                  Get.snackbar('Success',
+                                                      'Page deleted successfully');
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     },
                                     child: Text('Delete'),
                                   ),
@@ -109,8 +140,15 @@ class _PageManagementPageState extends State<PageManagementPage> {
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                     ),
-                                    onPressed: () {
-                                      Get.toNamed(Routes.pages + Routes.viewPage, parameters: {'pageId': page.id});
+                                    onPressed: () async {
+                                      if ((await canLaunchUrl(
+                                              Uri.parse(page.url))) ==
+                                          true) {
+                                        launchUrl(Uri.parse(page.url));
+                                      } else {
+                                        Get.snackbar('Error',
+                                            'Failed to launch URL ${page.url}');
+                                      }
                                     },
                                     child: Text('View'),
                                   ),

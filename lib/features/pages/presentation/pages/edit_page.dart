@@ -41,7 +41,7 @@ class _EditPageState extends State<EditPage> {
         id: pageId,
         name: _pageNameController.text,
         insertDate: DateTime.now(),
-        website: _websiteController.text,
+        url: _websiteController.text,
         content: content,
       );
       context.read<PagesBloc>().add(UpdatePageEvent(page: updatedPage));
@@ -69,7 +69,7 @@ class _EditPageState extends State<EditPage> {
           }
           if (state is SinglePageLoadedState) {
             _pageNameController.text = state.page.name;
-            _websiteController.text = state.page.website;
+            _websiteController.text = state.page.url;
             _contentController.setText(state.page.content);
 
             return SingleChildScrollView(
@@ -96,12 +96,12 @@ class _EditPageState extends State<EditPage> {
                     TextFormField(
                       controller: _websiteController,
                       decoration: InputDecoration(
-                        labelText: 'Website',
+                        labelText: 'URL',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter a website';
+                          return 'Please enter an url';
                         }
                         return null;
                       },

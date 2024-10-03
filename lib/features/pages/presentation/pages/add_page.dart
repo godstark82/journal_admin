@@ -21,7 +21,9 @@ class _AddPageState extends State<AddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Add Page'),
       ),
       body: SingleChildScrollView(
@@ -48,12 +50,12 @@ class _AddPageState extends State<AddPage> {
               TextFormField(
                 controller: _websiteController,
                 decoration: InputDecoration(
-                  labelText: 'Website',
+                  labelText: 'URL',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a website';
+                    return 'Please enter a URL';
                   }
                   return null;
                 },
@@ -102,7 +104,7 @@ class _AddPageState extends State<AddPage> {
 
       final PageModel page = PageModel(
         name: name,
-        website: website,
+        url: website,
         content: content,
         id: '1',
         insertDate: DateTime.now(),
