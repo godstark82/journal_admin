@@ -92,9 +92,9 @@ class _EditEditorialPageState extends State<EditEditorialPage> {
                             ),
                             SizedBox(height: 20),
                             TextFormField(
-                              initialValue: member.category,
+                              initialValue: member.role,
                               decoration: InputDecoration(
-                                labelText: 'Category',
+                                labelText: 'Role',
                                 filled: true,
                                 fillColor: Colors.purple[50],
                                 border: OutlineInputBorder(
@@ -102,7 +102,7 @@ class _EditEditorialPageState extends State<EditEditorialPage> {
                                 ),
                               ),
                               onChanged: (value) =>
-                                  member = member.copyWith(category: value),
+                                  member = member.copyWith(role: value),
                             ),
                             SizedBox(height: 40),
                             ElevatedButton(

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:journal_web/features/home/presentation/pages/dashboard.dart';
 import 'package:journal_web/features/home/presentation/pages/editorial_board_page.dart';
-import 'package:journal_web/features/home/presentation/pages/page_management_screen.dart';
+import 'package:journal_web/features/pages/presentation/pages/page_management_screen.dart';
 import 'package:journal_web/features/home/presentation/pages/social_links_page.dart';
 import 'package:journal_web/features/users/presentation/pages/users_page.dart';
 import 'package:journal_web/features/volume/presentation/pages/volume_home.dart';

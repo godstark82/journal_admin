@@ -1,7 +1,11 @@
 import 'package:get/get.dart';
 import 'package:journal_web/core/common/screens/profile.dart';
+import 'package:journal_web/core/usecase/middleware.dart';
 import 'package:journal_web/features/home/presentation/pages/add_editorial.dart';
 import 'package:journal_web/features/home/presentation/pages/edit_editorial.dart';
+import 'package:journal_web/features/pages/presentation/pages/add_page.dart';
+import 'package:journal_web/features/pages/presentation/pages/edit_page.dart';
+import 'package:journal_web/features/pages/presentation/pages/view_page.dart';
 import 'package:journal_web/features/volume/presentation/pages/add/add_article.dart';
 import 'package:journal_web/features/volume/presentation/pages/add/add_issue.dart';
 import 'package:journal_web/features/volume/presentation/pages/add/add_volume.dart';
@@ -44,10 +48,17 @@ class Routes {
   static const String editArticle = '/edit_article';
   static const String comments = '/comments';
 
+
   //ADMIN
   static const String editorialBoard = '/editorial_board';
   static const String addEditorialBoard = '/add_editorial_board';
   static const String editEditorialBoard = '/edit_editorial_board';
+
+  // Pages
+  static const String pages = '/pages';
+  static const String addPage = '/add_page';
+  static const String editPage = '/edit_page';
+  static const String viewPage = '/view_page';
 }
 
 List<GetPage> routes = [
@@ -55,40 +66,56 @@ List<GetPage> routes = [
   GetPage(
       name: Routes.dashboard,
       parameters: {'i': ''},
+      middlewares: [AuthGuard()],
       page: () => Home(),
       children: [
-        GetPage(name: Routes.volumes, page: () => VolumeHomePage()),
-        GetPage(name: Routes.addVolume, page: () => AddVolumePage()),
+        GetPage(
+          name: Routes.volumes,
+          page: () => VolumeHomePage(),
+          middlewares: [AuthGuard()],
+        ),
+        GetPage(
+          name: Routes.addVolume,
+          page: () => AddVolumePage(),
+          middlewares: [AuthGuard()],
+        ),
         GetPage(
             name: Routes.viewVolume,
             page: () => ViewVolumePage(),
+            middlewares: [AuthGuard()],
             children: []),
       ]),
 
   GetPage(
-      name: '${Routes.dashboard}${Routes.viewVolume}${Routes.addIssue}',
-      page: () => AddIssuePage()),
+    name: '${Routes.dashboard}${Routes.viewVolume}${Routes.addIssue}',
+    page: () => AddIssuePage(),
+    middlewares: [AuthGuard()],
+  ),
   GetPage(
     name: '${Routes.dashboard}${Routes.viewVolume}${Routes.editVolume}',
     page: () => EditVolumePage(),
     parameters: {'volumeId': ''},
+    middlewares: [AuthGuard()],
   ),
   GetPage(
     name: '${Routes.dashboard}${Routes.viewVolume}${Routes.viewIssue}',
     page: () => ViewIssuePage(),
     parameters: {'issueId': '', 'volumeId': ''},
+    middlewares: [AuthGuard()],
   ),
   GetPage(
     name:
         '${Routes.dashboard}${Routes.viewVolume}${Routes.viewIssue}${Routes.editIssue}',
     page: () => EditIssuePage(),
     parameters: {'issueId': '', 'volumeId': ''},
+    middlewares: [AuthGuard()],
   ),
   GetPage(
     name:
         '${Routes.dashboard}${Routes.viewVolume}${Routes.viewIssue}${Routes.addArticle}',
     page: () => AddArticlePage(),
     parameters: {'issueId': '', 'volumeId': ''},
+    middlewares: [AuthGuard()],
   ),
 
   GetPage(
@@ -96,18 +123,21 @@ List<GetPage> routes = [
         '${Routes.dashboard}${Routes.viewVolume}${Routes.viewIssue}${Routes.editArticle}',
     page: () => EditArticlePage(),
     parameters: {'issueId': '', 'volumeId': '', 'articleId': ''},
+    middlewares: [AuthGuard()],
   ),
   GetPage(
     name:
         '${Routes.dashboard}${Routes.viewVolume}${Routes.viewIssue}${Routes.viewArticle}',
     page: () => ViewArticlePage(),
     parameters: {'issueId': '', 'volumeId': '', 'articleId': ''},
+    middlewares: [AuthGuard()],
   ),
   GetPage(
     name:
         '${Routes.dashboard}${Routes.viewVolume}${Routes.viewIssue}${Routes.viewArticle}${Routes.comments}',
     page: () => CommentsPage(),
     parameters: {'issueId': '', 'volumeId': '', 'articleId': ''},
+    middlewares: [AuthGuard()],
   ),
 
   //! ADMIN BASED ROUTES
@@ -116,16 +146,42 @@ List<GetPage> routes = [
       page: () => Home(),
       parameters: {'i': '/editorial_board'}),
   GetPage(
-      name: Routes.editorialBoard + Routes.addEditorialBoard,
-      page: () => AddEditorialPage()),
+    name: Routes.editorialBoard + Routes.addEditorialBoard,
+    page: () => AddEditorialPage(),
+    middlewares: [AuthGuard()],
+  ),
   GetPage(
       name: Routes.editorialBoard + Routes.editEditorialBoard,
       page: () => EditEditorialPage(),
       parameters: {'memberId': ''}),
+  
+  GetPage(
+    name: Routes.pages + Routes.viewPage,
+    page: () => ViewPage(),
+    parameters: {'pageId': ''},
+    middlewares: [AuthGuard()],
+  ),
+
+  GetPage(
+    name: Routes.pages + Routes.editPage,
+    page: () => EditPage(),
+    parameters: {'pageId': ''},
+    middlewares: [AuthGuard()],
+  ),
+
+  GetPage(
+    name: Routes.pages + Routes.addPage,
+    page: () => AddPage(),
+    middlewares: [AuthGuard()],
+  ),
 
   //! Login Page Initial Page
   GetPage(name: Routes.login, page: () => LoginPage()),
-  GetPage(name: Routes.profile, page: () => ProfilePage()),
+  GetPage(
+    name: Routes.profile,
+    page: () => ProfilePage(),
+    middlewares: [AuthGuard()],
+  ),
   //! Registration Page
   GetPage(name: Routes.editorSignup, page: () => EditorSignup()),
   GetPage(name: Routes.authorSignup, page: () => AuthorSignup()),

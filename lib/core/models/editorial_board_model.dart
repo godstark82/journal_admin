@@ -1,16 +1,17 @@
-
 class EditorialBoardModel {
   final String id;
   final String name;
   final String email;
-  final String category;
+  final String role;
+  final String institution;
   final String createdAt;
 
   EditorialBoardModel({
     required this.id,
     required this.name,
     required this.email,
-    required this.category,
+    required this.role,
+    required this.institution,
     required this.createdAt,
   });
 
@@ -19,7 +20,8 @@ class EditorialBoardModel {
       id: json['id'],
       name: json['name'],
       email: json['email'],
-      category: json['category'],
+      role: json['role'],
+      institution: json['institution'],
       createdAt: json['createdAt'],
     );
   }
@@ -29,28 +31,31 @@ class EditorialBoardModel {
       'id': id,
       'name': name,
       'email': email,
-      'category': category,
+      'role': role,
+      'institution': institution,
       'createdAt': createdAt,
     };
   }
 
   @override
   String toString() {
-    return 'EditorialBoardModel(id: $id, name: $name, email: $email, category: $category, createdAt: $createdAt)';
+    return 'EditorialBoardModel(id: $id, name: $name, email: $email, role: $role, institution: $institution, createdAt: $createdAt)';
   }
 
   EditorialBoardModel copyWith({
     String? id,
     String? name,
     String? email,
-    String? category,
+    String? role,
+    String? institution,
     String? createdAt,
   }) {
     return EditorialBoardModel(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
-      category: category ?? this.category,
+      role: role ?? this.role,
+      institution: institution ?? this.institution,
       createdAt: createdAt ?? this.createdAt,
     );
   }

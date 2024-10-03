@@ -7,6 +7,7 @@ import 'package:journal_web/core/const/login_const.dart';
 import 'package:journal_web/dependency_injection.dart';
 import 'package:journal_web/features/login/presentation/bloc/login_bloc.dart';
 import 'package:journal_web/features/login/presentation/pages/login_page.dart';
+import 'package:journal_web/features/pages/presentation/bloc/pages_bloc.dart';
 import 'package:journal_web/features/users/presentation/bloc/users_bloc.dart';
 import 'package:journal_web/features/volume/presentation/bloc/article/article_bloc.dart';
 import 'package:journal_web/features/volume/presentation/bloc/article/singlearticle/singlearticle_bloc.dart';
@@ -26,8 +27,6 @@ void main() async {
   await LoginConst.getCurrentUser();
   runApp(const MainApp());
 }
-// 09GsUfOiI1SKwdU3ZT7G -VI
-// 2JhAfZEI9ZqGtc5uZNBw -II
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
@@ -41,6 +40,7 @@ class MainApp extends StatelessWidget {
           BlocProvider<ArticleBloc>(create: (context) => sl<ArticleBloc>()),
           BlocProvider<LoginBloc>(create: (context) => sl<LoginBloc>()),
           BlocProvider<UsersBloc>(create: (context) => sl<UsersBloc>()),
+          BlocProvider<PagesBloc>(create: (context) => sl<PagesBloc>()),
           BlocProvider<SinglearticleBloc>(
               create: (context) => sl<SinglearticleBloc>()),
           BlocProvider<SingleissueBloc>(
@@ -53,7 +53,6 @@ class MainApp extends StatelessWidget {
           transitionDuration: const Duration(milliseconds: 300),
           debugShowCheckedModeBanner: false,
           home: LoginPage(),
-
           initialRoute: Routes.dashboard,
           getPages: routes,
         ));

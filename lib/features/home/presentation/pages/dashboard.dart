@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:journal_web/features/home/data/datasources/pages_data.dart';
+import 'package:journal_web/features/pages/data/datasources/pages_data.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class DashboardPage extends StatelessWidget {

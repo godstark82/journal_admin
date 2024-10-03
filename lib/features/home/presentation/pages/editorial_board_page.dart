@@ -18,6 +18,25 @@ class _EditorialBoardPageState extends State<EditorialBoardPage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text('Editorial Board'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: OutlinedButton.icon(
+              onPressed: () async{
+                await Get.toNamed(Routes.editorialBoard + Routes.addEditorialBoard);
+                setState(() {});
+              },
+              
+              icon: Icon(Icons.add),
+              label: Text('Add EditorialBoard'),
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: FutureBuilder(
           future: adminServices.getEditorialBoardMembers(),
@@ -33,19 +52,6 @@ class _EditorialBoardPageState extends State<EditorialBoardPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  OutlinedButton.icon(
-                    onPressed: () {
-                      Get.toNamed(
-                          Routes.editorialBoard + Routes.addEditorialBoard);
-                    },
-                    icon: Icon(Icons.add),
-                    label: Text('Add Editorial Board Member'),
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ),
-                  ),
                   SizedBox(height: 20),
                   SizedBox(
                     width: context.width,
@@ -77,8 +83,7 @@ class _EditorialBoardPageState extends State<EditorialBoardPage> {
                                 cells: [
                                   DataCell(Text(snapshot.data![index].name)),
                                   DataCell(Text(snapshot.data![index].email)),
-                                  DataCell(
-                                      Text(snapshot.data![index].category)),
+                                  DataCell(Text(snapshot.data![index].role)),
                                   DataCell(
                                       Text(snapshot.data![index].createdAt)),
                                   DataCell(Row(

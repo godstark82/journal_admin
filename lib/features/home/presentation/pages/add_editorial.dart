@@ -15,7 +15,7 @@ class _AddEditorialPageState extends State<AddEditorialPage> {
 
   String name = '';
   String email = '';
-  String category = '';
+  String role = '';
   String institution = '';
   String country = '';
 
@@ -83,7 +83,31 @@ class _AddEditorialPageState extends State<AddEditorialPage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onSaved: (value) => category = value!,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a role';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => role = value!,
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Institution',
+                            filled: true,
+                            fillColor: Colors.purple[50],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter an institution';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => institution = value!,
                         ),
                         SizedBox(height: 20),
                         SizedBox(height: 40),
@@ -101,7 +125,8 @@ class _AddEditorialPageState extends State<AddEditorialPage> {
                                 id: '1',
                                 name: name,
                                 email: email,
-                                category: category,
+                                role: role,
+                                institution: institution,
                                 createdAt: DateTime.now().toIso8601String(),
                               );
                               _adminServices.addEditorialBoardMember(member);
