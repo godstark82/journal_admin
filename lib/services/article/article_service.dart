@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:journal_web/core/datastate/data_state.dart';
-import 'package:journal_web/features/volume/data/models/article_model.dart';
+import 'package:journal_web/features/article/data/models/article_model.dart';
 
 class ArticleService {
   final firestore = FirebaseFirestore.instance;
@@ -21,52 +21,102 @@ class ArticleService {
     }
   }
 
-  //! Add new Article
-  Future<DataState<ArticleModel>> addArticle(ArticleModel article) async {
+  // Article by Issue ID
+  Future<DataState<List<ArticleModel>>> getArticleByIssueId(
+      String issueId) async {
     try {
-      DocumentReference<Map<String, dynamic>> docRef =
-          await firestore.collection('articles').add({});
-
-      article.id = docRef.id;
-      article.createdAt = DateTime.now();
-      article.updatedAt = DateTime.now();
-
-      await docRef.set(article.toJson());
-
-      // Retrieve the newly added article from Firestore
       QuerySnapshot<Map<String, dynamic>> querySnapshot = await firestore
           .collection('articles')
-          .where('id', isEqualTo: docRef.id)
+          .where('issueId', isEqualTo: issueId)
           .get();
-
       List<ArticleModel> articles = querySnapshot.docs
           .map((doc) => ArticleModel.fromJson(doc.data()))
           .toList();
-
-      return DataSuccess(articles[0]);
+      return DataSuccess(articles);
     } catch (e) {
+      log(e.toString());
       return DataFailed(e.toString());
     }
   }
 
-  //! Update Article
-  Future<DataState<ArticleModel>> updateArticle(ArticleModel article) async {
+  // Article by Volume ID
+  Future<DataState<List<ArticleModel>>> getArticleByVolumeId(
+      String volumeId) async {
     try {
-      article.updatedAt = DateTime.now();
-      await firestore
-          .collection('articles')
-          .doc(article.id)
-          .update(article.toJson());
       QuerySnapshot<Map<String, dynamic>> querySnapshot = await firestore
           .collection('articles')
-          .where('id', isEqualTo: article.id)
+          .where('volumeId', isEqualTo: volumeId)
           .get();
       List<ArticleModel> articles = querySnapshot.docs
           .map((doc) => ArticleModel.fromJson(doc.data()))
           .toList();
-      return DataSuccess(articles[0]);
+      return DataSuccess(articles);
     } catch (e) {
+      log(e.toString());
       return DataFailed(e.toString());
+    }
+  }
+
+  // Article by Journal ID
+  Future<DataState<List<ArticleModel>>> getArticleByJournalId(
+      String journalId) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await firestore
+          .collection('articles')
+          .where('journalId', isEqualTo: journalId)
+          .get();
+      List<ArticleModel> articles = querySnapshot.docs
+          .map((doc) => ArticleModel.fromJson(doc.data()))
+          .toList();
+      return DataSuccess(articles);
+    } catch (e) {
+      log(e.toString());
+      return DataFailed(e.toString());
+    }
+  }
+
+  //! Get article by id
+  Future<DataState<ArticleModel>> getArticleById(String id) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> docSnapshot =
+          await firestore.collection('articles').doc(id).get();
+      return DataSuccess(ArticleModel.fromJson(docSnapshot.data()!));
+    } catch (e) {
+      log(e.toString());
+      return DataFailed(e.toString());
+    }
+  }
+
+  //! Add new Article
+  Future<void> addArticle(ArticleModel article) async {
+    try {
+      DocumentReference<Map<String, dynamic>> docRef =
+          await firestore.collection('articles').add({});
+
+      article = article.copyWith(
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        id: docRef.id,
+      );
+
+      await docRef.set(article.toJson());
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  //! Update Article
+  Future<void> updateArticle(ArticleModel article) async {
+    try {
+      article = article.copyWith(
+        updatedAt: DateTime.now(),
+      );
+      await firestore
+          .collection('articles')
+          .doc(article.id)
+          .update(article.toJson());
+    } catch (e) {
+      log(e.toString());
     }
   }
 

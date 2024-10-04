@@ -4,10 +4,12 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:journal_web/features/home/presentation/pages/dashboard.dart';
 import 'package:journal_web/features/home/presentation/pages/editorial_board_page.dart';
+import 'package:journal_web/features/issue/presentation/pages/issues_page.dart';
+import 'package:journal_web/features/journal/presentation/pages/journal_page.dart';
 import 'package:journal_web/features/pages/presentation/pages/page_management_screen.dart';
 import 'package:journal_web/features/home/presentation/pages/social_links_page.dart';
 import 'package:journal_web/features/users/presentation/pages/users_page.dart';
-import 'package:journal_web/features/volume/presentation/pages/volume_home.dart';
+import 'package:journal_web/features/volume/presentation/pages/all_volumes_page.dart';
 import 'package:journal_web/routes.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -16,15 +18,17 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = Get.parameters['i'] ?? '/dashboard';
+    final currentIndex = Get.parameters['i'] ?? 'd';
 
     final Map<String, Widget> screens = {
-      '/dashboard': DashboardPage(),
-      '/volumes': VolumeHomePage(),
-      '/users': UsersPage(),
-      '/pages': PageManagementPage(),
-      '/editorial_board': EditorialBoardPage(),
-      '/social': SocialLinksPage(),
+      'd': DashboardPage(),
+      'u': UsersPage(),
+      'p': PageManagementPage(),
+      'eb': EditorialBoardPage(),
+      's': SocialLinksPage(),
+      'j': JournalPage(),
+      'v': AllVolumesPage(),
+      'i': IssuesPage(),
     };
     return ResponsiveBuilder(builder: (context, sizingInfo) {
       return AdminScaffold(
@@ -47,32 +51,42 @@ class Home extends StatelessWidget {
           items: const [
             AdminMenuItem(
               title: 'Dashboard',
-              route: '/dashboard',
+              route: 'd',
               icon: Icons.dashboard,
             ),
             AdminMenuItem(
+              title: 'Journals',
+              route: 'j',
+              icon: Icons.book,
+            ),
+            AdminMenuItem(
               title: 'Volumes',
-              route: '/volumes',
+              route: 'v',
+              icon: Icons.book,
+            ),
+            AdminMenuItem(
+              title: 'Issues',
+              route: 'i',
               icon: Icons.book,
             ),
             AdminMenuItem(
               title: 'Page Management',
-              route: '/pages',
+              route: 'p',
               icon: Icons.book,
             ),
             AdminMenuItem(
               title: 'Editorial Board',
-              route: '/editorial_board',
+              route: 'eb',
               icon: Icons.people,
             ),
             AdminMenuItem(
               title: 'Social Links',
-              route: '/social',
+              route: 's',
               icon: Icons.people,
             ),
             AdminMenuItem(
               title: 'Users',
-              route: '/users',
+              route: 'u',
               icon: Icons.people,
             )
           ],
@@ -85,7 +99,7 @@ class Home extends StatelessWidget {
           activeTextStyle: TextStyle(color: Colors.white),
           activeBackgroundColor: Colors.blue,
         ),
-        body: screens[currentIndex] ?? Center(child: Text('No screen found')),
+        body: screens[currentIndex] ?? screens['d']!,
       );
     });
   }

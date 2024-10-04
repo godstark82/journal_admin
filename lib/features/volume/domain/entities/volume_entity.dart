@@ -1,25 +1,25 @@
 import 'package:equatable/equatable.dart';
-import 'package:journal_web/features/volume/domain/entities/issue_entity.dart';
 
-class VolumeEntity extends Equatable {
-  String? id;
-  String? title;
-  String? volumeNumber;
-  String? description;
-  bool? isActive;
-  DateTime? createdAt;
-  List<IssueEntity>? issues;
+abstract class VolumeEntity extends Equatable {
+  final String id;
+  final String journalId;
+  final String title;
+  final String volumeNumber;
+  final String description;
+  final bool isActive;
+  final DateTime createdAt;
 
-  VolumeEntity({
-    this.id,
-    this.volumeNumber,
-    this.title,
-    this.description,
-    this.isActive,
-    this.createdAt,
-    this.issues,
+  const VolumeEntity({
+    required this.id,
+    required this.volumeNumber,
+    required this.title,
+    required this.description,
+    required this.isActive,
+    required this.createdAt,
+    required this.journalId,
   });
 
   @override
-  List<Object?> get props => [id, title, createdAt, issues];
+  List<Object?> get props =>
+      [id, title, createdAt, journalId, volumeNumber, description, isActive];
 }

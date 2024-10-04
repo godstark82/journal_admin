@@ -5,16 +5,13 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:journal_web/core/const/login_const.dart';
 import 'package:journal_web/dependency_injection.dart';
+import 'package:journal_web/features/issue/presentation/bloc/issue_bloc.dart';
+import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
 import 'package:journal_web/features/login/presentation/bloc/login_bloc.dart';
 import 'package:journal_web/features/login/presentation/pages/login_page.dart';
 import 'package:journal_web/features/pages/presentation/bloc/pages_bloc.dart';
 import 'package:journal_web/features/users/presentation/bloc/users_bloc.dart';
-import 'package:journal_web/features/volume/presentation/bloc/article/article_bloc.dart';
-import 'package:journal_web/features/volume/presentation/bloc/article/singlearticle/singlearticle_bloc.dart';
-import 'package:journal_web/features/volume/presentation/bloc/issue/issue_bloc.dart';
-import 'package:journal_web/features/volume/presentation/bloc/issue/singleissue/singleissue_bloc.dart';
-import 'package:journal_web/features/volume/presentation/bloc/volume/singlevolume/singlevolume_bloc.dart';
-import 'package:journal_web/features/volume/presentation/bloc/volume/volume_bloc.dart';
+import 'package:journal_web/features/volume/presentation/bloc/volume_bloc.dart';
 import 'package:journal_web/firebase_options.dart';
 import 'package:journal_web/routes.dart';
 
@@ -35,25 +32,19 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider<VolumeBloc>(create: (context) => sl<VolumeBloc>()),
-          BlocProvider<IssueBloc>(create: (context) => sl<IssueBloc>()),
-          BlocProvider<ArticleBloc>(create: (context) => sl<ArticleBloc>()),
           BlocProvider<LoginBloc>(create: (context) => sl<LoginBloc>()),
           BlocProvider<UsersBloc>(create: (context) => sl<UsersBloc>()),
           BlocProvider<PagesBloc>(create: (context) => sl<PagesBloc>()),
-          BlocProvider<SinglearticleBloc>(
-              create: (context) => sl<SinglearticleBloc>()),
-          BlocProvider<SingleissueBloc>(
-              create: (context) => sl<SingleissueBloc>()),
-          BlocProvider<SinglevolumeBloc>(
-              create: (context) => sl<SinglevolumeBloc>())
+          BlocProvider<JournalBloc>(create: (context) => sl<JournalBloc>()),
+          BlocProvider<VolumeBloc>(create: (context) => sl<VolumeBloc>()),
+          BlocProvider<IssueBloc>(create: (context) => sl<IssueBloc>())
         ],
         child: GetMaterialApp(
           defaultTransition: Get.defaultTransition,
           transitionDuration: const Duration(milliseconds: 300),
           debugShowCheckedModeBanner: false,
           home: LoginPage(),
-          initialRoute: Routes.dashboard,
+          initialRoute: Routes.login,
           getPages: routes,
         ));
   }
