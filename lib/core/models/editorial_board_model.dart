@@ -4,7 +4,7 @@ class EditorialBoardModel {
   final String email;
   final String role;
   final String institution;
-  final String createdAt;
+  final DateTime createdAt;
 
   EditorialBoardModel({
     required this.id,
@@ -22,7 +22,7 @@ class EditorialBoardModel {
       email: json['email'],
       role: json['role'],
       institution: json['institution'],
-      createdAt: json['createdAt'],
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 
@@ -33,7 +33,7 @@ class EditorialBoardModel {
       'email': email,
       'role': role,
       'institution': institution,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 
@@ -48,7 +48,7 @@ class EditorialBoardModel {
     String? email,
     String? role,
     String? institution,
-    String? createdAt,
+    DateTime? createdAt,
   }) {
     return EditorialBoardModel(
       id: id ?? this.id,
@@ -59,4 +59,13 @@ class EditorialBoardModel {
       createdAt: createdAt ?? this.createdAt,
     );
   }
+}
+
+enum EditorialBoardRole {
+  chiefEditor('Chief Editor'),
+  associateEditor('Associate Editor'),
+  editor('Editor');
+
+  final String value;
+  const EditorialBoardRole(this.value);
 }

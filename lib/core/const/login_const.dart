@@ -26,10 +26,10 @@ class LoginConst {
   }
 
   static void clearLoginConsts() async {
-    currentRole = '';
-    currentUserName = '';
-    currentUserId = '';
-    currentUserEmail = '';
+    currentRole = null;
+    currentUserName = null;
+    currentUserId = null;
+    currentUserEmail = null;
     await Hive.box('cache').clear();
   }
 

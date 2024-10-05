@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:journal_web/routes.dart';
 import 'package:journal_web/services/admin_services.dart';
 
@@ -22,11 +23,11 @@ class _EditorialBoardPageState extends State<EditorialBoardPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: OutlinedButton.icon(
-              onPressed: () async{
-                await Get.toNamed(Routes.editorialBoard + Routes.addEditorialBoard);
+              onPressed: () async {
+                await Get.toNamed(
+                    Routes.editorialBoard + Routes.addEditorialBoard);
                 setState(() {});
               },
-              
               icon: Icon(Icons.add),
               label: Text('Add EditorialBoard'),
               style: OutlinedButton.styleFrom(
@@ -66,7 +67,7 @@ class _EditorialBoardPageState extends State<EditorialBoardPage> {
                             columns: [
                               DataColumn(label: Text('Name')),
                               DataColumn(label: Text('Email')),
-                              DataColumn(label: Text('Category')),
+                              DataColumn(label: Text('Role')),
                               DataColumn(label: Text('Created At')),
                               DataColumn(label: Text('Actions')),
                             ],
@@ -85,7 +86,7 @@ class _EditorialBoardPageState extends State<EditorialBoardPage> {
                                   DataCell(Text(snapshot.data![index].email)),
                                   DataCell(Text(snapshot.data![index].role)),
                                   DataCell(
-                                      Text(snapshot.data![index].createdAt)),
+                                      Text(DateFormat('dd-MMMM-yyyy').format(snapshot.data![index].createdAt))),
                                   DataCell(Row(
                                     children: [
                                       OutlinedButton(

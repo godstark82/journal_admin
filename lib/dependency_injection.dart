@@ -1,4 +1,15 @@
 import 'package:get_it/get_it.dart';
+import 'package:journal_web/features/article/data/repositories/article_repo_impl.dart';
+import 'package:journal_web/features/article/domain/repositories/article_repo.dart';
+import 'package:journal_web/features/article/domain/usecases/add_article_uc.dart';
+import 'package:journal_web/features/article/domain/usecases/delete_article_uc.dart';
+import 'package:journal_web/features/article/domain/usecases/edit_article_uc.dart';
+import 'package:journal_web/features/article/domain/usecases/get_all_article_uc.dart';
+import 'package:journal_web/features/article/domain/usecases/get_article_by_id_uc.dart';
+import 'package:journal_web/features/article/domain/usecases/get_article_by_iid_uc.dart';
+import 'package:journal_web/features/article/domain/usecases/get_article_by_jid_uc.dart';
+import 'package:journal_web/features/article/domain/usecases/get_article_by_vid_uc.dart';
+import 'package:journal_web/features/article/presentation/bloc/article_bloc.dart';
 import 'package:journal_web/features/issue/data/repositories/issue_repo_impl.dart';
 import 'package:journal_web/features/issue/domain/repositories/issue_repo.dart';
 import 'package:journal_web/features/issue/domain/usecases/add_issue_uc.dart';
@@ -62,7 +73,7 @@ Future<void> initializeDependencies() async {
   //! Services
   sl.registerSingleton<LoginService>(LoginService());
   sl.registerSingleton<UsersService>(UsersService());
-  // sl.registerSingleton<ArticleService>(ArticleService());
+  sl.registerSingleton<ArticleService>(ArticleService());
   sl.registerSingleton<PageService>(PageService());
   sl.registerSingleton<JournalServices>(JournalServices());
   sl.registerSingleton<VolumeServices>(VolumeServices());
@@ -75,6 +86,7 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<JournalRepo>(JournalRepoImpl(sl()));
   sl.registerSingleton<VolumeRepo>(VolumeRepoImpl(sl()));
   sl.registerSingleton<IssueRepository>(IssueRepoImpl(sl()));
+  sl.registerSingleton<ArticleRepository>(ArticleRepoImpl(sl()));
 
   //! Usecases
 
@@ -104,6 +116,16 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<UpdateIssueUseCase>(UpdateIssueUseCase(sl()));
   sl.registerSingleton<DeleteIssueUseCase>(DeleteIssueUseCase(sl()));
 
+  //? Article Usecases
+  sl.registerSingleton<GetAllArticleUC>(GetAllArticleUC(sl()));
+  sl.registerSingleton<GetArticleByIssueIdUC>(GetArticleByIssueIdUC(sl()));
+  sl.registerSingleton<GetArticleByVolumeIdUC>(GetArticleByVolumeIdUC(sl()));
+  sl.registerSingleton<GetArticleByJournalIdUC>(GetArticleByJournalIdUC(sl()));
+  sl.registerSingleton<GetArticleByIdUC>(GetArticleByIdUC(sl()));
+  sl.registerSingleton<AddArticleUC>(AddArticleUC(sl()));
+  sl.registerSingleton<EditArticleUc>(EditArticleUc(sl()));
+  sl.registerSingleton<DeleteArticleUC>(DeleteArticleUC(sl()));
+
   //? Login Usecases
   sl.registerSingleton<AuthorSignupUsecase>(AuthorSignupUsecase(sl()));
   sl.registerSingleton<EditorSignupUsecase>(EditorSignupUsecase(sl()));
@@ -130,4 +152,6 @@ Future<void> initializeDependencies() async {
       () => IssueBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory<VolumeBloc>(
       () => VolumeBloc(sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory<ArticleBloc>(
+      () => ArticleBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 }

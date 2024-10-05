@@ -1,9 +1,11 @@
 import 'package:journal_web/features/article/data/models/comment_model.dart';
 import 'package:journal_web/features/article/domain/entities/article_entity.dart';
+import 'package:journal_web/features/login/domain/entities/my_user_entity.dart';
 
 class ArticleModel extends ArticleEntity {
   ArticleModel(
       {required super.id,
+      required super.journalId,
       required super.abstractString,
       required super.authors,
       required super.issueId,
@@ -22,39 +24,42 @@ class ArticleModel extends ArticleEntity {
 
   factory ArticleModel.fromJson(Map<String, dynamic> json) {
     return ArticleModel(
-      id: json['id'],
-      abstractString: json['abstractString'],
-      authors: json['authors'],
-      issueId: json['issueId'],
-      volumeId: json['volumeId'],
-      documentType: json['documentType'],
-      image: json['image'],
-      keywords: json['keywords'],
-      mainSubjects: json['mainSubjects'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
+      id: json['id'] as String,
+      journalId: json['journalId'] as String,
+      abstractString: (json['abstractString']).toString(),
+      authors: List<MyUser>.from(json['authors']
+          .map((e) => MyUser.fromJson(e as Map<String, dynamic>))),
+      issueId: json['issueId'] as String,
+      volumeId: json['volumeId'] as String,
+      documentType: json['documentType'] as String,
+      image: json['image'] as String,
+      keywords: List<String>.from(json['keywords']),
+      mainSubjects: List<String>.from(json['mainSubjects']),
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
       comments: List<CommentModel>.from(
           (json['comments'] as List).map((e) => CommentModel.fromJson(e))),
-      pdf: json['pdf'],
-      references: json['references'],
-      title: json['title'],
-      status: json['status'],
+      pdf: json['pdf'] as String,
+      references: List<String>.from(json['references']),
+      title: json['title'] as String,
+      status: json['status'] as String,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'journalId': journalId,
       'abstractString': abstractString,
-      'authors': authors,
+      'authors': authors.map((e) => e.toJson()).toList(),
       'issueId': issueId,
       'volumeId': volumeId,
       'documentType': documentType,
       'image': image,
       'keywords': keywords,
       'mainSubjects': mainSubjects,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
       'comments': comments.map((e) => e.toJson()).toList(),
       'pdf': pdf,
       'references': references,
@@ -66,6 +71,7 @@ class ArticleModel extends ArticleEntity {
   factory ArticleModel.fromEntity(ArticleEntity entity) {
     return ArticleModel(
       id: entity.id,
+      journalId: entity.journalId,
       abstractString: entity.abstractString,
       authors: entity.authors,
       issueId: entity.issueId,
@@ -88,7 +94,7 @@ class ArticleModel extends ArticleEntity {
   ArticleModel copyWith({
     String? id,
     String? abstractString,
-    List<String>? authors,
+    List<MyUser>? authors,
     String? issueId,
     String? volumeId,
     String? documentType,
@@ -101,12 +107,14 @@ class ArticleModel extends ArticleEntity {
     String? pdf,
     List<String>? references,
     String? title,
+    String? journalId,
     String? status,
   }) {
     return ArticleModel(
       id: id ?? this.id,
       abstractString: abstractString ?? this.abstractString,
       authors: authors ?? this.authors,
+      journalId: journalId ?? this.journalId,
       issueId: issueId ?? this.issueId,
       volumeId: volumeId ?? this.volumeId,
       documentType: documentType ?? this.documentType,

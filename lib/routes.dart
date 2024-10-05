@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:journal_web/core/common/screens/profile.dart';
 import 'package:journal_web/core/usecase/middleware.dart';
+import 'package:journal_web/features/article/presentation/pages/add_article_page.dart';
+import 'package:journal_web/features/article/presentation/pages/edit_article_page.dart';
 import 'package:journal_web/features/home/presentation/pages/add_editorial.dart';
 import 'package:journal_web/features/home/presentation/pages/edit_editorial.dart';
 import 'package:journal_web/features/issue/presentation/pages/add_issue_page.dart';
@@ -54,6 +56,11 @@ class Routes {
   static const String issue = '/issue';
   static const String addIssue = '/add_issue';
   static const String editIssue = '/edit_issue';
+
+  // Article
+  static const String article = '/article';
+  static const String addArticle = '/add_article';
+  static const String editArticle = '/edit_article';
 }
 
 List<GetPage> routes = [
@@ -97,6 +104,17 @@ List<GetPage> routes = [
   GetPage(
       name: Routes.dashboard + Routes.editIssue,
       page: () => EditIssuePage(),
+      middlewares: [AuthGuard()]),
+
+  //! Article
+  GetPage(
+      name: Routes.dashboard + Routes.addArticle,
+      page: () => AddArticlePage(),
+      middlewares: [AuthGuard()]),
+
+  GetPage(
+      name: Routes.dashboard + Routes.editArticle,
+      page: () => EditArticlePage(),
       middlewares: [AuthGuard()]),
 
   //! ADMIN BASED ROUTES

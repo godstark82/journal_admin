@@ -1,20 +1,25 @@
-class CommentModel {
-  String? name;
-  String? content;
+import 'package:journal_web/features/login/data/models/reviewer_model.dart';
 
-  CommentModel({this.name, this.content});
+class CommentModel {
+  ReviewerModel? reviewer;
+  String? msg;
+  DateTime? createdAt;
+
+  CommentModel({this.reviewer, this.msg, this.createdAt});
 
   factory CommentModel.fromJson(Map<String, dynamic> json) {
     return CommentModel(
-      name: json['name'],
-      content: json['content'],
+      reviewer: ReviewerModel.fromJson(json['reviewer']),
+      msg: json['msg'],
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
-      'content': content,
+      'reviewer': reviewer?.toJson(),
+      'msg': msg,
+      'createdAt': createdAt?.toIso8601String(),
     };
   }
 }

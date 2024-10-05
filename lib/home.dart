@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_admin_scaffold/admin_scaffold.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:journal_web/features/article/presentation/pages/articles_page.dart';
 import 'package:journal_web/features/home/presentation/pages/dashboard.dart';
 import 'package:journal_web/features/home/presentation/pages/editorial_board_page.dart';
 import 'package:journal_web/features/issue/presentation/pages/issues_page.dart';
@@ -29,6 +30,7 @@ class Home extends StatelessWidget {
       'j': JournalPage(),
       'v': AllVolumesPage(),
       'i': IssuesPage(),
+      'a': ArticlesPage(),
     };
     return ResponsiveBuilder(builder: (context, sizingInfo) {
       return AdminScaffold(
@@ -67,6 +69,11 @@ class Home extends StatelessWidget {
             AdminMenuItem(
               title: 'Issues',
               route: 'i',
+              icon: Icons.book,
+            ),
+            AdminMenuItem(
+              title: 'Articles',
+              route: 'a',
               icon: Icons.book,
             ),
             AdminMenuItem(

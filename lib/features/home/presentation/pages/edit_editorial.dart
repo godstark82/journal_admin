@@ -15,7 +15,6 @@ class _EditEditorialPageState extends State<EditEditorialPage> {
   final _formKey = GlobalKey<FormState>();
   final AdminServices _adminServices = AdminServices();
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,8 +90,11 @@ class _EditEditorialPageState extends State<EditEditorialPage> {
                                   member = member.copyWith(email: value),
                             ),
                             SizedBox(height: 20),
-                            TextFormField(
-                              initialValue: member.role,
+                            DropdownButtonFormField<EditorialBoardRole>(
+                              value: EditorialBoardRole.values.firstWhere(
+                                (e) => e.value == member.role,
+                                orElse: () => EditorialBoardRole.editor,
+                              ),
                               decoration: InputDecoration(
                                 labelText: 'Role',
                                 filled: true,
@@ -101,8 +103,38 @@ class _EditEditorialPageState extends State<EditEditorialPage> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
+                              items: EditorialBoardRole.values
+                                  .map((EditorialBoardRole role) {
+                                return DropdownMenuItem<EditorialBoardRole>(
+                                  value: role,
+                                  child: Text(role.value),
+                                );
+                              }).toList(),
+                              onChanged: (EditorialBoardRole? newValue) {
+                                if (newValue != null) {
+                                  member = member.copyWith(role: newValue.value);
+                                }
+                              },
+                            ),
+                            SizedBox(height: 20),
+                            TextFormField(
+                              initialValue: member.institution,
+                              decoration: InputDecoration(
+                                labelText: 'Institution',
+                                filled: true,
+                                fillColor: Colors.orange[50],
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter an institution';
+                                }
+                                return null;
+                              },
                               onChanged: (value) =>
-                                  member = member.copyWith(role: value),
+                                  member = member.copyWith(institution: value),
                             ),
                             SizedBox(height: 40),
                             ElevatedButton(

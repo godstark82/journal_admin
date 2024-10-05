@@ -4,6 +4,7 @@ class MyUser {
   String? password;
   String? name;
   String? id;
+  String? designation;
 
   MyUser({
     this.role,
@@ -11,6 +12,7 @@ class MyUser {
     this.password,
     this.name,
     this.id,
+    this.designation,
   });
 
   Map<String, dynamic> toJson() => {
@@ -19,6 +21,7 @@ class MyUser {
         'password': password,
         'name': name,
         'id': id,
+        'designation': designation,
       };
 
   factory MyUser.fromJson(Map<String, dynamic> json) => MyUser(
@@ -27,5 +30,6 @@ class MyUser {
         password: json['password'],
         name: json['name'],
         id: json['id'],
+        designation: json['designation'],
       );
 }

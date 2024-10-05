@@ -300,7 +300,6 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
                   },
                 ),
                 ElevatedButton(
-                  child: Text('Delete'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isDeleteEnabled ? Colors.red : Colors.grey,
                     foregroundColor: Colors.white,
@@ -319,6 +318,7 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
                           );
                         }
                       : null,
+                  child: Text('Delete'),
                 ),
               ],
             );

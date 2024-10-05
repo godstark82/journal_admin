@@ -7,7 +7,7 @@ import 'package:journal_web/features/volume/presentation/bloc/volume_bloc.dart';
 import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
 
 class AddIssuePage extends StatefulWidget {
-  const AddIssuePage({Key? key}) : super(key: key);
+  const AddIssuePage({super.key});
 
   @override
   _AddIssuePageState createState() => _AddIssuePageState();

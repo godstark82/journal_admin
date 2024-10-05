@@ -15,9 +15,9 @@ class _AddEditorialPageState extends State<AddEditorialPage> {
 
   String name = '';
   String email = '';
-  String role = '';
+  EditorialBoardRole? selectedRole;
   String institution = '';
-  String country = '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,22 +74,33 @@ class _AddEditorialPageState extends State<AddEditorialPage> {
                           onSaved: (value) => email = value!,
                         ),
                         SizedBox(height: 20),
-                        TextFormField(
+                        DropdownButtonFormField<EditorialBoardRole>(
                           decoration: InputDecoration(
-                            labelText: 'Category',
+                            labelText: 'Role',
                             filled: true,
                             fillColor: Colors.purple[50],
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
+                          value: selectedRole,
+                          items: EditorialBoardRole.values.map((role) {
+                            return DropdownMenuItem(
+                              value: role,
+                              child: Text(role.value),
+                            );
+                          }).toList(),
+                          onChanged: (EditorialBoardRole? newValue) {
+                            setState(() {
+                              selectedRole = newValue;
+                            });
+                          },
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a role';
+                            if (value == null) {
+                              return 'Please select a role';
                             }
                             return null;
                           },
-                          onSaved: (value) => role = value!,
                         ),
                         SizedBox(height: 20),
                         TextFormField(
@@ -125,9 +136,9 @@ class _AddEditorialPageState extends State<AddEditorialPage> {
                                 id: '1',
                                 name: name,
                                 email: email,
-                                role: role,
+                                role: selectedRole!.value,
                                 institution: institution,
-                                createdAt: DateTime.now().toIso8601String(),
+                                createdAt: DateTime.now(),
                               );
                               _adminServices.addEditorialBoardMember(member);
                               ScaffoldMessenger.of(context).showSnackBar(
