@@ -12,7 +12,7 @@ const RESOURCES = {"icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2e
 "version.json": "3b89c966ad658b4b8f9a89cfda844d67",
 "manifest.json": "8e61b266a22a306237d0553151d3f1ec",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"flutter_bootstrap.js": "cf5e561334f0b84d0ea1649bea27f880",
+"flutter_bootstrap.js": "c0b22053175ed716090dde73abf27375",
 "canvaskit/skwasm.wasm": "9f0c0c02b82a910d12ce0543ec130e60",
 "canvaskit/skwasm.js.symbols": "262f4827a1317abb59d71d6c587a93e2",
 "canvaskit/canvaskit.js.symbols": "48c83a2ce573d9692e8d970e288d75f7",
@@ -54,12 +54,12 @@ const RESOURCES = {"icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2e
 "assets/packages/flutter_inappwebview/assets/t_rex_runner/t-rex.html": "16911fcc170c8af1c5457940bd0bf055",
 "assets/packages/flutter_inappwebview/assets/t_rex_runner/t-rex.css": "5a8d0222407e388155d7d1395a75d5b9",
 "assets/FontManifest.json": "3ddd9b2ab1c2ae162d46e3cc7b78ba88",
-"assets/fonts/MaterialIcons-Regular.otf": "1aab8991ce32f8d540beebbd2555d4df",
+"assets/fonts/MaterialIcons-Regular.otf": "3d45b31ebe8f7623d387ce591ad3bfbf",
 "assets/AssetManifest.bin": "6c02c83f1342e07a7d182663524fd869",
 "assets/AssetManifest.bin.json": "393aaba060592655c2781c009aa2f2f6",
-"assets/NOTICES": "b7a8bc2172adb1356b91eccb4287b8ac",
+"assets/NOTICES": "df3fc2d50a1e133ba87950131f0f4102",
 "assets/AssetManifest.json": "896faae6d40642ac927af19ab95fd219",
-"main.dart.js": "7aeb47df4e5d2aa9d9a594d50804b107"};
+"main.dart.js": "fb10bdbded9835bd4841234106a2b93c"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
