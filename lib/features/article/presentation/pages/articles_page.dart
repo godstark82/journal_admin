@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:journal_web/core/const/login_const.dart';
+import 'package:journal_web/core/const/roles.dart';
 import 'package:journal_web/features/article/data/models/comment_model.dart';
 import 'package:journal_web/features/login/data/models/reviewer_model.dart';
 import 'package:journal_web/routes.dart';
@@ -45,14 +46,16 @@ class _ArticlesPageState extends State<ArticlesPage> {
               title: const Text('Articles'),
               backgroundColor: Colors.blue,
               actions: [
-                ElevatedButton(
-                  onPressed: () async {
-                    await Get.toNamed(Routes.dashboard + Routes.addArticle);
-                    setState(() {});
-                  },
-                  style: ElevatedButton.styleFrom(),
-                  child: const Text('Add Article'),
-                ),
+                if (LoginConst.currentRole == Role.admin ||
+                    LoginConst.currentRole == Role.author)
+                  ElevatedButton(
+                    onPressed: () async {
+                      await Get.toNamed(Routes.dashboard + Routes.addArticle);
+                      setState(() {});
+                    },
+                    style: ElevatedButton.styleFrom(),
+                    child: const Text('Add Article'),
+                  ),
               ],
             ),
             body: ResponsiveBuilder(
@@ -176,34 +179,48 @@ class _ArticlesPageState extends State<ArticlesPage> {
                                 viewArticleDetails(article);
                               },
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.edit, color: Colors.blue),
-                              onPressed: () {
-                                editArticle(article.id);
-                                setState(() {});
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                deleteArticle(article.id);
-                                setState(() {});
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.comment,
-                                  color: Colors.green),
-                              onPressed: () {
-                                viewComments(article);
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.update,
-                                  color: Colors.orange),
-                              onPressed: () {
-                                updateStatus(article);
-                              },
-                            ),
+                            //* only admin and editor can EDIT this
+                            if (LoginConst.currentRole == Role.admin ||
+                                LoginConst.currentRole == Role.author)
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.edit, color: Colors.blue),
+                                onPressed: () {
+                                  editArticle(article.id);
+                                  setState(() {});
+                                },
+                              ),
+                            //* only admin and editor can see this
+                            if (LoginConst.currentRole == Role.admin ||
+                                LoginConst.currentRole == Role.author)
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {
+                                  deleteArticle(article.id);
+                                  setState(() {});
+                                },
+                              ),
+                            //* only admin and editor can see this
+                            if (LoginConst.currentRole == Role.admin ||
+                                LoginConst.currentRole == Role.reviewer)
+                              IconButton(
+                                icon: const Icon(Icons.comment,
+                                    color: Colors.green),
+                                onPressed: () {
+                                  viewComments(article);
+                                },
+                              ),
+                            //* only admin and editor can see this
+                            if (LoginConst.currentRole == Role.admin ||
+                                LoginConst.currentRole == Role.editor)
+                              IconButton(
+                                icon: const Icon(Icons.update,
+                                    color: Colors.orange),
+                                onPressed: () {
+                                  updateStatus(article);
+                                },
+                              ),
                           ],
                         ),
                       ),
@@ -319,32 +336,44 @@ class _ArticlesPageState extends State<ArticlesPage> {
                       viewArticleDetails(article);
                     },
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () {
-                      editArticle(article.id);
-                      setState(() {});
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      deleteArticle(article.id);
-                      setState(() {});
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.comment, color: Colors.green),
-                    onPressed: () {
-                      viewComments(article);
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.update, color: Colors.orange),
-                    onPressed: () {
-                      updateStatus(article);
-                    },
-                  ),
+                  //* only admin and editor can see this
+                  if (LoginConst.currentRole == Role.admin ||
+                      LoginConst.currentRole == Role.author)
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () {
+                        editArticle(article.id);
+                        setState(() {});
+                      },
+                    ),
+                  //* only admin and editor can see this
+                  if (LoginConst.currentRole == Role.admin ||
+                      LoginConst.currentRole == Role.author)
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        deleteArticle(article.id);
+                        setState(() {});
+                      },
+                    ),
+                  //* only admin and editor can see this
+                  if (LoginConst.currentRole == Role.admin ||
+                      LoginConst.currentRole == Role.reviewer)
+                    IconButton(
+                      icon: const Icon(Icons.comment, color: Colors.green),
+                      onPressed: () {
+                        viewComments(article);
+                      },
+                    ),
+                  //* only admin and editor can see this
+                  if (LoginConst.currentRole == Role.admin ||
+                      LoginConst.currentRole == Role.editor)
+                    IconButton(
+                      icon: const Icon(Icons.update, color: Colors.orange),
+                      onPressed: () {
+                        updateStatus(article);
+                      },
+                    ),
                 ],
               ),
             ],

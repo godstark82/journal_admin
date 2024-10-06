@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:journal_web/core/const/login_const.dart';
+import 'package:journal_web/core/const/roles.dart';
 import 'package:journal_web/features/volume/presentation/bloc/volume_bloc.dart';
 import 'package:journal_web/features/volume/data/models/volume_model.dart';
 import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
@@ -39,20 +41,22 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
         automaticallyImplyLeading: false,
         title: const Text('All Volumes'),
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton.icon(
-              onPressed: () {
-                _addNewVolumeFunc();
-              },
-              icon: const Icon(Icons.add),
-              label: const Text('Add New Volume'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
+          if (LoginConst.currentRole == Role.admin ||
+              LoginConst.currentRole == Role.author)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  _addNewVolumeFunc();
+                },
+                icon: const Icon(Icons.add),
+                label: const Text('Add New Volume'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
               ),
             ),
-          ),
         ],
       ),
       body: BlocBuilder<JournalBloc, JournalState>(
@@ -138,20 +142,26 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
                             DataCell(Text(volume.isActive ? 'Yes' : 'No')),
                             DataCell(Row(
                               children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit,
-                                      color: Colors.blue),
-                                  onPressed: () {
-                                    _editVolumeFunc(volume.id);
-                                  },
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete,
-                                      color: Colors.red),
-                                  onPressed: () {
-                                    _deleteVolumeFunc(volume.id);
-                                  },
-                                ),
+                                //* only admin and editor can see this
+                                if (LoginConst.currentRole == Role.admin ||
+                                    LoginConst.currentRole == Role.author)
+                                  IconButton(
+                                    icon: const Icon(Icons.edit,
+                                        color: Colors.blue),
+                                    onPressed: () {
+                                      _editVolumeFunc(volume.id);
+                                    },
+                                  ),
+                                //* only admin and editor can see this
+                                if (LoginConst.currentRole == Role.admin ||
+                                    LoginConst.currentRole == Role.author)
+                                  IconButton(
+                                    icon: const Icon(Icons.delete,
+                                        color: Colors.red),
+                                    onPressed: () {
+                                      _deleteVolumeFunc(volume.id);
+                                    },
+                                  ),
                               ],
                             )),
                           ],
@@ -188,18 +198,24 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.edit, color: Colors.blue),
-                  onPressed: () {
-                    _editVolumeFunc(volume.id);
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    _deleteVolumeFunc(volume.id);
-                  },
-                ),
+                //* only admin and editor can see this
+                if (LoginConst.currentRole == Role.admin ||
+                    LoginConst.currentRole == Role.author)
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.blue),
+                    onPressed: () {
+                      _editVolumeFunc(volume.id);
+                    },
+                  ),
+                //* only admin and editor can see this
+                if (LoginConst.currentRole == Role.admin ||
+                    LoginConst.currentRole == Role.author)
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      _deleteVolumeFunc(volume.id);
+                    },
+                  ),
               ],
             ),
           ),
@@ -209,6 +225,11 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
   }
 
   Widget _buildEmptyView() {
+    //* only admin and editor can see this
+    if (!(LoginConst.currentRole == Role.admin ||
+        LoginConst.currentRole == Role.author)) {
+      return SizedBox();
+    }
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

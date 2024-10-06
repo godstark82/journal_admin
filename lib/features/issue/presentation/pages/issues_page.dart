@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:journal_web/core/const/login_const.dart';
+import 'package:journal_web/core/const/roles.dart';
 import 'package:journal_web/routes.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:journal_web/features/issue/data/models/issue_model.dart';
@@ -38,13 +40,15 @@ class _IssuesPageState extends State<IssuesPage> {
               automaticallyImplyLeading: false,
               title: const Text('Issues'),
               actions: [
-                ElevatedButton(
-                  onPressed: () async {
-                    await Get.toNamed(Routes.dashboard + Routes.addIssue);
-                    setState(() {});
-                  },
-                  child: const Text('Add Issue'),
-                ),
+                if (LoginConst.currentRole == Role.admin ||
+                    LoginConst.currentRole == Role.author)
+                  ElevatedButton(
+                    onPressed: () async {
+                      await Get.toNamed(Routes.dashboard + Routes.addIssue);
+                      setState(() {});
+                    },
+                    child: const Text('Add Issue'),
+                  ),
               ],
             ),
             body: ResponsiveBuilder(
@@ -128,20 +132,26 @@ class _IssuesPageState extends State<IssuesPage> {
               )),
               DataCell(Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () async {
-                      await editIssue(issue.id);
-                      setState(() {});
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () async {
-                      await deleteIssue(issue.id, context);
-                      setState(() {});
-                    },
-                  ),
+                  //* only admin and editor can see this
+                  if (LoginConst.currentRole == Role.admin ||
+                      LoginConst.currentRole == Role.author)
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () async {
+                        await editIssue(issue.id);
+                        setState(() {});
+                      },
+                    ),
+                  //* only admin and editor can see this
+                  if (LoginConst.currentRole == Role.admin ||
+                      LoginConst.currentRole == Role.author)
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () async {
+                        await deleteIssue(issue.id, context);
+                        setState(() {});
+                      },
+                    ),
                 ],
               )),
             ]);
@@ -191,20 +201,26 @@ class _IssuesPageState extends State<IssuesPage> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    editIssue(issue.id);
-                    setState(() {});
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () async {
-                    await deleteIssue(issue.id, context);
-                    setState(() {});
-                  },
-                ),
+                //* only admin and editor can see this
+                if (LoginConst.currentRole == Role.admin ||
+                    LoginConst.currentRole == Role.author)
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      editIssue(issue.id);
+                      setState(() {});
+                    },
+                  ),
+                //* only admin and editor can see this
+                if (LoginConst.currentRole == Role.admin ||
+                    LoginConst.currentRole == Role.author)
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () async {
+                      await deleteIssue(issue.id, context);
+                      setState(() {});
+                    },
+                  ),
               ],
             ),
           ),

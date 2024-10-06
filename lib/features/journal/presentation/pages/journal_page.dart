@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:journal_web/core/const/login_const.dart';
+import 'package:journal_web/core/const/roles.dart';
 import 'package:journal_web/features/journal/data/models/journal_model.dart';
 import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
 import 'package:intl/intl.dart';
@@ -29,13 +31,14 @@ class _JournalPageState extends State<JournalPage> {
         automaticallyImplyLeading: false,
         title: const Text('Journals'),
         actions: [
-          ElevatedButton.icon(
-            onPressed: () {
-              Get.toNamed(Routes.dashboard + Routes.addJournal);
-            },
-            icon: const Icon(Icons.add),
-            label: const Text('Add Journal'),
-          ),
+          if (LoginConst.currentRole == Role.admin)
+            ElevatedButton.icon(
+              onPressed: () {
+                Get.toNamed(Routes.dashboard + Routes.addJournal);
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('Add Journal'),
+            ),
         ],
       ),
       body: BlocBuilder<JournalBloc, JournalState>(
