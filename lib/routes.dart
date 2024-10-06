@@ -66,7 +66,6 @@ class Routes {
 List<GetPage> routes = [
   GetPage(
       name: Routes.dashboard,
-      parameters: {'i': ''},
       middlewares: [AuthGuard()],
       page: () => Home()),
 

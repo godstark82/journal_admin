@@ -23,13 +23,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late String currentIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    currentIndex = Get.parameters['i'] ?? 'd';
-  }
+  String currentIndex = 'd';
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +131,6 @@ class _HomeState extends State<Home> {
         setState(() {
           currentIndex = route;
         });
-        Get.offAllNamed(Routes.dashboard, parameters: {'i': route});
         if (_scaffoldKey.currentState!.isDrawerOpen) {
           Navigator.of(context).pop();
         }

@@ -23,6 +23,10 @@ class _IssuesPageState extends State<IssuesPage> {
   @override
   void initState() {
     super.initState();
+    _loadData();
+  }
+
+  void _loadData() {
     context.read<IssueBloc>().add(GetAllIssueEvent());
     context.read<VolumeBloc>().add(GetAllVolumesEvent());
     context.read<JournalBloc>().add(GetAllJournalEvent());
@@ -45,7 +49,7 @@ class _IssuesPageState extends State<IssuesPage> {
                   ElevatedButton(
                     onPressed: () async {
                       await Get.toNamed(Routes.dashboard + Routes.addIssue);
-                      setState(() {});
+                      _loadData();
                     },
                     child: const Text('Add Issue'),
                   ),
@@ -65,7 +69,8 @@ class _IssuesPageState extends State<IssuesPage> {
         } else if (state is ErrorIssueState) {
           return Center(child: Text('Error: ${state.message}'));
         } else {
-          return const Center(child: Text('Unknown state'));
+          _loadData();
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );
@@ -139,7 +144,7 @@ class _IssuesPageState extends State<IssuesPage> {
                       icon: const Icon(Icons.edit, color: Colors.blue),
                       onPressed: () async {
                         await editIssue(issue.id);
-                        setState(() {});
+                        _loadData();
                       },
                     ),
                   //* only admin and editor can see this
@@ -149,7 +154,7 @@ class _IssuesPageState extends State<IssuesPage> {
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () async {
                         await deleteIssue(issue.id, context);
-                        setState(() {});
+                        _loadData();
                       },
                     ),
                 ],
@@ -206,9 +211,9 @@ class _IssuesPageState extends State<IssuesPage> {
                     LoginConst.currentRole == Role.author)
                   IconButton(
                     icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      editIssue(issue.id);
-                      setState(() {});
+                    onPressed: () async {
+                      await editIssue(issue.id);
+                      _loadData();
                     },
                   ),
                 //* only admin and editor can see this
@@ -218,7 +223,7 @@ class _IssuesPageState extends State<IssuesPage> {
                     icon: const Icon(Icons.delete),
                     onPressed: () async {
                       await deleteIssue(issue.id, context);
-                      setState(() {});
+                      _loadData();
                     },
                   ),
               ],
@@ -230,8 +235,9 @@ class _IssuesPageState extends State<IssuesPage> {
   }
 
   Future<void> editIssue(String issueId) async {
-    Get.toNamed(Routes.dashboard + Routes.editIssue,
+    await Get.toNamed(Routes.dashboard + Routes.editIssue,
         parameters: {'issueId': issueId});
+    _loadData();
   }
 
   Future<void> deleteIssue(String issueId, BuildContext context) async {
@@ -303,6 +309,8 @@ class _IssuesPageState extends State<IssuesPage> {
                               .add(DeleteIssueEvent(issueId));
                           // Close the dialog
                           Get.back();
+                          // Reload data
+                          _loadData();
                         }
                       : null,
                   child: Text(
