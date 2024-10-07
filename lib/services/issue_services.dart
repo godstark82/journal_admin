@@ -9,6 +9,25 @@ class IssueServices {
     final docRef = issueCollection.doc();
     issue = issue.copyWith(id: docRef.id);
     await docRef.set(issue.toJson());
+
+    if (issue.isActive) {
+      // Get all issues under the same journal and volume
+      final querySnapshot = await issueCollection
+          .where('journalId', isEqualTo: issue.journalId)
+          .where('volumeId', isEqualTo: issue.volumeId)
+          .get();
+
+      // Update all other issues to be inactive
+      final batch = FirebaseFirestore.instance.batch();
+      for (var doc in querySnapshot.docs) {
+        if (doc.id != issue.id) {
+          batch.update(doc.reference, {'isActive': false});
+        }
+      }
+
+      // Commit the batch update
+      await batch.commit();
+    }
   }
 
   Future<void> deleteIssue(String id) async {
@@ -17,6 +36,25 @@ class IssueServices {
 
   Future<void> updateIssue(IssueModel issue) async {
     await issueCollection.doc(issue.id).update(issue.toJson());
+
+    if (issue.isActive) {
+      // Get all issues under the same journal and volume
+      final querySnapshot = await issueCollection
+          .where('journalId', isEqualTo: issue.journalId)
+          .where('volumeId', isEqualTo: issue.volumeId)
+          .get();
+
+      // Update all other issues to be inactive
+      final batch = FirebaseFirestore.instance.batch();
+      for (var doc in querySnapshot.docs) {
+        if (doc.id != issue.id) {
+          batch.update(doc.reference, {'isActive': false});
+        }
+      }
+
+      // Commit the batch update
+      await batch.commit();
+    }
   }
 
   Future<DataState<List<IssueModel>>> getAllIssues() async {

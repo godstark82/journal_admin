@@ -23,7 +23,16 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  String currentIndex = 'd';
+  String currentIndex = 'a';
+  String? indexArgument = Get.arguments;
+
+  @override
+  void initState() {
+    super.initState();
+    if (indexArgument != null) {
+      currentIndex = indexArgument!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

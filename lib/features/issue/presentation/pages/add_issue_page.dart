@@ -121,9 +121,9 @@ class _AddIssuePageState extends State<AddIssuePage> {
           const SizedBox(height: 24),
           _buildTextField(_titleController, 'Issue Title', Icons.title),
           const SizedBox(height: 16),
-          _buildVolumeDropdown(),
-          const SizedBox(height: 16),
           _buildJournalDropdown(),
+          const SizedBox(height: 16),
+          _buildVolumeDropdown(),
           const SizedBox(height: 16),
           _buildTextField(_issueNumberController, 'Issue Number',
               Icons.format_list_numbered),
@@ -187,7 +187,10 @@ class _AddIssuePageState extends State<AddIssuePage> {
   Widget _buildVolumeDropdown() {
     return BlocBuilder<VolumeBloc, VolumeState>(
       builder: (context, state) {
-        if (state is VolumeLoadedAll) {
+        if (state is VolumeLoadedAll && _selectedJournalId != null) {
+          final filteredVolumes = state.volumes
+              .where((volume) => volume.journalId == _selectedJournalId)
+              .toList();
           return DropdownButtonFormField<String>(
             value: _selectedVolumeId,
             decoration: InputDecoration(
@@ -197,7 +200,7 @@ class _AddIssuePageState extends State<AddIssuePage> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            items: state.volumes.map((volume) {
+            items: filteredVolumes.map((volume) {
               return DropdownMenuItem<String>(
                 value: volume.id,
                 child: Text(volume.title),
@@ -218,7 +221,7 @@ class _AddIssuePageState extends State<AddIssuePage> {
         } else if (state is VolumeLoadingAll) {
           return const CircularProgressIndicator();
         } else {
-          return const Text('Failed to load volumes');
+          return const Text('Please select a journal first');
         }
       },
     );
@@ -246,6 +249,7 @@ class _AddIssuePageState extends State<AddIssuePage> {
             onChanged: (value) {
               setState(() {
                 _selectedJournalId = value;
+                _selectedVolumeId = null; // Reset volume selection
               });
             },
             validator: (value) {

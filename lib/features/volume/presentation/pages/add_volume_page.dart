@@ -5,6 +5,7 @@ import 'package:journal_web/features/volume/presentation/bloc/volume_bloc.dart';
 import 'package:journal_web/features/volume/data/models/volume_model.dart';
 import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
 import 'package:journal_web/features/journal/data/models/journal_model.dart';
+import 'package:journal_web/routes.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class AddVolumePage extends StatefulWidget {
@@ -28,10 +29,19 @@ class _AddVolumePageState extends State<AddVolumePage> {
     context.read<JournalBloc>().add(GetAllJournalEvent());
   }
 
+  void _goBack() {
+    Get.off(Routes.dashboard, arguments: 'v');
+    context.read<VolumeBloc>().add(GetAllVolumesEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: _goBack,
+          icon: const Icon(Icons.arrow_back),
+        ),
         title: const Text('Add New Volume'),
         backgroundColor: Colors.blue,
       ),

@@ -78,90 +78,135 @@ class _IssuesPageState extends State<IssuesPage> {
 
   Widget _buildDesktopLayout(List<IssueModel> issues, BuildContext context) {
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SizedBox(
+      child: Container(
         width: MediaQuery.of(context).size.width,
-        child: DataTable(
-          headingRowColor: WidgetStateProperty.all(Colors.blue[100]),
-          dataRowColor: WidgetStateProperty.resolveWith<Color?>(
-            (Set<WidgetState> states) {
-              if (states.contains(WidgetState.selected)) {
-                return Theme.of(context).colorScheme.primary.withOpacity(0.08);
-              }
-              if (states.contains(WidgetState.hovered)) {
-                return Colors.grey[100];
-              }
-              return null;
-            },
+        padding: EdgeInsets.all(16),
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            dividerColor: Colors.blue[100],
           ),
-          columns: const [
-            DataColumn(
-                label: Text('Title',
-                    style: TextStyle(fontWeight: FontWeight.bold))),
-            DataColumn(
-                label: Text('Issue Number',
-                    style: TextStyle(fontWeight: FontWeight.bold))),
-            DataColumn(
-                label: Text('Volume',
-                    style: TextStyle(fontWeight: FontWeight.bold))),
-            DataColumn(
-                label: Text('Journal',
-                    style: TextStyle(fontWeight: FontWeight.bold))),
-            DataColumn(
-                label: Text('Actions',
-                    style: TextStyle(fontWeight: FontWeight.bold))),
-          ],
-          rows: issues.map((issue) {
-            return DataRow(cells: [
-              DataCell(Text(issue.title)),
-              DataCell(Text(issue.issueNumber)),
-              DataCell(BlocBuilder<VolumeBloc, VolumeState>(
-                builder: (context, state) {
-                  if (state is VolumeLoadedAll) {
-                    final volume =
-                        state.volumes.firstWhere((v) => v.id == issue.volumeId);
-                    return Text(volume.title);
-                  }
-                  return Text('Loading...');
-                },
-              )),
-              DataCell(BlocBuilder<JournalBloc, JournalState>(
-                builder: (context, state) {
-                  if (state is JournalsLoaded) {
-                    final journal = state.journals
-                        .firstWhere((j) => j.id == issue.journalId);
-                    return Text(journal.title);
-                  }
-                  return Text('Loading...');
-                },
-              )),
-              DataCell(Row(
+          child: Table(
+            border: TableBorder.all(
+              color: Colors.blue[300]!,
+              width: 1,
+              style: BorderStyle.solid,
+            ),
+            columnWidths: {
+              0: FlexColumnWidth(3),
+              1: FlexColumnWidth(2),
+              2: FlexColumnWidth(2),
+              3: FlexColumnWidth(2),
+              4: FlexColumnWidth(1),
+              5: FlexColumnWidth(2),
+            },
+            children: [
+              TableRow(
+                decoration: BoxDecoration(
+                  color: Colors.blue[100],
+                ),
                 children: [
-                  //* only admin and editor can see this
-                  if (LoginConst.currentRole == Role.admin ||
-                      LoginConst.currentRole == Role.author)
-                    IconButton(
-                      icon: const Icon(Icons.edit, color: Colors.blue),
-                      onPressed: () async {
-                        await editIssue(issue.id);
-                        _loadData();
-                      },
-                    ),
-                  //* only admin and editor can see this
-                  if (LoginConst.currentRole == Role.admin ||
-                      LoginConst.currentRole == Role.author)
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () async {
-                        await deleteIssue(issue.id, context);
-                        _loadData();
-                      },
-                    ),
+                  _buildTableHeader('Title'),
+                  _buildTableHeader('Issue Number'),
+                  _buildTableHeader('Volume'),
+                  _buildTableHeader('Journal'),
+                  _buildTableHeader('Status'),
+                  _buildTableHeader('Actions'),
                 ],
-              )),
-            ]);
-          }).toList(),
+              ),
+              ...issues.map((issue) => TableRow(
+                decoration: BoxDecoration(
+                  color: issues.indexOf(issue) % 2 == 0 ? Colors.white : Colors.grey[100],
+                ),
+                children: [
+                  _buildTableCell(Text(issue.title)),
+                  _buildTableCell(Text(issue.issueNumber)),
+                  _buildTableCell(
+                    BlocBuilder<VolumeBloc, VolumeState>(
+                      builder: (context, state) {
+                        if (state is VolumeLoadedAll) {
+                          final volume = state.volumes.firstWhere((v) => v.id == issue.volumeId);
+                          return Text(volume.title);
+                        }
+                        return Text('Loading...');
+                      },
+                    ),
+                  ),
+                  _buildTableCell(
+                    BlocBuilder<JournalBloc, JournalState>(
+                      builder: (context, state) {
+                        if (state is JournalsLoaded) {
+                          final journal = state.journals.firstWhere((j) => j.id == issue.journalId);
+                          return Text(journal.title);
+                        }
+                        return Text('Loading...');
+                      },
+                    ),
+                  ),
+                  _buildTableCell(
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: issue.isActive ? Colors.green : Colors.red,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        issue.isActive ? 'Active' : 'Inactive',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  _buildTableCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (LoginConst.currentRole == Role.admin ||
+                            LoginConst.currentRole == Role.author)
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () async {
+                              await editIssue(issue.id);
+                              _loadData();
+                            },
+                          ),
+                        if (LoginConst.currentRole == Role.admin ||
+                            LoginConst.currentRole == Role.author)
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              await deleteIssue(issue.id, context);
+                              _loadData();
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              )).toList(),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTableHeader(String text) {
+    return TableCell(
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          text,
+          style: TextStyle(fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTableCell(Widget content) {
+    return TableCell(
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Center(child: content),
       ),
     );
   }
@@ -173,61 +218,81 @@ class _IssuesPageState extends State<IssuesPage> {
         final issue = issues[index];
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: ListTile(
-            title: Text(issue.title),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Issue Number: ${issue.issueNumber}'),
-                BlocBuilder<VolumeBloc, VolumeState>(
-                  builder: (context, state) {
-                    if (state is VolumeLoadedAll) {
-                      final volume = state.volumes.firstWhere(
-                        (v) => v.id == issue.volumeId,
-                      );
-                      return Text('Volume: ${volume.title}');
-                    }
-                    return Text('Volume: Loading...');
-                  },
-                ),
-                BlocBuilder<JournalBloc, JournalState>(
-                  builder: (context, state) {
-                    if (state is JournalsLoaded) {
-                      final journal = state.journals.firstWhere(
-                        (j) => j.id == issue.journalId,
-                      );
-                      return Text('Journal: ${journal.title}');
-                    }
-                    return Text('Journal: Loading...');
-                  },
-                ),
-              ],
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(color: Colors.blue[300]!, width: 1),
+          ),
+          child: ExpansionTile(
+            title: Text(issue.title, style: TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text('Issue Number: ${issue.issueNumber}'),
+            trailing: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: issue.isActive ? Colors.green : Colors.red,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                issue.isActive ? 'Active' : 'Inactive',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                //* only admin and editor can see this
-                if (LoginConst.currentRole == Role.admin ||
-                    LoginConst.currentRole == Role.author)
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () async {
-                      await editIssue(issue.id);
-                      _loadData();
-                    },
-                  ),
-                //* only admin and editor can see this
-                if (LoginConst.currentRole == Role.admin ||
-                    LoginConst.currentRole == Role.author)
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async {
-                      await deleteIssue(issue.id, context);
-                      _loadData();
-                    },
-                  ),
-              ],
-            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BlocBuilder<VolumeBloc, VolumeState>(
+                      builder: (context, state) {
+                        if (state is VolumeLoadedAll) {
+                          final volume = state.volumes.firstWhere(
+                            (v) => v.id == issue.volumeId,
+                          );
+                          return Text('Volume: ${volume.title}');
+                        }
+                        return Text('Volume: Loading...');
+                      },
+                    ),
+                    BlocBuilder<JournalBloc, JournalState>(
+                      builder: (context, state) {
+                        if (state is JournalsLoaded) {
+                          final journal = state.journals.firstWhere(
+                            (j) => j.id == issue.journalId,
+                          );
+                          return Text('Journal: ${journal.title}');
+                        }
+                        return Text('Journal: Loading...');
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (LoginConst.currentRole == Role.admin ||
+                            LoginConst.currentRole == Role.author)
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () async {
+                              await editIssue(issue.id);
+                              _loadData();
+                            },
+                          ),
+                        if (LoginConst.currentRole == Role.admin ||
+                            LoginConst.currentRole == Role.author)
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              await deleteIssue(issue.id, context);
+                              _loadData();
+                            },
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -241,7 +306,6 @@ class _IssuesPageState extends State<IssuesPage> {
   }
 
   Future<void> deleteIssue(String issueId, BuildContext context) async {
-    // Create a timer to enable the delete button after 5 seconds
     bool isDeleteEnabled = false;
     int remainingSeconds = 5;
     Timer? deleteTimer;
@@ -303,13 +367,10 @@ class _IssuesPageState extends State<IssuesPage> {
                   ),
                   onPressed: isDeleteEnabled
                       ? () {
-                          // Delete the issue
                           context
                               .read<IssueBloc>()
                               .add(DeleteIssueEvent(issueId));
-                          // Close the dialog
                           Get.back();
-                          // Reload data
                           _loadData();
                         }
                       : null,

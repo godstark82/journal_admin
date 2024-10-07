@@ -20,8 +20,12 @@ class JournalPage extends StatefulWidget {
 class _JournalPageState extends State<JournalPage> {
   @override
   void initState() {
-    BlocProvider.of<JournalBloc>(context).add(GetAllJournalEvent());
+    _loadData();
     super.initState();
+  }
+
+  void _loadData() {
+    context.read<JournalBloc>().add(GetAllJournalEvent());
   }
 
   @override
@@ -193,8 +197,9 @@ class _JournalPageState extends State<JournalPage> {
   }
 
   Future<void> editJournal(String journalId) async {
-    Get.toNamed(Routes.dashboard + Routes.editJournal,
+    await Get.toNamed(Routes.dashboard + Routes.editJournal,
         parameters: {'journalId': journalId});
+    _loadData();
   }
 
   Future<void> deleteJournal(String journalId) async {

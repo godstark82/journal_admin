@@ -20,7 +20,7 @@ class _EditVolumePageState extends State<EditVolumePage> {
   late TextEditingController _titleController;
   late TextEditingController _volumeNumberController;
   late TextEditingController _descriptionController;
-  late bool _isActive;
+  bool _isActive = true;
   JournalModel? _selectedJournal;
 
   @override
@@ -29,7 +29,6 @@ class _EditVolumePageState extends State<EditVolumePage> {
     _titleController = TextEditingController();
     _volumeNumberController = TextEditingController();
     _descriptionController = TextEditingController();
-    _isActive = true;
     context.read<VolumeBloc>().add(GetVolumeEvent(volumeId: volumeId));
     context.read<JournalBloc>().add(GetAllJournalEvent());
   }
@@ -177,22 +176,20 @@ class _EditVolumePageState extends State<EditVolumePage> {
             maxLines: 3,
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              const Icon(Icons.check_circle_outline, color: Colors.teal),
-              const SizedBox(width: 16),
-              const Text('Is Active'),
-              const Spacer(),
-              Switch(
+          StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return SwitchListTile(
+                title: const Text('Is Active'),
                 value: _isActive,
                 onChanged: (bool value) {
                   setState(() {
                     _isActive = value;
                   });
                 },
+                secondary: const Icon(Icons.check_circle_outline, color: Colors.teal),
                 activeColor: Colors.teal,
-              ),
-            ],
+              );
+            },
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(

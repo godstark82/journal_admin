@@ -25,12 +25,17 @@ class _EditIssuePageState extends State<EditIssuePage> {
   bool _isActive = true;
   String? _selectedVolumeId;
   String? _selectedJournalId;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    context.read<VolumeBloc>().add(GetAllVolumesEvent());
+    _loadData();
+  }
+
+  void _loadData() {
     context.read<JournalBloc>().add(GetAllJournalEvent());
+    context.read<VolumeBloc>().add(GetAllVolumesEvent());
     context.read<IssueBloc>().add(GetIssueByIdEvent(issueId));
   }
 
@@ -70,12 +75,19 @@ class _EditIssuePageState extends State<EditIssuePage> {
         title: const Text('Edit Issue'),
         backgroundColor: Colors.teal,
       ),
-      body: BlocBuilder<IssueBloc, IssueState>(
+      body: BlocConsumer<IssueBloc, IssueState>(
+        listener: (context, state) {
+          if (state is LoadedIssueByIdState) {
+            setState(() {
+              _isLoading = false;
+              _populateFields(state.issue);
+            });
+          }
+        },
         builder: (context, state) {
-          if (state is LoadingIssueByIdState) {
+          if (_isLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is LoadedIssueByIdState) {
-            _populateFields(state.issue);
+          } else {
             return ResponsiveBuilder(
               builder: (context, sizingInformation) {
                 if (sizingInformation.deviceScreenType ==
@@ -86,10 +98,6 @@ class _EditIssuePageState extends State<EditIssuePage> {
                 }
               },
             );
-          } else if (state is ErrorIssueState) {
-            return Center(child: Text('Error: ${state.message}'));
-          } else {
-            return const Center(child: Text('Unknown state'));
           }
         },
       ),
@@ -148,9 +156,9 @@ class _EditIssuePageState extends State<EditIssuePage> {
           const SizedBox(height: 24),
           _buildTextField(_titleController, 'Issue Title', Icons.title),
           const SizedBox(height: 16),
-          _buildVolumeDropdown(),
-          const SizedBox(height: 16),
           _buildJournalDropdown(),
+          const SizedBox(height: 16),
+          _buildVolumeDropdown(),
           const SizedBox(height: 16),
           _buildTextField(_issueNumberController, 'Issue Number',
               Icons.format_list_numbered),
@@ -211,46 +219,6 @@ class _EditIssuePageState extends State<EditIssuePage> {
     );
   }
 
-  Widget _buildVolumeDropdown() {
-    return BlocBuilder<VolumeBloc, VolumeState>(
-      builder: (context, state) {
-        if (state is VolumeLoadedAll) {
-          return DropdownButtonFormField<String>(
-            value: _selectedVolumeId,
-            decoration: InputDecoration(
-              labelText: 'Volume',
-              prefixIcon: const Icon(Icons.volume_up, color: Colors.teal),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            items: state.volumes.map((volume) {
-              return DropdownMenuItem<String>(
-                value: volume.id,
-                child: Text(volume.title),
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedVolumeId = value;
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please select a volume';
-              }
-              return null;
-            },
-          );
-        } else if (state is VolumeLoadingAll) {
-          return const CircularProgressIndicator();
-        } else {
-          return const Text('Failed to load volumes');
-        }
-      },
-    );
-  }
-
   Widget _buildJournalDropdown() {
     return BlocBuilder<JournalBloc, JournalState>(
       builder: (context, state) {
@@ -273,6 +241,7 @@ class _EditIssuePageState extends State<EditIssuePage> {
             onChanged: (value) {
               setState(() {
                 _selectedJournalId = value;
+                _selectedVolumeId = null; // Reset volume when journal changes
               });
             },
             validator: (value) {
@@ -286,6 +255,49 @@ class _EditIssuePageState extends State<EditIssuePage> {
           return const CircularProgressIndicator();
         } else {
           return const Text('Failed to load journals');
+        }
+      },
+    );
+  }
+
+  Widget _buildVolumeDropdown() {
+    return BlocBuilder<VolumeBloc, VolumeState>(
+      builder: (context, state) {
+        if (state is VolumeLoadedAll && _selectedJournalId != null) {
+          final volumesForJournal = state.volumes
+              .where((volume) => volume.journalId == _selectedJournalId)
+              .toList();
+          return DropdownButtonFormField<String>(
+            value: _selectedVolumeId,
+            decoration: InputDecoration(
+              labelText: 'Volume',
+              prefixIcon: const Icon(Icons.volume_up, color: Colors.teal),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            items: volumesForJournal.map((volume) {
+              return DropdownMenuItem<String>(
+                value: volume.id,
+                child: Text(volume.title),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedVolumeId = value;
+              });
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please select a volume';
+              }
+              return null;
+            },
+          );
+        } else if (state is VolumeLoadingAll || _selectedJournalId == null) {
+          return const Text('Please select a journal first');
+        } else {
+          return const Text('Failed to load volumes');
         }
       },
     );

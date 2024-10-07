@@ -27,6 +27,10 @@ class _ArticlesPageState extends State<ArticlesPage> {
   @override
   void initState() {
     super.initState();
+    _loadData();
+  }
+
+  void _loadData() {
     context.read<ArticleBloc>().add(GetAllArticleEvent());
     context.read<JournalBloc>().add(GetAllJournalEvent());
     context.read<VolumeBloc>().add(GetAllVolumesEvent());
@@ -51,7 +55,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                   ElevatedButton(
                     onPressed: () async {
                       await Get.toNamed(Routes.dashboard + Routes.addArticle);
-                      setState(() {});
+                      _loadData(); // Reload data after returning from add article page
                     },
                     style: ElevatedButton.styleFrom(),
                     child: const Text('Add Article'),
@@ -185,9 +189,9 @@ class _ArticlesPageState extends State<ArticlesPage> {
                               IconButton(
                                 icon:
                                     const Icon(Icons.edit, color: Colors.blue),
-                                onPressed: () {
-                                  editArticle(article.id);
-                                  setState(() {});
+                                onPressed: () async {
+                                  await editArticle(article.id);
+                                  _loadData(); // Reload data after returning from edit article page
                                 },
                               ),
                             //* only admin and editor can see this
@@ -198,7 +202,6 @@ class _ArticlesPageState extends State<ArticlesPage> {
                                     const Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
                                   deleteArticle(article.id);
-                                  setState(() {});
                                 },
                               ),
                             //* only admin and editor can see this
@@ -341,9 +344,9 @@ class _ArticlesPageState extends State<ArticlesPage> {
                       LoginConst.currentRole == Role.author)
                     IconButton(
                       icon: const Icon(Icons.edit, color: Colors.blue),
-                      onPressed: () {
-                        editArticle(article.id);
-                        setState(() {});
+                      onPressed: () async {
+                        await editArticle(article.id);
+                        _loadData(); // Reload data after returning from edit article page
                       },
                     ),
                   //* only admin and editor can see this
@@ -353,7 +356,6 @@ class _ArticlesPageState extends State<ArticlesPage> {
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
                         deleteArticle(article.id);
-                        setState(() {});
                       },
                     ),
                   //* only admin and editor can see this
@@ -396,8 +398,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
     }
   }
 
-  void editArticle(String id) {
-    Get.toNamed(Routes.dashboard + Routes.editArticle,
+  Future<void> editArticle(String id) async {
+    await Get.toNamed(Routes.dashboard + Routes.editArticle,
         parameters: {'articleId': id});
   }
 
@@ -761,6 +763,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                         .read<ArticleBloc>()
                         .add(EditArticleEvent(article: newArticle));
                     Navigator.of(context).pop();
+                    _loadData(); // Reload data after updating status
                   },
                   child: const Text('Update'),
                 ),
@@ -838,6 +841,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                               .add(DeleteArticleEvent(id: articleId));
                           // Close the dialog
                           Navigator.of(context).pop();
+                          _loadData(); // Reload data after deleting
                         }
                       : null,
                   child: Text(

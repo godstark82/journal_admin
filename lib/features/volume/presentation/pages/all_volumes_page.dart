@@ -23,6 +23,10 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
   @override
   void initState() {
     super.initState();
+    _loadData();
+  }
+
+  void _loadData() {
     context.read<VolumeBloc>().add(GetAllVolumesEvent());
     context.read<JournalBloc>().add(GetAllJournalEvent());
   }
@@ -258,11 +262,13 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
 
   void _addNewVolumeFunc() async {
     await Get.toNamed(Routes.dashboard + Routes.addVolume);
+    _loadData(); // Reload data after adding a new volume
   }
 
   void _editVolumeFunc(String volumeId) async {
     await Get.toNamed(Routes.dashboard + Routes.editVolume,
-        arguments: volumeId, parameters: {'volumeId': volumeId});
+        parameters: {'volumeId': volumeId});
+    _loadData(); // Reload data after editing a volume
   }
 
   void _deleteVolumeFunc(String volumeId) {
@@ -337,6 +343,7 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
                               backgroundColor: Colors.green,
                             ),
                           );
+                          _loadData(); // Reload data after deleting a volume
                         }
                       : null,
                   child: Text('Delete'),
