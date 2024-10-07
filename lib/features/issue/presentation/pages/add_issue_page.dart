@@ -114,50 +114,52 @@ class _AddIssuePageState extends State<AddIssuePage> {
   Widget _buildForm() {
     return Form(
       key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Icon(Icons.book, size: 80, color: Colors.teal),
-          const SizedBox(height: 24),
-          _buildTextField(_titleController, 'Issue Title', Icons.title),
-          const SizedBox(height: 16),
-          _buildJournalDropdown(),
-          const SizedBox(height: 16),
-          _buildVolumeDropdown(),
-          const SizedBox(height: 16),
-          _buildTextField(_issueNumberController, 'Issue Number',
-              Icons.format_list_numbered),
-          const SizedBox(height: 16),
-          _buildTextField(
-              _descriptionController, 'Description', Icons.description,
-              maxLines: 3),
-          const SizedBox(height: 16),
-          _buildDatePicker('From Date', _fromDate,
-              (date) => setState(() => _fromDate = date)),
-          const SizedBox(height: 16),
-          _buildDatePicker(
-              'To Date', _toDate, (date) => setState(() => _toDate = date)),
-          const SizedBox(height: 16),
-          SwitchListTile(
-            title: const Text('Is Active'),
-            value: _isActive,
-            onChanged: (value) => setState(() => _isActive = value),
-            activeColor: Colors.teal,
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: _submitForm,
-            icon: const Icon(Icons.add),
-            label: const Text('Add Issue'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Icon(Icons.book, size: 80, color: Colors.teal),
+            const SizedBox(height: 24),
+            _buildTextField(_titleController, 'Issue Title', Icons.title),
+            const SizedBox(height: 16),
+            _buildJournalDropdown(),
+            const SizedBox(height: 16),
+            _buildVolumeDropdown(),
+            const SizedBox(height: 16),
+            _buildTextField(_issueNumberController, 'Issue Number',
+                Icons.format_list_numbered),
+            const SizedBox(height: 16),
+            _buildTextField(
+                _descriptionController, 'Description', Icons.description,
+                maxLines: 3),
+            const SizedBox(height: 16),
+            _buildDatePicker('From Date', _fromDate,
+                (date) => setState(() => _fromDate = date)),
+            const SizedBox(height: 16),
+            _buildDatePicker(
+                'To Date', _toDate, (date) => setState(() => _toDate = date)),
+            const SizedBox(height: 16),
+            SwitchListTile(
+              title: const Text('Is Active'),
+              value: _isActive,
+              onChanged: (value) => setState(() => _isActive = value),
+              activeColor: Colors.teal,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: _submitForm,
+              icon: const Icon(Icons.add),
+              label: const Text('Add Issue'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
