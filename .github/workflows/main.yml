@@ -31,8 +31,8 @@ jobs:
         run: flutter build web --release --web-renderer html
 
       # Adjust the base href for GitHub Pages
-      - name: Adjust base href
-        run: sed -i 's|<base href="/">|<base href="/journal_admin/">|' build/web/index.html
+      # - name: Adjust base href
+        # run: sed -i 's|<base href="/">|<base href="/journal_admin/">|' build/web/index.html
 
       # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
