@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/components/button/gf_button.dart';
 import 'package:journal_web/core/common/widgets/custom_text_field.dart';
 import 'package:journal_web/features/login/data/repositories/login_repo_impl.dart';
 import 'package:journal_web/features/login/presentation/bloc/login_bloc.dart';
@@ -40,15 +39,14 @@ class LoginWidget extends StatelessWidget {
                 if (state is LoginLoadingState) {
                   return CircularProgressIndicator.adaptive();
                 }
-                return GFButton(
-                  icon: Icon(Icons.login),
+                return ElevatedButton(
                   onPressed: () {
                     log(email);
                     log(pass);
                     context.read<LoginBloc>().add(LoginInitiateLoginEvent(
                         EmailPassModel(email: email, password: pass)));
                   },
-                  text: 'Login',
+                  child: Text('Login'),
                 );
               },
             )
