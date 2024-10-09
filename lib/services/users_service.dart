@@ -59,4 +59,14 @@ class UsersService {
       return DataFailed(e.toString());
     }
   }
+
+  Future<void> updateUserJournals(String userId, List<String> journalIds) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'journalIds': journalIds,
+      });
+    } catch (e) {
+      print('Error updating user journals: $e');
+    }
+  }
 }

@@ -5,6 +5,8 @@ import 'package:journal_web/features/login/data/models/author_model.dart';
 import 'package:journal_web/features/login/data/models/editor_model.dart';
 import 'package:journal_web/features/login/data/models/reviewer_model.dart';
 import 'package:journal_web/features/users/presentation/bloc/users_bloc.dart';
+import 'package:journal_web/features/journal/data/models/journal_model.dart';
+import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
 
 class UsersPage extends StatelessWidget {
   const UsersPage({super.key});
@@ -285,8 +287,6 @@ Widget buildAuthorDetails(AuthorModel? author) {
                       ? constraints.maxWidth / 2 - 24
                       : constraints.maxWidth - 32,
                   isDesktop),
-              
-              
               _buildDetailItem(
                   Icons.fingerprint,
                   'ORCID',
@@ -327,8 +327,8 @@ Widget buildAuthorDetails(AuthorModel? author) {
                       ? constraints.maxWidth / 2 - 24
                       : constraints.maxWidth - 32,
                   isDesktop),
-             
-              
+              _buildJournalsList(context, author?.journalIds ?? [], 'Author'),
+              _buildUpdateButton(context, author?.id ?? '', 'Author', author?.journalIds ?? []),
             ],
           ),
         ),
@@ -414,6 +414,8 @@ Widget buildEditorDetails(EditorModel? editor) {
                       ? constraints.maxWidth / 2 - 24
                       : constraints.maxWidth - 32,
                   isDesktop),
+              _buildJournalsList(context, editor?.journalIds ?? [], 'Editor'),
+              _buildUpdateButton(context, editor?.id ?? '', 'Editor', editor?.journalIds ?? []),
             ],
           ),
         ),
@@ -476,14 +478,6 @@ Widget buildReviewerDetails(ReviewerModel? reviewer) {
                       : constraints.maxWidth - 32,
                   isDesktop),
               _buildDetailItem(
-                  Icons.book,
-                  'Journal',
-                  reviewer?.journalIds?.join(', '),
-                  isDesktop
-                      ? constraints.maxWidth / 2 - 24
-                      : constraints.maxWidth - 32,
-                  isDesktop),
-              _buildDetailItem(
                   Icons.phone,
                   'Mobile',
                   reviewer?.mobile,
@@ -499,6 +493,8 @@ Widget buildReviewerDetails(ReviewerModel? reviewer) {
                       ? constraints.maxWidth / 2 - 24
                       : constraints.maxWidth - 32,
                   isDesktop),
+              _buildJournalsList(context, reviewer?.journalIds ?? [], 'Reviewer'),
+              _buildUpdateButton(context, reviewer?.id ?? '', 'Reviewer', reviewer?.journalIds ?? []),
             ],
           ),
         ),
@@ -579,4 +575,118 @@ Widget _buildDetailItem(
       ],
     ),
   );
+}
+
+Widget _buildJournalsList(BuildContext context, List<String> journalIds, String userType) {
+  return BlocBuilder<JournalBloc, JournalState>(
+    builder: (context, state) {
+      if (state is JournalsLoaded) {
+        final journals = state.journals.where((journal) => journalIds.contains(journal.id)).toList();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Registered Journals:', style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 8),
+            ...journals.map((journal) => Text('- ${journal.title}')),
+          ],
+        );
+      } else {
+        return CircularProgressIndicator();
+      }
+    },
+  );
+}
+
+Widget _buildUpdateButton(BuildContext context, String userId, String userType, List<String> currentJournalIds) {
+  return ElevatedButton(
+    onPressed: () {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return UpdateUserJournalsDialog(userId: userId, userType: userType, currentJournalIds: currentJournalIds);
+        },
+      );
+    },
+    child: Text('Update Journals'),
+  );
+}
+
+class UpdateUserJournalsDialog extends StatefulWidget {
+  final String userId;
+  final String userType;
+  final List<String> currentJournalIds;
+
+  const UpdateUserJournalsDialog({
+    super.key,
+    required this.userId,
+    required this.userType,
+    required this.currentJournalIds,
+  });
+
+  @override
+  _UpdateUserJournalsDialogState createState() => _UpdateUserJournalsDialogState();
+}
+
+class _UpdateUserJournalsDialogState extends State<UpdateUserJournalsDialog> {
+  late List<String> selectedJournalIds;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedJournalIds = List.from(widget.currentJournalIds);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Update ${widget.userType} Journals'),
+      content: BlocBuilder<JournalBloc, JournalState>(
+        builder: (context, state) {
+          if (state is JournalsLoaded) {
+            return SizedBox(
+              width: double.maxFinite,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: state.journals.length,
+                itemBuilder: (context, index) {
+                  final journal = state.journals[index];
+                  return CheckboxListTile(
+                    title: Text(journal.title),
+                    value: selectedJournalIds.contains(journal.id),
+                    onChanged: (bool? value) {
+                      setState(() {
+                        if (value == true) {
+                          selectedJournalIds.add(journal.id);
+                        } else {
+                          selectedJournalIds.remove(journal.id);
+                        }
+                      });
+                    },
+                  );
+                },
+              ),
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text('Cancel'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: Text('Update'),
+          onPressed: () {
+          
+            context.read<UsersBloc>().add(UpdateUserJournalsEvent(userId: widget.userId, journalIds: selectedJournalIds));
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
 }

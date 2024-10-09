@@ -17,4 +17,9 @@ class UsersRepoImpl implements UsersRepo {
   Future<DataState<MyUser?>> getUserInfo(String userId) async {
     return await _usersService.getUserInfo(userId);
   }
+
+  @override
+  Future<void> updateUserJournals(String userId, List<String> journalIds) async {
+    await _usersService.updateUserJournals(userId, journalIds);
+  }
 }

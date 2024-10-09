@@ -98,77 +98,99 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
 
   Widget _buildDesktopView(
       List<VolumeModel> volumes, List<JournalModel> journals) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: ConstrainedBox(
-        constraints:
-            BoxConstraints(minWidth: MediaQuery.of(context).size.width),
-        child: volumes.isEmpty
-            ? _buildEmptyView()
-            : DataTable(
-                headingRowColor: WidgetStateProperty.all(Colors.lightBlue[100]),
-                dataRowColor: WidgetStateProperty.resolveWith<Color?>(
-                  (Set<WidgetState> states) {
-                    if (states.contains(WidgetState.selected)) {
-                      return Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.08);
-                    }
-                    return null;
-                  },
-                ),
-                columns: const [
-                  DataColumn(
-                      label: Text('Title',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(
-                      label: Text('Journal Name',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(
-                      label: Text('Volume Number',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(
-                      label: Text('Is Active',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(
-                      label: Text('Actions',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                ],
-                rows: volumes
-                    .map((volume) => DataRow(
-                          cells: [
-                            DataCell(Text(volume.title)),
-                            DataCell(Text(
-                                getJournalName(volume.journalId, journals))),
-                            DataCell(Text(volume.volumeNumber)),
-                            DataCell(Text(volume.isActive ? 'Yes' : 'No')),
-                            DataCell(Row(
-                              children: [
-                                //* only admin and editor can see this
-                                if (LoginConst.currentUser?.role == Role.admin)
-                                  IconButton(
-                                    icon: const Icon(Icons.edit,
-                                        color: Colors.blue),
-                                    onPressed: () {
-                                      _editVolumeFunc(volume.id);
-                                    },
-                                  ),
-                                //* only admin and editor can see this
-                                if (LoginConst.currentUser?.role == Role.admin)
-                                  IconButton(
-                                    icon: const Icon(Icons.delete,
-                                        color: Colors.red),
-                                    onPressed: () {
-                                      _deleteVolumeFunc(volume.id);
-                                    },
-                                  ),
-                              ],
-                            )),
-                          ],
-                        ))
-                    .toList(),
+    return volumes.isEmpty
+        ? _buildEmptyView()
+        : SingleChildScrollView(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8),
               ),
+              margin: EdgeInsets.all(16),
+              child: Table(
+                border: TableBorder.all(color: Colors.grey[300]!),
+                columnWidths: const {
+                  0: FlexColumnWidth(3),
+                  1: FlexColumnWidth(3),
+                  2: FlexColumnWidth(2),
+                  3: FlexColumnWidth(1),
+                  4: FlexColumnWidth(2),
+                },
+                children: [
+                  TableRow(
+                    decoration: BoxDecoration(color: Colors.lightBlue[100]),
+                    children: [
+                      _buildTableHeader('Title'),
+                      _buildTableHeader('Journal Name'),
+                      _buildTableHeader('Volume Number'),
+                      _buildTableHeader('Is Active'),
+                      _buildTableHeader('Actions'),
+                    ],
+                  ),
+                  ...volumes.map((volume) => TableRow(
+                        children: [
+                          _buildTableCell(volume.title),
+                          _buildTableCell(
+                              getJournalName(volume.journalId, journals)),
+                          _buildTableCell(volume.volumeNumber),
+                          _buildIsActiveCell(volume.isActive),
+                          _buildActionCell(volume.id),
+                        ],
+                      )),
+                ],
+              ),
+            ),
+          );
+  }
+
+  Widget _buildTableHeader(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        text,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildTableCell(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(text),
+    );
+  }
+
+  Widget _buildIsActiveCell(bool isActive) {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      color: isActive ? Colors.green[100] : Colors.red[100],
+      child: Text(
+        isActive ? 'Yes' : 'No',
+        style: TextStyle(
+          color: isActive ? Colors.green[800] : Colors.red[800],
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionCell(String volumeId) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (LoginConst.currentUser?.role == Role.admin)
+            IconButton(
+              icon: const Icon(Icons.edit, color: Colors.blue),
+              onPressed: () => _editVolumeFunc(volumeId),
+            ),
+          if (LoginConst.currentUser?.role == Role.admin)
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: () => _deleteVolumeFunc(volumeId),
+            ),
+        ],
       ),
     );
   }
@@ -192,23 +214,21 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
               children: [
                 Text('Journal: ${getJournalName(volume.journalId, journals)}'),
                 Text('Volume Number: ${volume.volumeNumber}'),
-                Text('Is Active: ${volume.isActive ? 'Yes' : 'No'}'),
+                _buildIsActiveCell(volume.isActive),
               ],
             ),
             tileColor: index.isEven ? Colors.grey[100] : Colors.white,
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                //* only admin and editor can see this
-                if (LoginConst.currentUser?.role == Role.admin )
+                if (LoginConst.currentUser?.role == Role.admin)
                   IconButton(
                     icon: const Icon(Icons.edit, color: Colors.blue),
                     onPressed: () {
                       _editVolumeFunc(volume.id);
                     },
                   ),
-                //* only admin and editor can see this
-                if (LoginConst.currentUser?.role == Role.admin )
+                if (LoginConst.currentUser?.role == Role.admin)
                   IconButton(
                     icon: const Icon(Icons.delete, color: Colors.red),
                     onPressed: () {
@@ -224,7 +244,6 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
   }
 
   Widget _buildEmptyView() {
-    //* only admin and editor can see this
     if (!(LoginConst.currentUser?.role == Role.admin)) {
       return SizedBox();
     }

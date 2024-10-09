@@ -48,6 +48,7 @@ import 'package:journal_web/features/users/data/repositories/users_repo_impl.dar
 import 'package:journal_web/features/users/domain/repositories/users_repo.dart';
 import 'package:journal_web/features/users/domain/usecases/get_all_users_usecase.dart';
 import 'package:journal_web/features/users/domain/usecases/get_specific_user_usecase.dart';
+import 'package:journal_web/features/users/domain/usecases/update_user_journals_uc.dart';
 import 'package:journal_web/features/users/presentation/bloc/users_bloc.dart';
 import 'package:journal_web/features/volume/data/repositories/volume_repo_impl.dart';
 import 'package:journal_web/features/volume/domain/repositories/volume_repo.dart';
@@ -78,6 +79,7 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<JournalServices>(JournalServices());
   sl.registerSingleton<VolumeServices>(VolumeServices());
   sl.registerSingleton<IssueServices>(IssueServices());
+
 
   //! Repositories
   sl.registerSingleton<LoginRepo>(LoginRepoImpl(sl()));
@@ -141,13 +143,14 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<EditPageUsecase>(EditPageUsecase(sl()));
   sl.registerSingleton<DeletePageUsecase>(DeletePageUsecase(sl()));
   sl.registerSingleton<AddPageUsecase>(AddPageUsecase(sl()));
+  sl.registerSingleton<UpdateUserJournalsUC>(UpdateUserJournalsUC(sl()));
 
   //! Blocs
   sl.registerFactory<JournalBloc>(
       () => JournalBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory<PagesBloc>(() => PagesBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory<LoginBloc>(() => LoginBloc(sl(), sl(), sl(), sl(), sl()));
-  sl.registerFactory<UsersBloc>(() => UsersBloc(sl(), sl()));
+  sl.registerFactory<UsersBloc>(() => UsersBloc(sl(), sl(), sl()));
   sl.registerFactory<IssueBloc>(
       () => IssueBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory<VolumeBloc>(

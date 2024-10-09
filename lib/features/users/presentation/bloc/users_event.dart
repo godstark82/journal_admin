@@ -15,3 +15,12 @@ class GetSpecificUserEvent extends UsersEvent {
     required this.userId,
   });
 }
+
+class UpdateUserJournalsEvent extends UsersEvent {
+  final String userId;
+  final List<String> journalIds;
+  const UpdateUserJournalsEvent({
+    required this.userId,
+    required this.journalIds,
+  });
+}

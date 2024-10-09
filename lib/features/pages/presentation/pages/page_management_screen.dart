@@ -27,11 +27,14 @@ class _PageManagementPageState extends State<PageManagementPage> {
         automaticallyImplyLeading: false,
         title: Text('Page Management'),
         actions: [
-          IconButton(
-            onPressed: () {
-              Get.toNamed(Routes.pages + Routes.addPage);
-            },
-            icon: Icon(Icons.add),
+          Visibility(
+            visible: false,
+            child: IconButton(
+              onPressed: () {
+                Get.toNamed(Routes.pages + Routes.addPage);
+              },
+              icon: Icon(Icons.add),
+            ),
           ),
         ],
       ),
@@ -90,46 +93,49 @@ class _PageManagementPageState extends State<PageManagementPage> {
                                     child: Text('Edit'),
                                   ),
                                   SizedBox(width: 8),
-                                  OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                      foregroundColor: Colors.red,
-                                      side: BorderSide(color: Colors.red),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4),
+                                  Visibility(
+                                    visible: false,
+                                    child: OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.red,
+                                        side: BorderSide(color: Colors.red),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
                                       ),
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('Confirm Delete'),
+                                              content: Text(
+                                                  'Are you sure you want to delete this page?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: Text('Cancel'),
+                                                  onPressed: () {
+                                                    Get.back();
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: Text('Delete'),
+                                                  onPressed: () {
+                                                    context.read<PagesBloc>().add(
+                                                        DeletePageEvent(
+                                                            id: page.id));
+                                                    Get.back();
+                                                    Get.snackbar('Success',
+                                                        'Page deleted successfully');
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Text('Delete'),
                                     ),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text('Confirm Delete'),
-                                            content: Text(
-                                                'Are you sure you want to delete this page?'),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                child: Text('Cancel'),
-                                                onPressed: () {
-                                                  Get.back();
-                                                },
-                                              ),
-                                              TextButton(
-                                                child: Text('Delete'),
-                                                onPressed: () {
-                                                  context.read<PagesBloc>().add(
-                                                      DeletePageEvent(
-                                                          id: page.id));
-                                                  Get.back();
-                                                  Get.snackbar('Success',
-                                                      'Page deleted successfully');
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Text('Delete'),
                                   ),
                                   SizedBox(width: 8),
                                   OutlinedButton(

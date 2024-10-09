@@ -125,14 +125,14 @@ class _ArticlesPageState extends State<ArticlesPage> {
         builder: (BuildContext context, BoxConstraints constraints) {
           return Table(
             columnWidths: const {
-              0: FlexColumnWidth(3), // Title
+              0: FlexColumnWidth(2.5), // Title
               1: FlexColumnWidth(2), // Authors
               2: FlexColumnWidth(2), // Journal
-              3: FlexColumnWidth(1), // Volume
-              4: FlexColumnWidth(1), // Issue
-              5: FlexColumnWidth(1), // Status
-              6: FlexColumnWidth(2), // Publication Date
-              7: FlexColumnWidth(2), // Actions
+              3: FlexColumnWidth(2), // Volume
+              4: FlexColumnWidth(2), // Issue
+              5: FlexColumnWidth(1.5), // Status
+              6: FlexColumnWidth(1.5), // Publication Date
+              7: FlexColumnWidth(1), // Actions
             },
             border: TableBorder.all(color: Colors.grey[300]!),
             children: [
@@ -209,58 +209,73 @@ class _ArticlesPageState extends State<ArticlesPage> {
                       _buildTableCell(Text(DateFormat('dd/MMMM/yyyy')
                           .format(article.createdAt))),
                       _buildTableCell(
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.visibility,
-                                  color: Colors.purple),
-                              onPressed: () {
+                        PopupMenuButton<String>(
+                          
+                          onSelected: (String result) {
+                            switch (result) {
+                              case 'view':
                                 viewArticleDetails(article);
-                              },
+                                break;
+                              case 'edit':
+                                editArticle(article.id);
+                                break;
+                              case 'delete':
+                                deleteArticle(article.id);
+                                break;
+                              case 'comment':
+                                viewComments(article);
+                                break;
+                              case 'update':
+                                updateStatus(article);
+                                break;
+                            }
+                          },
+                          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                            const PopupMenuItem<String>(
+                              value: 'view',
+                              child: ListTile(
+                                leading: Icon(Icons.visibility, color: Colors.blue),
+                                title: Text('View Details'),
+                              ),
                             ),
-                            //* only admin and editor can EDIT this
                             if (LoginConst.currentUser?.role == Role.admin ||
                                 LoginConst.currentUser?.role == Role.author)
-                              IconButton(
-                                icon:
-                                    const Icon(Icons.edit, color: Colors.blue),
-                                onPressed: () async {
-                                  await editArticle(article.id);
-                                  _loadData(); // Reload data after returning from edit article page
-                                },
+                              const PopupMenuItem<String>(
+                                value: 'edit',
+                                child: ListTile(
+                                  leading: Icon(Icons.edit, color: Colors.green),
+                                  title: Text('Edit'),
+                                ),
                               ),
-                            //* only admin and editor can see this
                             if (LoginConst.currentUser?.role == Role.admin ||
                                 LoginConst.currentUser?.role == Role.author)
-                              IconButton(
-                                icon:
-                                    const Icon(Icons.delete, color: Colors.red),
-                                onPressed: () {
-                                  deleteArticle(article.id);
-                                },
+                              const PopupMenuItem<String>(
+                                value: 'delete',
+                                child: ListTile(
+                                  leading: Icon(Icons.delete, color: Colors.red),
+                                  title: Text('Delete'),
+                                ),
                               ),
-                            //* only admin and editor can see this
                             if (LoginConst.currentUser?.role == Role.admin ||
                                 LoginConst.currentUser?.role == Role.reviewer)
-                              IconButton(
-                                icon: const Icon(Icons.comment,
-                                    color: Colors.green),
-                                onPressed: () {
-                                  viewComments(article);
-                                },
+                              const PopupMenuItem<String>(
+                                value: 'comment',
+                                child: ListTile(
+                                  leading: Icon(Icons.comment, color: Colors.orange),
+                                  title: Text('View Comments'),
+                                ),
                               ),
-                            //* only admin and editor can see this
                             if (LoginConst.currentUser?.role == Role.admin ||
                                 LoginConst.currentUser?.role == Role.editor)
-                              IconButton(
-                                icon: const Icon(Icons.update,
-                                    color: Colors.orange),
-                                onPressed: () {
-                                  updateStatus(article);
-                                },
+                              const PopupMenuItem<String>(
+                                value: 'update',
+                                child: ListTile(
+                                  leading: Icon(Icons.update, color: Colors.purple),
+                                  title: Text('Update Status'),
+                                ),
                               ),
                           ],
+                          child: const Icon(Icons.more_vert),
                         ),
                       ),
                     ],
@@ -303,7 +318,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
           child: ExpansionTile(
             title: Text(article.title),
             subtitle: Text(
-              '${article.authors.join(', ')}\n${DateFormat('dd/MMMM/yyyy').format(article.createdAt)}',
+              '${article.authors.map((a) => a.name).join(', ')}\n${DateFormat('dd/MMMM/yyyy').format(article.createdAt)}',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -375,17 +390,15 @@ class _ArticlesPageState extends State<ArticlesPage> {
                       viewArticleDetails(article);
                     },
                   ),
-                  //* only admin and editor can see this
                   if (LoginConst.currentUser?.role == Role.admin ||
                       LoginConst.currentUser?.role == Role.author)
                     IconButton(
                       icon: const Icon(Icons.edit, color: Colors.blue),
                       onPressed: () async {
                         await editArticle(article.id);
-                        _loadData(); // Reload data after returning from edit article page
+                        _loadData();
                       },
                     ),
-                  //* only admin and editor can see this
                   if (LoginConst.currentUser?.role == Role.admin ||
                       LoginConst.currentUser?.role == Role.author)
                     IconButton(
@@ -394,7 +407,6 @@ class _ArticlesPageState extends State<ArticlesPage> {
                         deleteArticle(article.id);
                       },
                     ),
-                  //* only admin and editor can see this
                   if (LoginConst.currentUser?.role == Role.admin ||
                       LoginConst.currentUser?.role == Role.reviewer)
                     IconButton(
@@ -403,7 +415,6 @@ class _ArticlesPageState extends State<ArticlesPage> {
                         viewComments(article);
                       },
                     ),
-                  //* only admin and editor can see this
                   if (LoginConst.currentUser?.role == Role.admin ||
                       LoginConst.currentUser?.role == Role.editor)
                     IconButton(
