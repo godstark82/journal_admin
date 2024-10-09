@@ -8,7 +8,6 @@ class EditorEntity extends MyUser {
   String? correspondingAddress;
   String? cvPdfUrl;
   String? researchDomain;
-  List<String>? journalIds;
 
   EditorEntity({
     this.correspondingAddress,
@@ -23,6 +22,6 @@ class EditorEntity extends MyUser {
      super.id,
     this.researchDomain,
     this.title,
-    this.journalIds,
+    super.journalIds,
   });
 }

@@ -7,7 +7,7 @@ class AuthGuard extends GetMiddleware {
   RouteSettings? redirect(String? route) {
     
 
-    if (LoginConst.currentUserId == null) {
+    if (LoginConst.currentUser?.id == null) {
       return RouteSettings(name: '/login'); // Redirect to login page
     }
     return null; // Allow access if logged in

@@ -9,6 +9,7 @@ import 'package:journal_web/features/login/data/models/author_model.dart';
 import 'package:journal_web/features/login/data/models/editor_model.dart';
 import 'package:journal_web/features/login/data/models/reviewer_model.dart';
 import 'package:journal_web/features/login/data/repositories/login_repo_impl.dart';
+import 'package:journal_web/features/login/domain/entities/my_user_entity.dart';
 import 'package:journal_web/features/login/domain/usecases/author_signup_usecase.dart';
 import 'package:journal_web/features/login/domain/usecases/editor_signup_usecase.dart';
 import 'package:journal_web/features/login/domain/usecases/login_usecase.dart';
@@ -60,10 +61,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (user != null) {
       emit(LoginDoneState(role: user.role!));
       LoginConst.updateLoginConsts(
-          role: user.role,
-          userName: user.name,
-          userId: user.id,
-          userEmail: user.email);
+          user: MyUser(
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        journalIds: user.journalIds,
+        designation: user.designation,
+      ));
       LoginConst.printLoginConsts();
       Get.offAllNamed(Routes.dashboard);
     } else {

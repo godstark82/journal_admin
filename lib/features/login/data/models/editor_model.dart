@@ -32,7 +32,7 @@ class EditorModel extends EditorEntity {
       title: json['title'],
       id: json['id'],
       name: json['name'],
-      journalIds: json['journalIds'],
+      journalIds: List<String>.from(json['journalIds']),
     );
   }
 

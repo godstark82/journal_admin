@@ -1,10 +1,7 @@
-
 import 'package:journal_web/features/login/domain/entities/my_user_entity.dart';
 
 class ReviewerEntity extends MyUser {
   String? title;
-
-  List<String>? journalIds;
   String? country;
   String? mobile;
   String? correspondingAddress;
@@ -14,7 +11,7 @@ class ReviewerEntity extends MyUser {
 
   ReviewerEntity({
     this.title,
-    this.journalIds,
+    super.journalIds,
     this.country,
     this.mobile,
     this.correspondingAddress,

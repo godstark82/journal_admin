@@ -1,51 +1,35 @@
 import 'dart:developer';
 
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:journal_web/features/login/domain/entities/my_user_entity.dart';
 
 class LoginConst {
-  static String? currentRole;
-  static String? currentUserName;
-  static String? currentUserId;
-  static String? currentUserEmail;
+  static MyUser? currentUser;
 
   static void updateLoginConsts({
-    String? role,
-    String? userName,
-    String? userId,
-    String? userEmail,
+    MyUser? user,
   }) async {
-    currentRole = role ?? currentRole;
-    currentUserName = userName ?? currentUserName;
-    currentUserId = userId ?? currentUserId;
-    currentUserEmail = userEmail ?? currentUserEmail;
-
-    await Hive.box('cache').put('currentRole', currentRole);
-    await Hive.box('cache').put('currentUserName', currentUserName);
-    await Hive.box('cache').put('currentUserId', currentUserId);
-    await Hive.box('cache').put('currentUserEmail', currentUserEmail);
+    currentUser = user ?? currentUser;
+    await Hive.box('cache').put('currentUser', currentUser?.toJson());
   }
 
   static void clearLoginConsts() async {
-    currentRole = null;
-    currentUserName = null;
-    currentUserId = null;
-    currentUserEmail = null;
+    currentUser = null;
     await Hive.box('cache').clear();
   }
 
   static void printLoginConsts() {
-    log('currentRole: $currentRole');
-    log('currentUserName: $currentUserName');
-    log('currentUserId: $currentUserId');
-    log('currentUserEmail: $currentUserEmail');
+    log('currentRole: ${currentUser?.role}');
+    log('currentUserName: ${currentUser?.name}');
+    log('currentUserId: ${currentUser?.id}');
+    log('currentUserEmail: ${currentUser?.email}');
+    log('currentUser: ${currentUser?.journalIds}');
   }
 
   static Future<void> getCurrentUser() async {
     final hiveBox = Hive.box('cache');
-    currentRole = hiveBox.get('currentRole');
-    currentUserName = hiveBox.get('currentUserName');
-    currentUserId = hiveBox.get('currentUserId');
-    currentUserEmail = hiveBox.get('currentUserEmail');
+    final userJson = await hiveBox.get('currentUser');
+    currentUser = userJson != null ? MyUser.fromJson(userJson) : null;
     printLoginConsts();
   }
 }

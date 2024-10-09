@@ -34,7 +34,7 @@ class AuthorModel extends AuthorEntity {
       mobile: json['mobile'],
       address: json['address'],
       cvPdfUrl: json['cvPdfUrl'],
-      journalIds: json['journalIds'],
+      journalIds: List<String>.from(json['journalIds']),
     );
   }
 

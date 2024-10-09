@@ -5,7 +5,7 @@ class MyUser {
   String? name;
   String? id;
   String? designation;
-
+  List<String>? journalIds;
   MyUser({
     this.role,
     this.email,
@@ -13,6 +13,7 @@ class MyUser {
     this.name,
     this.id,
     this.designation,
+    this.journalIds,
   });
 
   Map<String, dynamic> toJson() => {
@@ -22,6 +23,7 @@ class MyUser {
         'name': name,
         'id': id,
         'designation': designation,
+        'journalIds': journalIds,
       };
 
   factory MyUser.fromJson(Map<String, dynamic> json) => MyUser(
@@ -31,5 +33,6 @@ class MyUser {
         name: json['name'],
         id: json['id'],
         designation: json['designation'],
+        journalIds: List<String>.from(json['journalIds']),
       );
 }

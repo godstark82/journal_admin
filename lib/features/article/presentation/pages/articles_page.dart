@@ -50,8 +50,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
               title: const Text('Articles'),
               backgroundColor: Colors.blue,
               actions: [
-                if (LoginConst.currentRole == Role.admin ||
-                    LoginConst.currentRole == Role.author)
+                if (LoginConst.currentUser?.role == Role.admin ||
+                    LoginConst.currentUser?.role == Role.author)
                   ElevatedButton(
                     onPressed: () async {
                       await Get.toNamed(Routes.dashboard + Routes.addArticle);
@@ -184,8 +184,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
                               },
                             ),
                             //* only admin and editor can EDIT this
-                            if (LoginConst.currentRole == Role.admin ||
-                                LoginConst.currentRole == Role.author)
+                            if (LoginConst.currentUser?.role == Role.admin ||
+                                LoginConst.currentUser?.role == Role.author)
                               IconButton(
                                 icon:
                                     const Icon(Icons.edit, color: Colors.blue),
@@ -195,8 +195,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
                                 },
                               ),
                             //* only admin and editor can see this
-                            if (LoginConst.currentRole == Role.admin ||
-                                LoginConst.currentRole == Role.author)
+                            if (LoginConst.currentUser?.role == Role.admin ||
+                                LoginConst.currentUser?.role == Role.author)
                               IconButton(
                                 icon:
                                     const Icon(Icons.delete, color: Colors.red),
@@ -205,8 +205,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
                                 },
                               ),
                             //* only admin and editor can see this
-                            if (LoginConst.currentRole == Role.admin ||
-                                LoginConst.currentRole == Role.reviewer)
+                            if (LoginConst.currentUser?.role == Role.admin ||
+                                LoginConst.currentUser?.role == Role.reviewer)
                               IconButton(
                                 icon: const Icon(Icons.comment,
                                     color: Colors.green),
@@ -215,8 +215,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
                                 },
                               ),
                             //* only admin and editor can see this
-                            if (LoginConst.currentRole == Role.admin ||
-                                LoginConst.currentRole == Role.editor)
+                            if (LoginConst.currentUser?.role == Role.admin ||
+                                LoginConst.currentUser?.role == Role.editor)
                               IconButton(
                                 icon: const Icon(Icons.update,
                                     color: Colors.orange),
@@ -340,8 +340,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
                     },
                   ),
                   //* only admin and editor can see this
-                  if (LoginConst.currentRole == Role.admin ||
-                      LoginConst.currentRole == Role.author)
+                  if (LoginConst.currentUser?.role == Role.admin ||
+                      LoginConst.currentUser?.role == Role.author)
                     IconButton(
                       icon: const Icon(Icons.edit, color: Colors.blue),
                       onPressed: () async {
@@ -350,8 +350,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
                       },
                     ),
                   //* only admin and editor can see this
-                  if (LoginConst.currentRole == Role.admin ||
-                      LoginConst.currentRole == Role.author)
+                  if (LoginConst.currentUser?.role == Role.admin ||
+                      LoginConst.currentUser?.role == Role.author)
                     IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
@@ -359,8 +359,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
                       },
                     ),
                   //* only admin and editor can see this
-                  if (LoginConst.currentRole == Role.admin ||
-                      LoginConst.currentRole == Role.reviewer)
+                  if (LoginConst.currentUser?.role == Role.admin ||
+                      LoginConst.currentUser?.role == Role.reviewer)
                     IconButton(
                       icon: const Icon(Icons.comment, color: Colors.green),
                       onPressed: () {
@@ -368,8 +368,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
                       },
                     ),
                   //* only admin and editor can see this
-                  if (LoginConst.currentRole == Role.admin ||
-                      LoginConst.currentRole == Role.editor)
+                  if (LoginConst.currentUser?.role == Role.admin ||
+                      LoginConst.currentUser?.role == Role.editor)
                     IconButton(
                       icon: const Icon(Icons.update, color: Colors.orange),
                       onPressed: () {
@@ -658,10 +658,11 @@ class _ArticlesPageState extends State<ArticlesPage> {
                           msg: commentController.text,
                           createdAt: DateTime.now(),
                           reviewer: ReviewerModel(
-                            name: LoginConst.currentUserName,
-                            email: LoginConst.currentUserEmail,
-                            id: LoginConst.currentUserId,
-                            role: LoginConst.currentRole,
+                            name: LoginConst.currentUser?.name,
+                            email: LoginConst.currentUser?.email,
+                            id: LoginConst.currentUser?.id,
+                            role: LoginConst.currentUser?.role,
+                            journalIds: LoginConst.currentUser?.journalIds,
                           ),
                         );
                         article.comments.add(newComment);

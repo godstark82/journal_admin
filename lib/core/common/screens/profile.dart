@@ -75,12 +75,12 @@ class ProfilePage extends StatelessWidget {
                               ),
                               SizedBox(height: 20),
                               Text(
-                                LoginConst.currentUserName ?? 'User',
+                                LoginConst.currentUser?.name ?? 'User',
                                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 10),
                               Text(
-                                LoginConst.currentUserEmail ?? 'email@example.com',
+                                LoginConst.currentUser?.email ?? 'email@example.com',
                                 style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                               ),
                               SizedBox(height: 20),
@@ -91,7 +91,7 @@ class ProfilePage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  'Role: ${LoginConst.currentRole}',
+                                  'Role: ${LoginConst.currentUser?.role}',
                                   style: TextStyle(fontSize: 18, color: Colors.blue[800]),
                                 ),
                               ),

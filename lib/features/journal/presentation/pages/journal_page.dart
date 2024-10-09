@@ -35,7 +35,7 @@ class _JournalPageState extends State<JournalPage> {
         automaticallyImplyLeading: false,
         title: const Text('Journals'),
         actions: [
-          if (LoginConst.currentRole == Role.admin)
+          if (LoginConst.currentUser?.role == Role.admin)
             ElevatedButton.icon(
               onPressed: () {
                 Get.toNamed(Routes.dashboard + Routes.addJournal);

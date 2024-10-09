@@ -100,20 +100,20 @@ class _HomeState extends State<Home> {
           Expanded(
             child: ListView(
               children: [
-                if (LoginConst.currentRole == Role.admin)
+                if (LoginConst.currentUser?.role == Role.admin)
                 _buildMenuItem('Dashboard', 'd', Icons.dashboard),
-                if (LoginConst.currentRole == Role.admin)
+                if (LoginConst.currentUser?.role == Role.admin)
                 _buildMenuItem('Journals', 'j', Icons.book),
                 _buildMenuItem('Volumes', 'v', Icons.collections_bookmark),
                 _buildMenuItem('Issues', 'i', Icons.library_books),
                 _buildMenuItem('Articles', 'a', Icons.article),
-                if (LoginConst.currentRole == Role.admin)
+                if (LoginConst.currentUser?.role == Role.admin)
                 _buildMenuItem('Page Management', 'p', Icons.pages),
-                if (LoginConst.currentRole == Role.admin)
+                if (LoginConst.currentUser?.role == Role.admin)
                 _buildMenuItem('Editorial Board', 'eb', Icons.people),
-                if (LoginConst.currentRole == Role.admin)
+                if (LoginConst.currentUser?.role == Role.admin)
                 _buildMenuItem('Social Links', 's', Icons.link),
-                if (LoginConst.currentRole == Role.admin)
+                if (LoginConst.currentUser?.role == Role.admin)
                   _buildMenuItem('Users', 'u', Icons.person),
               ],
             ),
@@ -160,7 +160,7 @@ class _HomeState extends State<Home> {
             )
           : null,
       title: Text(
-        'Welcome, ${LoginConst.currentUserName}',
+        'Welcome, ${LoginConst.currentUser?.name}',
         style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,

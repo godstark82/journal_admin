@@ -394,7 +394,7 @@ class _AuthorSignupState extends State<AuthorSignup> {
 
     if (result != null) {
       String fileName =
-          '${tempAuthor.title}${tempAuthor.name}${tempAuthor.email}_cv.pdf';
+          '${tempAuthor.role}${tempAuthor.title}${tempAuthor.name}${tempAuthor.email}_cv.pdf';
 
       try {
         setState(() {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:journal_web/core/common/widgets/snack_bars.dart';
+import 'package:journal_web/core/const/roles.dart';
 import 'package:journal_web/features/login/presentation/bloc/login_bloc.dart';
 import 'package:journal_web/features/login/data/models/editor_model.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -10,6 +11,9 @@ import 'package:journal_web/routes.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:url_launcher/url_launcher.dart';
 
 class EditorSignup extends StatefulWidget {
   const EditorSignup({super.key});
@@ -24,6 +28,8 @@ class _EditorSignupState extends State<EditorSignup> {
   bool _obscureText = true;
   String? _cvFileName;
   List<String> selectedJournalIds = [];
+  bool _isUploading = false;
+  double _uploadProgress = 0;
 
   final List<String> titleOptions = ['Dr.', 'Prof.', 'Mr.', 'Ms.', 'Mrs.'];
 
@@ -58,7 +64,9 @@ class _EditorSignupState extends State<EditorSignup> {
               builder: (context, sizingInfo) {
                 return SingleChildScrollView(
                   child: Container(
-                    width: sizingInfo.isDesktop ? 800 : (sizingInfo.isTablet ? 600 : context.width * 0.9),
+                    width: sizingInfo.isDesktop
+                        ? 800
+                        : (sizingInfo.isTablet ? 600 : context.width * 0.9),
                     margin: EdgeInsets.symmetric(vertical: 32),
                     padding: const EdgeInsets.all(32),
                     decoration: BoxDecoration(
@@ -91,24 +99,34 @@ class _EditorSignupState extends State<EditorSignup> {
                               ),
                               TextButton(
                                 onPressed: () => Get.toNamed(Routes.login),
-                                child: Text('Sign In', style: TextStyle(color: Colors.blue[700])),
+                                child: Text('Sign In',
+                                    style: TextStyle(color: Colors.blue[700])),
                               ),
                             ],
                           ),
                           SizedBox(height: 32),
-                          if (sizingInfo.isDesktop) 
+                          if (sizingInfo.isDesktop)
                             _buildDesktopFields()
                           else
                             _buildMobileFields(),
                           SizedBox(height: 16),
                           _buildCvUploadButton(),
+                          SizedBox(height: 10),
+                          if (_isUploading)
+                            LinearProgressIndicator(value: _uploadProgress),
+                          if (tempEditor.cvPdfUrl != null)
+                            ElevatedButton(
+                              onPressed: () => _viewPdf(tempEditor.cvPdfUrl!),
+                              child: Text('View CV'),
+                            ),
                           SizedBox(height: 16),
                           _buildJournalSelection(),
                           SizedBox(height: 32),
                           BlocBuilder<LoginBloc, LoginState>(
                             builder: (context, state) {
                               if (state is LoginLoadingState) {
-                                return Center(child: CircularProgressIndicator());
+                                return Center(
+                                    child: CircularProgressIndicator());
                               }
                               return Center(
                                 child: ElevatedButton(
@@ -116,12 +134,14 @@ class _EditorSignupState extends State<EditorSignup> {
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: Colors.white,
                                     backgroundColor: Colors.blue[700],
-                                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 32, vertical: 16),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                  child: Text('Submit', style: TextStyle(fontSize: 18)),
+                                  child: Text('Submit',
+                                      style: TextStyle(fontSize: 18)),
                                 ),
                               );
                             },
@@ -144,15 +164,22 @@ class _EditorSignupState extends State<EditorSignup> {
       children: [
         Row(
           children: [
-            Expanded(child: _buildDropdownField('Title', titleOptions, (v) => tempEditor.title = v)),
+            Expanded(
+                child: _buildDropdownField(
+                    'Title', titleOptions, (v) => tempEditor.title = v)),
             SizedBox(width: 16),
-            Expanded(flex: 2, child: _buildTextField('Full Name', (v) => tempEditor.name = v)),
+            Expanded(
+                flex: 2,
+                child:
+                    _buildTextField('Full Name', (v) => tempEditor.name = v)),
           ],
         ),
         SizedBox(height: 16),
         Row(
           children: [
-            Expanded(flex: 2, child: _buildTextField('Email', (v) => tempEditor.email = v)),
+            Expanded(
+                flex: 2,
+                child: _buildTextField('Email', (v) => tempEditor.email = v)),
             SizedBox(width: 16),
             Expanded(child: _buildPasswordField()),
           ],
@@ -160,15 +187,19 @@ class _EditorSignupState extends State<EditorSignup> {
         SizedBox(height: 16),
         Row(
           children: [
-            Expanded(child: _buildTextField('Mobile', (v) => tempEditor.mobile = v)),
+            Expanded(
+                child: _buildTextField('Mobile', (v) => tempEditor.mobile = v)),
             SizedBox(width: 16),
-            Expanded(child: _buildTextField('Country', (v) => tempEditor.country = v)),
+            Expanded(
+                child:
+                    _buildTextField('Country', (v) => tempEditor.country = v)),
           ],
         ),
         SizedBox(height: 16),
         _buildTextField('Address', (v) => tempEditor.correspondingAddress = v),
         SizedBox(height: 16),
-        _buildTextField('Research Domains', (v) => tempEditor.researchDomain = v),
+        _buildTextField(
+            'Research Domains', (v) => tempEditor.researchDomain = v),
       ],
     );
   }
@@ -190,7 +221,8 @@ class _EditorSignupState extends State<EditorSignup> {
         SizedBox(height: 16),
         _buildTextField('Address', (v) => tempEditor.correspondingAddress = v),
         SizedBox(height: 16),
-        _buildTextField('Research Domains', (v) => tempEditor.researchDomain = v),
+        _buildTextField(
+            'Research Domains', (v) => tempEditor.researchDomain = v),
       ],
     );
   }
@@ -238,7 +270,8 @@ class _EditorSignupState extends State<EditorSignup> {
     );
   }
 
-  Widget _buildDropdownField(String label, List<String> items, Function(String?) onChanged) {
+  Widget _buildDropdownField(
+      String label, List<String> items, Function(String?) onChanged) {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         labelText: label,
@@ -262,22 +295,72 @@ class _EditorSignupState extends State<EditorSignup> {
 
   Widget _buildCvUploadButton() {
     return ElevatedButton.icon(
-      onPressed: () async {
-        FilePickerResult? result = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowedExtensions: ['pdf'],
-        );
-
-        if (result != null) {
-          setState(() {
-            _cvFileName = result.files.single.name;
-            tempEditor.cvPdfUrl = result.files.single.path;
-          });
-        }
-      },
+      onPressed: _uploadCV,
       icon: Icon(Icons.upload_file),
       label: Text(_cvFileName ?? 'Upload CV (PDF)'),
     );
+  }
+
+  Future<void> _uploadCV() async {
+    if (tempEditor.title == null ||
+        tempEditor.name == null ||
+        tempEditor.email == null) {
+      MySnacks.showErrorSnack('Please Fill the form first');
+      return;
+    }
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (result != null) {
+      setState(() {
+        _isUploading = true;
+        _uploadProgress = 0;
+      });
+
+      String fileName =
+          '${Role.editor}${tempEditor.title}${tempEditor.name}${tempEditor.email}_cv.pdf';
+
+      try {
+        UploadTask task = FirebaseStorage.instance
+            .ref('cvs/$fileName')
+            .putData(result.files.single.bytes!);
+
+        task.snapshotEvents.listen((TaskSnapshot snapshot) {
+          setState(() {
+            _uploadProgress = snapshot.bytesTransferred / snapshot.totalBytes;
+          });
+        });
+
+        await task;
+
+        String downloadURL = await FirebaseStorage.instance
+            .ref('cvs/$fileName')
+            .getDownloadURL();
+
+        setState(() {
+          _cvFileName = result.files.single.name;
+          tempEditor.cvPdfUrl = downloadURL;
+          _isUploading = false;
+        });
+
+        MySnacks.showSuccessSnack('CV uploaded successfully');
+      } catch (e) {
+        setState(() {
+          _isUploading = false;
+        });
+        MySnacks.showErrorSnack('Failed to upload CV: $e');
+      }
+    }
+  }
+
+  Future<void> _viewPdf(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      MySnacks.showErrorSnack('Could not launch $url');
+    }
   }
 
   Widget _buildJournalSelection() {
@@ -285,7 +368,8 @@ class _EditorSignupState extends State<EditorSignup> {
       builder: (context, state) {
         if (state is JournalsLoaded) {
           List<MultiSelectItem<String>> items = state.journals
-              .map((journal) => MultiSelectItem<String>(journal.id, '${journal.domain}.abhijournals.com : ${journal.title}'))
+              .map((journal) => MultiSelectItem<String>(journal.id,
+                  '${journal.domain}.abhijournals.com : ${journal.title}'))
               .toList();
 
           return MultiSelectDialogField(
@@ -331,9 +415,9 @@ class _EditorSignupState extends State<EditorSignup> {
       } else if (selectedJournalIds.isEmpty) {
         MySnacks.showErrorSnack('Please select at least one journal');
       } else {
-        context.read<LoginBloc>().add(
-          LoginEditorSignupEvent(editor: tempEditor) 
-        );
+        context
+            .read<LoginBloc>()
+            .add(LoginEditorSignupEvent(editor: tempEditor));
       }
     }
   }
