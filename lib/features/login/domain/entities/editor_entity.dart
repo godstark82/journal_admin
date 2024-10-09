@@ -6,13 +6,14 @@ class EditorEntity extends MyUser {
   String? country;
   String? mobile;
   String? correspondingAddress;
-  String? detailsCV;
+  String? cvPdfUrl;
   String? researchDomain;
+  List<String>? journalIds;
 
   EditorEntity({
     this.correspondingAddress,
     this.country,
-    this.detailsCV,
+    this.cvPdfUrl,
      super.email,
      super.password,
     this.journalName,
@@ -22,5 +23,6 @@ class EditorEntity extends MyUser {
      super.id,
     this.researchDomain,
     this.title,
+    this.journalIds,
   });
 }

@@ -7,6 +7,9 @@ import 'package:journal_web/features/login/data/models/editor_model.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'dart:ui';
 import 'package:journal_web/routes.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class EditorSignup extends StatefulWidget {
   const EditorSignup({super.key});
@@ -19,8 +22,16 @@ class _EditorSignupState extends State<EditorSignup> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   EditorModel tempEditor = EditorModel();
   bool _obscureText = true;
+  String? _cvFileName;
+  List<String> selectedJournalIds = [];
 
   final List<String> titleOptions = ['Dr.', 'Prof.', 'Mr.', 'Ms.', 'Mrs.'];
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<JournalBloc>().add(GetAllJournalEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +100,10 @@ class _EditorSignupState extends State<EditorSignup> {
                             _buildDesktopFields()
                           else
                             _buildMobileFields(),
+                          SizedBox(height: 16),
+                          _buildCvUploadButton(),
+                          SizedBox(height: 16),
+                          _buildJournalSelection(),
                           SizedBox(height: 32),
                           BlocBuilder<LoginBloc, LoginState>(
                             builder: (context, state) {
@@ -153,8 +168,6 @@ class _EditorSignupState extends State<EditorSignup> {
         SizedBox(height: 16),
         _buildTextField('Address', (v) => tempEditor.correspondingAddress = v),
         SizedBox(height: 16),
-        _buildTextField('Details CV', (v) => tempEditor.detailsCV = v),
-        SizedBox(height: 16),
         _buildTextField('Research Domains', (v) => tempEditor.researchDomain = v),
       ],
     );
@@ -176,8 +189,6 @@ class _EditorSignupState extends State<EditorSignup> {
         _buildTextField('Country', (v) => tempEditor.country = v),
         SizedBox(height: 16),
         _buildTextField('Address', (v) => tempEditor.correspondingAddress = v),
-        SizedBox(height: 16),
-        _buildTextField('Details CV', (v) => tempEditor.detailsCV = v),
         SizedBox(height: 16),
         _buildTextField('Research Domains', (v) => tempEditor.researchDomain = v),
       ],
@@ -249,10 +260,76 @@ class _EditorSignupState extends State<EditorSignup> {
     );
   }
 
+  Widget _buildCvUploadButton() {
+    return ElevatedButton.icon(
+      onPressed: () async {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['pdf'],
+        );
+
+        if (result != null) {
+          setState(() {
+            _cvFileName = result.files.single.name;
+            tempEditor.cvPdfUrl = result.files.single.path;
+          });
+        }
+      },
+      icon: Icon(Icons.upload_file),
+      label: Text(_cvFileName ?? 'Upload CV (PDF)'),
+    );
+  }
+
+  Widget _buildJournalSelection() {
+    return BlocBuilder<JournalBloc, JournalState>(
+      builder: (context, state) {
+        if (state is JournalsLoaded) {
+          List<MultiSelectItem<String>> items = state.journals
+              .map((journal) => MultiSelectItem<String>(journal.id, '${journal.domain}.abhijournals.com : ${journal.title}'))
+              .toList();
+
+          return MultiSelectDialogField(
+            items: items,
+            title: Text("Select Journals"),
+            selectedColor: Colors.blue,
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.1),
+              borderRadius: BorderRadius.all(Radius.circular(40)),
+              border: Border.all(
+                color: Colors.blue,
+                width: 2,
+              ),
+            ),
+            buttonIcon: Icon(
+              Icons.book,
+              color: Colors.blue,
+            ),
+            buttonText: Text(
+              "Select Journals",
+              style: TextStyle(
+                color: Colors.blue[800],
+                fontSize: 16,
+              ),
+            ),
+            onConfirm: (results) {
+              selectedJournalIds = results.cast<String>();
+              tempEditor.journalIds = selectedJournalIds;
+            },
+          );
+        }
+        return CircularProgressIndicator();
+      },
+    );
+  }
+
   void _submitForm() {
     if (formKey.currentState!.validate()) {
       if (tempEditor.title == null || tempEditor.title!.isEmpty) {
         MySnacks.showErrorSnack('Title cannot be empty');
+      } else if (tempEditor.cvPdfUrl == null) {
+        MySnacks.showErrorSnack('Please upload your CV');
+      } else if (selectedJournalIds.isEmpty) {
+        MySnacks.showErrorSnack('Please select at least one journal');
       } else {
         context.read<LoginBloc>().add(
           LoginEditorSignupEvent(editor: tempEditor) 

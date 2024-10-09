@@ -7,6 +7,9 @@ import 'package:journal_web/features/login/data/models/reviewer_model.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'dart:ui';
 import 'package:journal_web/routes.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class ReviewerSignup extends StatefulWidget {
   const ReviewerSignup({super.key});
@@ -19,8 +22,16 @@ class _ReviewerSignupState extends State<ReviewerSignup> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   ReviewerModel tempReviewer = ReviewerModel();
   bool _obscureText = true;
+  String? _cvFileName;
+  List<String> selectedJournalIds = [];
 
   final List<String> titleOptions = ['Dr.', 'Prof.', 'Mr.', 'Ms.', 'Mrs.'];
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<JournalBloc>().add(GetAllJournalEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +101,10 @@ class _ReviewerSignupState extends State<ReviewerSignup> {
                           else
                             _buildMobileFields(),
                           SizedBox(height: 32),
+                          _buildCvUploadButton(),
+                          SizedBox(height: 16),
+                          _buildJournalSelection(),
+                          SizedBox(height: 32),
                           BlocBuilder<LoginBloc, LoginState>(
                             builder: (context, state) {
                               if (state is LoginLoadingState) {
@@ -145,8 +160,6 @@ class _ReviewerSignupState extends State<ReviewerSignup> {
         SizedBox(height: 16),
         Row(
           children: [
-            Expanded(child: _buildTextField('Journal Name', (v) => tempReviewer.journal = v)),
-            SizedBox(width: 16),
             Expanded(child: _buildTextField('Mobile', (v) => tempReviewer.mobile = v)),
           ],
         ),
@@ -161,8 +174,6 @@ class _ReviewerSignupState extends State<ReviewerSignup> {
         SizedBox(height: 16),
         Row(
           children: [
-            Expanded(child: _buildTextField('Details CV', (v) => tempReviewer.detailsCV = v)),
-            SizedBox(width: 16),
             Expanded(child: _buildTextField('Research Domains', (v) => tempReviewer.researchDomain = v)),
           ],
         ),
@@ -181,15 +192,11 @@ class _ReviewerSignupState extends State<ReviewerSignup> {
         SizedBox(height: 16),
         _buildPasswordField(),
         SizedBox(height: 16),
-        _buildTextField('Journal Name', (v) => tempReviewer.journal = v),
-        SizedBox(height: 16),
         _buildTextField('Mobile', (v) => tempReviewer.mobile = v),
         SizedBox(height: 16),
         _buildTextField('Country', (v) => tempReviewer.country = v),
         SizedBox(height: 16),
         _buildTextField('Corresponding Address', (v) => tempReviewer.correspondingAddress = v),
-        SizedBox(height: 16),
-        _buildTextField('Details CV', (v) => tempReviewer.detailsCV = v),
         SizedBox(height: 16),
         _buildTextField('Research Domains', (v) => tempReviewer.researchDomain = v),
       ],
@@ -261,12 +268,78 @@ class _ReviewerSignupState extends State<ReviewerSignup> {
     );
   }
 
+  Widget _buildCvUploadButton() {
+    return ElevatedButton.icon(
+      onPressed: () async {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['pdf'],
+        );
+
+        if (result != null) {
+          setState(() {
+            _cvFileName = result.files.single.name;
+            tempReviewer.cvPdfUrl = result.files.single.path;
+          });
+        }
+      },
+      icon: Icon(Icons.upload_file),
+      label: Text(_cvFileName ?? 'Upload CV (PDF)'),
+    );
+  }
+
+  Widget _buildJournalSelection() {
+    return BlocBuilder<JournalBloc, JournalState>(
+      builder: (context, state) {
+        if (state is JournalsLoaded) {
+          List<MultiSelectItem<String>> items = state.journals
+              .map((journal) => MultiSelectItem<String>(journal.id, '${journal.domain}.abhijournals.com : ${journal.title}'))
+              .toList();
+
+          return MultiSelectDialogField(
+            items: items,
+            title: Text("Select Journals"),
+            selectedColor: Colors.blue,
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.1),
+              borderRadius: BorderRadius.all(Radius.circular(40)),
+              border: Border.all(
+                color: Colors.blue,
+                width: 2,
+              ),
+            ),
+            buttonIcon: Icon(
+              Icons.book,
+              color: Colors.blue,
+            ),
+            buttonText: Text(
+              "Select Journals",
+              style: TextStyle(
+                color: Colors.blue[800],
+                fontSize: 16,
+              ),
+            ),
+            onConfirm: (results) {
+              selectedJournalIds = results.cast<String>();
+              tempReviewer.journalIds = selectedJournalIds;
+            },
+          );
+        }
+        return CircularProgressIndicator();
+      },
+    );
+  }
+
   void _submitForm() {
     if (formKey.currentState!.validate()) {
       if (tempReviewer.title == null || tempReviewer.title!.isEmpty) {
         MySnacks.showErrorSnack('Title cannot be empty');
       } else if (tempReviewer.country == null || tempReviewer.country!.isEmpty) {
         MySnacks.showErrorSnack('Country cannot be empty');
+      } else if (tempReviewer.cvPdfUrl == null) {
+        MySnacks.showErrorSnack('Please upload your CV');
+      } else if (selectedJournalIds.isEmpty) {
+        MySnacks.showErrorSnack('Please select at least one journal');
       } else {
         context.read<LoginBloc>().add(
           LoginReviewerSignupEvent(reviewer: tempReviewer) 

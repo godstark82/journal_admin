@@ -285,22 +285,8 @@ Widget buildAuthorDetails(AuthorModel? author) {
                       ? constraints.maxWidth / 2 - 24
                       : constraints.maxWidth - 32,
                   isDesktop),
-              _buildDetailItem(
-                  Icons.location_city,
-                  'City',
-                  author?.city,
-                  isDesktop
-                      ? constraints.maxWidth / 2 - 24
-                      : constraints.maxWidth - 32,
-                  isDesktop),
-              _buildDetailItem(
-                  Icons.flag,
-                  'Country',
-                  author?.country,
-                  isDesktop
-                      ? constraints.maxWidth / 2 - 24
-                      : constraints.maxWidth - 32,
-                  isDesktop),
+              
+              
               _buildDetailItem(
                   Icons.fingerprint,
                   'ORCID',
@@ -341,22 +327,8 @@ Widget buildAuthorDetails(AuthorModel? author) {
                       ? constraints.maxWidth / 2 - 24
                       : constraints.maxWidth - 32,
                   isDesktop),
-              _buildDetailItem(
-                  Icons.map,
-                  'State',
-                  author?.state,
-                  isDesktop
-                      ? constraints.maxWidth / 2 - 24
-                      : constraints.maxWidth - 32,
-                  isDesktop),
-              _buildDetailItem(
-                  Icons.pin_drop,
-                  'Pin Code',
-                  author?.pinCode,
-                  isDesktop
-                      ? constraints.maxWidth / 2 - 24
-                      : constraints.maxWidth - 32,
-                  isDesktop),
+             
+              
             ],
           ),
         ),
@@ -506,7 +478,7 @@ Widget buildReviewerDetails(ReviewerModel? reviewer) {
               _buildDetailItem(
                   Icons.book,
                   'Journal',
-                  reviewer?.journal,
+                  reviewer?.journalIds?.join(', '),
                   isDesktop
                       ? constraints.maxWidth / 2 - 24
                       : constraints.maxWidth - 32,

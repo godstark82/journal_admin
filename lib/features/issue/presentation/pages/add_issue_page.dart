@@ -103,11 +103,9 @@ class _AddIssuePageState extends State<AddIssuePage> {
   }
 
   Widget _buildMobileLayout() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: _buildForm(),
-      ),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: _buildForm(),
     );
   }
 

@@ -5,7 +5,7 @@ class EditorModel extends EditorEntity {
   EditorModel({
     super.correspondingAddress,
     super.country,
-    super.detailsCV,
+    super.cvPdfUrl,
     super.email,
     super.role,
     super.journalName,
@@ -14,6 +14,7 @@ class EditorModel extends EditorEntity {
     super.researchDomain,
     super.title,
     super.name,
+    super.journalIds,
     super.id,
   });
 
@@ -21,7 +22,7 @@ class EditorModel extends EditorEntity {
     return EditorModel(
       correspondingAddress: json['correspondingAddress'],
       country: json['country'],
-      detailsCV: json['detailsCV'],
+      cvPdfUrl: json['cvPdfUrl'],
       email: json['email'],
       role: json['role'],
       journalName: json['journalName'],
@@ -31,6 +32,7 @@ class EditorModel extends EditorEntity {
       title: json['title'],
       id: json['id'],
       name: json['name'],
+      journalIds: json['journalIds'],
     );
   }
 
@@ -39,7 +41,7 @@ class EditorModel extends EditorEntity {
     return {
       'correspondingAddress': correspondingAddress,
       'country': country,
-      'detailsCV': detailsCV,
+      'cvPdfUrl': cvPdfUrl,
       'email': email,
       'role': role,
       'journalName': journalName,
@@ -49,7 +51,8 @@ class EditorModel extends EditorEntity {
       'title': title,
       'id': id,
       'name': name,
-    };
+      'journalIds': journalIds,
+      };
   }
 
   static Future<EditorModel?> fromUser(String userId) async {

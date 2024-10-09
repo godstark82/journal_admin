@@ -6,11 +6,9 @@ class AuthorEntity extends MyUser {
   String? specialization;
   String? fieldOfStudy;
   String? mobile;
-  String? country;
-  String? state;
-  String? city;
-  String? pinCode;
   String? address;
+  String? cvPdfUrl;
+  List<String>? journalIds;
 
   AuthorEntity({
     this.title,
@@ -25,9 +23,7 @@ class AuthorEntity extends MyUser {
     this.specialization,
     this.fieldOfStudy,
     this.mobile,
-    this.country,
-    this.state,
-    this.city,
-    this.pinCode,
+    this.cvPdfUrl,
+    this.journalIds,
   });
 }

@@ -6,8 +6,6 @@ class AuthorModel extends AuthorEntity {
     super.title,
     super.address,
     super.role,
-    super.city,
-    super.country,
     super.orcId,
     super.email,
     super.name,
@@ -17,16 +15,14 @@ class AuthorModel extends AuthorEntity {
     super.specialization,
     super.fieldOfStudy,
     super.mobile,
-    super.state,
-    super.pinCode,
+    super.cvPdfUrl,
+    super.journalIds,
   });
 
   factory AuthorModel.fromJson(Map<String, dynamic> json) {
     return AuthorModel(
       title: json['title'],
-      city: json['city'],
       role: json['role'],
-      country: json['country'],
       name: json['name'],
       id: json['id'],
       email: json['email'],
@@ -36,9 +32,9 @@ class AuthorModel extends AuthorEntity {
       specialization: json['specialization'],
       fieldOfStudy: json['fieldOfStudy'],
       mobile: json['mobile'],
-      state: json['state'],
-      pinCode: json['pinCode'],
       address: json['address'],
+      cvPdfUrl: json['cvPdfUrl'],
+      journalIds: json['journalIds'],
     );
   }
 
@@ -46,9 +42,6 @@ class AuthorModel extends AuthorEntity {
   Map<String, dynamic> toJson() {
     return {
       'title': title,
-      'city': city,
-      'country': country,
-      
       'role': role,
       'orcId': orcId,
       'password': password,
@@ -56,12 +49,12 @@ class AuthorModel extends AuthorEntity {
       'specialization': specialization,
       'fieldOfStudy': fieldOfStudy,
       'mobile': mobile,
-      'state': state,
-      'pinCode': pinCode,
       'address': address,
       'name': name,
       'id': id,
       'email': email,
+      'cvPdfUrl': cvPdfUrl,
+      'journalIds': journalIds,
     };
   }
 

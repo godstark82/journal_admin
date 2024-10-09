@@ -9,4 +9,12 @@ class MySnacks {
         backgroundColor: Colors.red,
         duration: Duration(seconds: 3)));
   }
+
+  static Future<void> showSuccessSnack(String content) async {
+    Get.showSnackbar(GetSnackBar(
+        title: 'Success',
+        message: content,
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 3)));
+  }
 }
