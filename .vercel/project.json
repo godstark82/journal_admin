@@ -1,0 +1,8 @@
+{
+    "framework": "flutter",
+    "buildCommand": "flutter build web",
+    "devCommand": "flutter run",
+    "outputDirectory": "build/web",
+    "flutterVersion": "3.24.3"
+  }
+  
