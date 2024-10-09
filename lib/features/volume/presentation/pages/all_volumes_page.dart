@@ -45,8 +45,7 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
         automaticallyImplyLeading: false,
         title: const Text('All Volumes'),
         actions: [
-          if (LoginConst.currentUser?.role == Role.admin ||
-              LoginConst.currentUser?.role == Role.author)
+          if (LoginConst.currentUser?.role == Role.admin)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton.icon(
@@ -147,8 +146,7 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
                             DataCell(Row(
                               children: [
                                 //* only admin and editor can see this
-                                if (LoginConst.currentUser?.role == Role.admin ||
-                                    LoginConst.currentUser?.role == Role.author)
+                                if (LoginConst.currentUser?.role == Role.admin)
                                   IconButton(
                                     icon: const Icon(Icons.edit,
                                         color: Colors.blue),
@@ -157,8 +155,7 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
                                     },
                                   ),
                                 //* only admin and editor can see this
-                                if (LoginConst.currentUser?.role == Role.admin ||
-                                    LoginConst.currentUser?.role == Role.author)
+                                if (LoginConst.currentUser?.role == Role.admin)
                                   IconButton(
                                     icon: const Icon(Icons.delete,
                                         color: Colors.red),
@@ -203,8 +200,7 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 //* only admin and editor can see this
-                if (LoginConst.currentUser?.role == Role.admin ||
-                    LoginConst.currentUser?.role == Role.author)
+                if (LoginConst.currentUser?.role == Role.admin )
                   IconButton(
                     icon: const Icon(Icons.edit, color: Colors.blue),
                     onPressed: () {
@@ -212,8 +208,7 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
                     },
                   ),
                 //* only admin and editor can see this
-                if (LoginConst.currentUser?.role == Role.admin ||
-                    LoginConst.currentUser?.role == Role.author)
+                if (LoginConst.currentUser?.role == Role.admin )
                   IconButton(
                     icon: const Icon(Icons.delete, color: Colors.red),
                     onPressed: () {
@@ -230,8 +225,7 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
 
   Widget _buildEmptyView() {
     //* only admin and editor can see this
-    if (!(LoginConst.currentUser?.role == Role.admin ||
-        LoginConst.currentUser?.role == Role.author)) {
+    if (!(LoginConst.currentUser?.role == Role.admin)) {
       return SizedBox();
     }
     return Center(

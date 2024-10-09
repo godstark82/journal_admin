@@ -15,6 +15,7 @@ import 'package:journal_web/features/article/presentation/bloc/article_bloc.dart
 import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
 import 'package:journal_web/features/volume/presentation/bloc/volume_bloc.dart';
 import 'package:journal_web/features/issue/presentation/bloc/issue_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ArticlesPage extends StatefulWidget {
   const ArticlesPage({super.key});
@@ -44,6 +45,13 @@ class _ArticlesPageState extends State<ArticlesPage> {
         if (state is AllArticleLoadingState) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is AllArticleLoadedState) {
+          List<ArticleModel> filteredArticles = LoginConst.currentUser?.role ==
+                  Role.author
+              ? state.articles
+                  .where((article) => article.authors
+                      .any((author) => author.id == LoginConst.currentUser?.id))
+                  .toList()
+              : state.articles;
           return Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: false,
@@ -64,11 +72,39 @@ class _ArticlesPageState extends State<ArticlesPage> {
             ),
             body: ResponsiveBuilder(
               builder: (context, sizingInformation) {
+                if (filteredArticles.isEmpty) {
+                  return Center(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.article_outlined,
+                              size: 64, color: Colors.grey),
+                          SizedBox(height: 16),
+                          Text(
+                            'No articles created by you yet',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8),
+                          Text('Start by creating a new article'),
+                          SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            icon: Icon(Icons.add),
+                            label: Text('Create New Article'),
+                            onPressed: () async {
+                              await Get.toNamed(
+                                  Routes.dashboard + Routes.addArticle);
+                              _loadData();
+                            },
+                          )
+                        ]),
+                  );
+                }
                 if (sizingInformation.deviceScreenType ==
                     DeviceScreenType.desktop) {
-                  return _buildDesktopLayout(state.articles, context);
+                  return _buildDesktopLayout(filteredArticles, context);
                 } else {
-                  return _buildMobileLayout(state.articles);
+                  return _buildMobileLayout(filteredArticles);
                 }
               },
             ),
@@ -512,9 +548,12 @@ class _ArticlesPageState extends State<ArticlesPage> {
                     icon: Icon(Icons.download, color: Colors.white),
                     label: Text('Download PDF',
                         style: TextStyle(color: Colors.white)),
-                    onPressed: () {
-                      // Implement PDF download functionality here
-                      // You might want to use a package like url_launcher to open the PDF URL
+                    onPressed: () async {
+                      if (await canLaunchUrl(Uri.parse(article.pdf))) {
+                        await launchUrl(Uri.parse(article.pdf));
+                      } else {
+                        print('Could not launch ${article.pdf}');
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,

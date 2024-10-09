@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:journal_web/features/issue/data/models/issue_model.dart';
 import 'package:journal_web/features/issue/presentation/bloc/issue_bloc.dart';

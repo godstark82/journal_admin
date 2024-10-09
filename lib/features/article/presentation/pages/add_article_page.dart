@@ -15,6 +15,7 @@ import 'package:journal_web/features/login/presentation/bloc/login_bloc.dart';
 import 'package:journal_web/features/login/domain/entities/my_user_entity.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AddArticlePage extends StatefulWidget {
   const AddArticlePage({super.key});
@@ -34,6 +35,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
   String pdf = '';
   String image = '';
   bool _isUploading = false;
+  bool _isPdfUploading = false;
   String? selectedJournalId;
   String? selectedVolumeId;
   String? selectedIssueId;
@@ -50,7 +52,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add New Article'),
+        title: const Text('Add New Article'),
       ),
       body: ResponsiveBuilder(
         builder: (context, sizingInformation) {
@@ -69,13 +71,19 @@ class _AddArticlePageState extends State<AddArticlePage> {
                     BlocBuilder<JournalBloc, JournalState>(
                       builder: (context, state) {
                         if (state is JournalsLoaded) {
+                          var journals = state.journals;
+                          if (LoginConst.currentUser?.role != Role.admin) {
+                            journals = journals.where((journal) => 
+                              LoginConst.currentUser?.journalIds?.contains(journal.id) ?? false
+                            ).toList();
+                          }
                           return DropdownButtonFormField<String>(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Select Journal',
                               border: OutlineInputBorder(),
                             ),
                             value: selectedJournalId,
-                            items: state.journals.map((journal) {
+                            items: journals.map((journal) {
                               return DropdownMenuItem<String>(
                                 value: journal.id,
                                 child: Text(journal.title),
@@ -95,15 +103,18 @@ class _AddArticlePageState extends State<AddArticlePage> {
                             },
                           );
                         }
-                        return CircularProgressIndicator();
+                        return SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: const CircularProgressIndicator());
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     BlocBuilder<VolumeBloc, VolumeState>(
                       builder: (context, state) {
                         if (state is VolumeLoadedByJournalId) {
                           return DropdownButtonFormField<String>(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Select Volume',
                               border: OutlineInputBorder(),
                             ),
@@ -127,15 +138,15 @@ class _AddArticlePageState extends State<AddArticlePage> {
                             },
                           );
                         }
-                        return SizedBox.shrink();
+                        return const SizedBox.shrink();
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     BlocBuilder<IssueBloc, IssueState>(
                       builder: (context, state) {
                         if (state is LoadedIssueByVolumeIdState) {
                           return DropdownButtonFormField<String>(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Select Issue',
                               border: OutlineInputBorder(),
                             ),
@@ -153,10 +164,10 @@ class _AddArticlePageState extends State<AddArticlePage> {
                             },
                           );
                         }
-                        return SizedBox.shrink();
+                        return const SizedBox.shrink();
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     BlocBuilder<UsersBloc, UsersState>(
                       builder: (context, state) {
                         if (state is UsersLoaded) {
@@ -167,15 +178,14 @@ class _AddArticlePageState extends State<AddArticlePage> {
                                     author,
                                     '${author.name ?? ''}\n'
                                     'Email: ${author.email}\n'
-                                    'Designation: ${author.designation ?? 'N/A'}'
-                                ))
+                                    'Designation: ${author.designation ?? 'N/A'}'))
                                 .toList(),
-                            title: Text("Select Authors"),
+                            title: const Text("Select Authors"),
                             selectedColor: Theme.of(context).primaryColor,
                             decoration: BoxDecoration(
                               color: Colors.blue.withOpacity(0.1),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(40)),
+                                  const BorderRadius.all(Radius.circular(40)),
                               border: Border.all(
                                 color: Theme.of(context).primaryColor,
                                 width: 2,
@@ -204,20 +214,23 @@ class _AddArticlePageState extends State<AddArticlePage> {
                                 });
                               },
                               chipColor: Colors.blue.withOpacity(0.1),
-                              textStyle: TextStyle(color: Colors.blue),
+                              textStyle: const TextStyle(color: Colors.blue),
                             ),
-                            itemsTextStyle: TextStyle(
+                            itemsTextStyle: const TextStyle(
                               color: Colors.black,
                               fontSize: 14,
                             ),
                           );
                         }
-                        return CircularProgressIndicator();
+                        return const SizedBox(
+                            height: 50,
+                            width: 50,
+                            child:  CircularProgressIndicator());
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Title',
                         border: OutlineInputBorder(),
                       ),
@@ -229,9 +242,9 @@ class _AddArticlePageState extends State<AddArticlePage> {
                       },
                       onChanged: (v) => title = v,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Document Type',
                         border: OutlineInputBorder(),
                       ),
@@ -243,10 +256,10 @@ class _AddArticlePageState extends State<AddArticlePage> {
                       },
                       onChanged: (v) => documentType = v,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
                       onChanged: (v) => abstractString = v,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Abstract',
                         border: OutlineInputBorder(),
                       ),
@@ -260,9 +273,9 @@ class _AddArticlePageState extends State<AddArticlePage> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Main Subjects (comma-separated)',
                         border: OutlineInputBorder(),
                       ),
@@ -275,11 +288,11 @@ class _AddArticlePageState extends State<AddArticlePage> {
                       onChanged: (v) => mainSubjects =
                           v.split(',').map((e) => e.trim()).toList(),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
                       onChanged: (v) =>
                           keywords = v.split(',').map((e) => e.trim()).toList(),
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Keywords (comma-separated)',
                         border: OutlineInputBorder(),
                       ),
@@ -290,11 +303,11 @@ class _AddArticlePageState extends State<AddArticlePage> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
                       onChanged: (v) => references =
                           v.split(',').map((e) => e.trim()).toList(),
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'References (comma-separated)',
                         border: OutlineInputBorder(),
                       ),
@@ -308,24 +321,165 @@ class _AddArticlePageState extends State<AddArticlePage> {
                       keyboardType: TextInputType.multiline,
                       textInputAction: TextInputAction.newline,
                     ),
-                    SizedBox(height: 16),
-                    TextFormField(
-                      onChanged: (v) => pdf = v,
-                      decoration: InputDecoration(
-                        labelText: 'PDF url',
-                        border: OutlineInputBorder(),
+                    const SizedBox(height: 16),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              FilePickerResult? result =
+                                  await FilePicker.platform.pickFiles(
+                                type: FileType.custom,
+                                allowedExtensions: ['pdf'],
+                                allowMultiple: false,
+                              );
+
+                              if (result != null) {
+                                setState(() {
+                                  _isPdfUploading = true;
+                                });
+
+                                PlatformFile file = result.files.first;
+                                String journalName = 'DefaultJournal';
+                                String volumeName = 'DefaultVolume';
+                                String issueName = 'DefaultIssue';
+                                String authorsName = 'DefaultAuthor';
+
+                                // Get journal, volume, issue names if selected
+                                if (selectedJournalId != null) {
+                                  final journal = (context
+                                          .read<JournalBloc>()
+                                          .state as JournalsLoaded)
+                                      .journals
+                                      .firstWhere(
+                                          (j) => j.id == selectedJournalId);
+                                  journalName =
+                                      journal.title.replaceAll(' ', '_');
+                                }
+                                if (selectedVolumeId != null) {
+                                  final volume = (context
+                                          .read<VolumeBloc>()
+                                          .state as VolumeLoadedByJournalId)
+                                      .volumes
+                                      .firstWhere(
+                                          (v) => v.id == selectedVolumeId);
+                                  volumeName =
+                                      volume.title.replaceAll(' ', '_');
+                                }
+                                if (selectedIssueId != null) {
+                                  final issue = (context.read<IssueBloc>().state
+                                          as LoadedIssueByVolumeIdState)
+                                      .issues
+                                      .firstWhere(
+                                          (i) => i.id == selectedIssueId);
+                                  issueName = issue.title.replaceAll(' ', '_');
+                                }
+                                if (selectedAuthors.isNotEmpty) {
+                                  authorsName = selectedAuthors
+                                      .map((a) => a.name)
+                                      .join('_');
+                                }
+
+                                String uniqueId = DateTime.now()
+                                    .millisecondsSinceEpoch
+                                    .toString();
+                                String fileName =
+                                    '${journalName}_${volumeName}_${issueName}_${authorsName}_$uniqueId.pdf';
+
+                                try {
+                                  // Upload to Firebase Storage
+                                  Reference ref = FirebaseStorage.instance
+                                      .ref()
+                                      .child('article_pdfs/$fileName');
+                                  UploadTask uploadTask =
+                                      ref.putData(file.bytes!);
+
+                                  // Listen to upload progress
+                                  uploadTask.snapshotEvents
+                                      .listen((TaskSnapshot snapshot) {
+                                    double progress =
+                                        snapshot.bytesTransferred /
+                                            snapshot.totalBytes;
+                                    print(
+                                        'Upload progress: ${(progress * 100).toStringAsFixed(2)}%');
+                                  });
+
+                                  TaskSnapshot snapshot = await uploadTask;
+                                  String downloadUrl =
+                                      await snapshot.ref.getDownloadURL();
+
+                                  // Save the download URL to the article
+                                  setState(() {
+                                    pdf = downloadUrl;
+                                    _isPdfUploading = false;
+                                  });
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text('PDF uploaded successfully')),
+                                  );
+                                } catch (e) {
+                                  print('Error uploading PDF: $e');
+                                  setState(() {
+                                    _isPdfUploading = false;
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Failed to upload PDF')),
+                                  );
+                                }
+                              }
+                            },
+                            icon: _isPdfUploading
+                                ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    ),
+                                  )
+                                : const Icon(Icons.upload_file, size: 18),
+                            label: Text(_isPdfUploading
+                                ? 'Uploading...'
+                                : 'Upload PDF'),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              minimumSize: const Size(120, 36),
+                            ),
+                          ),
+                          if (pdf.isNotEmpty) ...[
+                            const SizedBox(height: 16),
+                            const Text(
+                              'PDF uploaded',
+                              style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            ElevatedButton(
+                              onPressed: () async {
+                                if (await canLaunchUrl(Uri.parse(pdf))) {
+                                  await launchUrl(Uri.parse(pdf));
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Could not open PDF')),
+                                  );
+                                }
+                              },
+                              child: const Text('View PDF'),
+                            ),
+                          ],
+                        ],
                       ),
-                      maxLines: null,
-                      keyboardType: TextInputType.url,
-                      textInputAction: TextInputAction.done,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a pdf url';
-                        }
-                        return null;
-                      },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Column(
@@ -366,7 +520,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
                                   });
 
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
+                                    const SnackBar(
                                         content: Text(
                                             'Image uploaded successfully')),
                                   );
@@ -376,7 +530,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
                                     _isUploading = false;
                                   });
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
+                                    const SnackBar(
                                         content:
                                             Text('Failed to upload image')),
                                   );
@@ -384,7 +538,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
                               }
                             },
                             icon: _isUploading
-                                ? SizedBox(
+                                ? const SizedBox(
                                     width: 18,
                                     height: 18,
                                     child: CircularProgressIndicator(
@@ -393,24 +547,24 @@ class _AddArticlePageState extends State<AddArticlePage> {
                                           Colors.white),
                                     ),
                                   )
-                                : Icon(Icons.image, size: 18),
+                                : const Icon(Icons.image, size: 18),
                             label: Text(
                                 _isUploading ? 'Uploading...' : 'Upload Image'),
                             style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
-                              minimumSize: Size(120, 36),
+                              minimumSize: const Size(120, 36),
                             ),
                           ),
                           if (image.isNotEmpty) ...[
-                            SizedBox(height: 16),
-                            Text(
+                            const SizedBox(height: 16),
+                            const Text(
                               'Image uploaded',
                               style: TextStyle(
                                   color: Colors.green,
                                   fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Image.network(
                               image,
                               height: 100,
@@ -421,18 +575,15 @@ class _AddArticlePageState extends State<AddArticlePage> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text('Image uploaded: $image'),
-                    ),
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate() &&
                             selectedJournalId != null &&
                             selectedVolumeId != null &&
                             selectedIssueId != null &&
-                            selectedAuthors.isNotEmpty) {
+                            selectedAuthors.isNotEmpty &&
+                            pdf.isNotEmpty) {
                           final article = ArticleModel(
                             id: '',
                             authors: selectedAuthors,
@@ -456,7 +607,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
                               .read<ArticleBloc>()
                               .add(AddArticleEvent(article: article));
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content: Text('Article published successfully!'),
                               duration: Duration(seconds: 3),
                             ),
@@ -466,14 +617,15 @@ class _AddArticlePageState extends State<AddArticlePage> {
                           Get.back(result: true);
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Please fill all required fields'),
+                            const SnackBar(
+                              content: Text(
+                                  'Please fill all required fields and upload a PDF'),
                               duration: Duration(seconds: 3),
                             ),
                           );
                         }
                       },
-                      child: Text('Submit Article'),
+                      child: const Text('Submit Article'),
                     ),
                   ],
                 ),

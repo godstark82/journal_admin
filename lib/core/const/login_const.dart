@@ -23,13 +23,15 @@ class LoginConst {
     log('currentUserName: ${currentUser?.name}');
     log('currentUserId: ${currentUser?.id}');
     log('currentUserEmail: ${currentUser?.email}');
-    log('currentUser: ${currentUser?.journalIds}');
+    log('currentUserJpurnal: ${currentUser?.journalIds}');
   }
 
   static Future<void> getCurrentUser() async {
     final hiveBox = Hive.box('cache');
     final userJson = await hiveBox.get('currentUser');
-    currentUser = userJson != null ? MyUser.fromJson(userJson) : null;
+    currentUser = userJson != null
+        ? MyUser.fromJson((userJson as Map).cast<String, dynamic>())
+        : null;
     printLoginConsts();
   }
 }

@@ -44,8 +44,7 @@ class _IssuesPageState extends State<IssuesPage> {
               automaticallyImplyLeading: false,
               title: const Text('Issues'),
               actions: [
-                if (LoginConst.currentUser?.role == Role.admin ||
-                    LoginConst.currentUser?.role == Role.author)
+                if (LoginConst.currentUser?.role == Role.admin)
                   ElevatedButton(
                     onPressed: () async {
                       await Get.toNamed(Routes.dashboard + Routes.addIssue);
@@ -159,8 +158,7 @@ class _IssuesPageState extends State<IssuesPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (LoginConst.currentUser?.role == Role.admin ||
-                            LoginConst.currentUser?.role == Role.author)
+                        if (LoginConst.currentUser?.role == Role.admin)
                           IconButton(
                             icon: const Icon(Icons.edit, color: Colors.blue),
                             onPressed: () async {
@@ -168,8 +166,7 @@ class _IssuesPageState extends State<IssuesPage> {
                               _loadData();
                             },
                           ),
-                        if (LoginConst.currentUser?.role == Role.admin ||
-                            LoginConst.currentUser?.role == Role.author)
+                        if (LoginConst.currentUser?.role == Role.admin )
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () async {
@@ -269,8 +266,7 @@ class _IssuesPageState extends State<IssuesPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        if (LoginConst.currentUser?.role == Role.admin ||
-                            LoginConst.currentUser?.role == Role.author)
+                        if (LoginConst.currentUser?.role == Role.admin )
                           IconButton(
                             icon: const Icon(Icons.edit, color: Colors.blue),
                             onPressed: () async {
@@ -278,8 +274,7 @@ class _IssuesPageState extends State<IssuesPage> {
                               _loadData();
                             },
                           ),
-                        if (LoginConst.currentUser?.role == Role.admin ||
-                            LoginConst.currentUser?.role == Role.author)
+                        if (LoginConst.currentUser?.role == Role.admin )
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () async {

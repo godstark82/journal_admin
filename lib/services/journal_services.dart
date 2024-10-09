@@ -18,7 +18,19 @@ class JournalServices {
   }
 
   Future<void> deleteJournal(String id) async {
+    // Delete the journal
     await _journalCollection.doc(id).delete();
+
+    // Delete all volumes where journalId equals id
+    final volumesCollection = FirebaseFirestore.instance.collection('volumes');
+    final volumeSnapshot =
+        await volumesCollection.where('journalId', isEqualTo: id).get();
+
+    final batch = FirebaseFirestore.instance.batch();
+    for (var doc in volumeSnapshot.docs) {
+      batch.delete(doc.reference);
+    }
+    await batch.commit();
   }
 
   Future<DataState<List<JournalModel>>> getAllJournals() async {

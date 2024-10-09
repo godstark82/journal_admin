@@ -39,7 +39,9 @@ class ReviewerModel extends ReviewerEntity {
       title: json['title'],
       email: json['email'],
       role: json['role'],
-      journalIds: List<String>.from(json['journalIds']),
+      journalIds: json['journalIds'] != null
+          ? List<String>.from(json['journalIds'])
+          : [],
       password: json['password'],
       country: json['country'],
       mobile: json['mobile'],

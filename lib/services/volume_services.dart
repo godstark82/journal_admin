@@ -13,10 +13,39 @@ class VolumeServices {
 
   Future<void> updateVolume(VolumeModel volume) async {
     await _volumeCollection.doc(volume.id).update(volume.toJson());
+
+    if (volume.isActive) {
+      // Get all volumes under the same journal
+      final querySnapshot = await _volumeCollection
+          .where('journalId', isEqualTo: volume.journalId)
+          .get();
+
+      // Update all other volumes to be inactive
+      final batch = FirebaseFirestore.instance.batch();
+      for (var doc in querySnapshot.docs) {
+        if (doc.id != volume.id) {
+          batch.update(doc.reference, {'isActive': false});
+        }
+      }
+
+      // Commit the batch update
+      await batch.commit();
+    }
   }
 
   Future<void> deleteVolume(String id) async {
+    // Delete the volume
     await _volumeCollection.doc(id).delete();
+
+    // Delete all issues where volumeId equals id
+    final issuesCollection = FirebaseFirestore.instance.collection('issues');
+    final issueSnapshot = await issuesCollection.where('volumeId', isEqualTo: id).get();
+
+    final batch = FirebaseFirestore.instance.batch();
+    for (var doc in issueSnapshot.docs) {
+      batch.delete(doc.reference);
+    }
+    await batch.commit();
   }
 
   Future<DataState<VolumeModel>> getVolume(String id) async {

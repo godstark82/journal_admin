@@ -34,7 +34,9 @@ class AuthorModel extends AuthorEntity {
       mobile: json['mobile'],
       address: json['address'],
       cvPdfUrl: json['cvPdfUrl'],
-      journalIds: List<String>.from(json['journalIds']),
+      journalIds: json['journalIds'] != null
+          ? List<String>.from(json['journalIds'])
+          : [],
     );
   }
 
@@ -61,7 +63,10 @@ class AuthorModel extends AuthorEntity {
   static Future<AuthorModel?> fromUser(String userId) async {
     try {
       final DocumentSnapshot<Map<String, dynamic>> snapshot =
-          await FirebaseFirestore.instance.collection('users').doc(userId).get();
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .get();
 
       if (snapshot.exists) {
         final userData = snapshot.data()!;

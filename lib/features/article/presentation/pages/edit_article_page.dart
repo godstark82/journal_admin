@@ -11,6 +11,7 @@ import 'package:journal_web/features/volume/presentation/bloc/volume_bloc.dart';
 import 'package:journal_web/features/issue/presentation/bloc/issue_bloc.dart';
 import 'package:journal_web/routes.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EditArticlePage extends StatefulWidget {
   const EditArticlePage({super.key});
@@ -34,12 +35,58 @@ class _EditArticlePageState extends State<EditArticlePage> {
   String? selectedJournalId;
   String? selectedVolumeId;
   String? selectedIssueId;
+  double _uploadProgress = 0.0;
+  bool _isUploading = false;
 
   @override
   void initState() {
     super.initState();
     context.read<ArticleBloc>().add(GetArticleByIdEvent(id: articleId));
     context.read<JournalBloc>().add(GetAllJournalEvent());
+  }
+
+  Future<void> _uploadPDF() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (result != null) {
+      setState(() {
+        _isUploading = true;
+        _uploadProgress = 0.0;
+      });
+
+      PlatformFile file = result.files.first;
+      String fileName = '${DateTime.now().millisecondsSinceEpoch}.pdf';
+
+      try {
+        final ref = FirebaseStorage.instance.ref().child('pdfs/$fileName');
+        final uploadTask = ref.putData(
+          file.bytes!,
+          SettableMetadata(contentType: 'application/pdf'),
+        );
+
+        uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+          setState(() {
+            _uploadProgress = snapshot.bytesTransferred / snapshot.totalBytes;
+          });
+        });
+
+        await uploadTask;
+
+        String downloadURL = await ref.getDownloadURL();
+        setState(() {
+          pdf = downloadURL;
+          _isUploading = false;
+        });
+      } catch (e) {
+        print('Error uploading PDF: $e');
+        setState(() {
+          _isUploading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -91,13 +138,17 @@ class _EditArticlePageState extends State<EditArticlePage> {
                           BlocBuilder<JournalBloc, JournalState>(
                             builder: (context, state) {
                               if (state is JournalsLoaded) {
+                                List filteredJournals = LoginConst.currentUser?.role == 'admin'
+                                    ? state.journals
+                                    : state.journals.where((journal) =>
+                                        LoginConst.currentUser?.journalIds?.contains(journal.id) ?? false).toList();
                                 return DropdownButtonFormField<String>(
                                   decoration: InputDecoration(
                                     labelText: 'Select Journal',
                                     border: OutlineInputBorder(),
                                   ),
                                   value: selectedJournalId,
-                                  items: state.journals.map((journal) {
+                                  items: filteredJournals.map((journal) {
                                     return DropdownMenuItem<String>(
                                       value: journal.id,
                                       child: Text(journal.title),
@@ -273,20 +324,31 @@ class _EditArticlePageState extends State<EditArticlePage> {
                                 v.split('\n').map((e) => e.trim()).toList(),
                           ),
                           SizedBox(height: 16),
-                          TextFormField(
-                            initialValue: pdf,
-                            decoration: InputDecoration(
-                              labelText: 'PDF URL',
-                              border: OutlineInputBorder(),
+                          if (_isUploading)
+                            LinearProgressIndicator(value: _uploadProgress)
+                          else if (pdf.isNotEmpty)
+                            Row(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    if (await canLaunchUrl(Uri.parse(pdf))) {
+                                      await launchUrl(Uri.parse(pdf));
+                                    }
+                                  },
+                                  child: Text('View PDF'),
+                                ),
+                                SizedBox(width: 16),
+                                ElevatedButton(
+                                  onPressed: _uploadPDF,
+                                  child: Text('Change PDF'),
+                                ),
+                              ],
+                            )
+                          else
+                            ElevatedButton(
+                              onPressed: _uploadPDF,
+                              child: Text('Upload PDF'),
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a PDF URL';
-                              }
-                              return null;
-                            },
-                            onChanged: (v) => pdf = v,
-                          ),
                           SizedBox(height: 16),
                           Row(
                             children: [

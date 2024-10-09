@@ -33,6 +33,8 @@ class MyUser {
         name: json['name'],
         id: json['id'],
         designation: json['designation'],
-        journalIds: List<String>.from(json['journalIds']),
+        journalIds: json['journalIds'] != null
+            ? List<String>.from(json['journalIds'])
+            : [],
       );
 }

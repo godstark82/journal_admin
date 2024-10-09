@@ -31,7 +31,18 @@ class IssueServices {
   }
 
   Future<void> deleteIssue(String id) async {
+    // Delete the issue
     await issueCollection.doc(id).delete();
+
+    // Delete all articles where issueId equals id
+    final articlesCollection = FirebaseFirestore.instance.collection('articles');
+    final articleSnapshot = await articlesCollection.where('issueId', isEqualTo: id).get();
+
+    final batch = FirebaseFirestore.instance.batch();
+    for (var doc in articleSnapshot.docs) {
+      batch.delete(doc.reference);
+    }
+    await batch.commit();
   }
 
   Future<void> updateIssue(IssueModel issue) async {
