@@ -69,7 +69,7 @@ class _JournalPageState extends State<JournalPage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 600) {
-          return _buildDesktopTable(journals);
+          return SingleChildScrollView(child: _buildDesktopTable(journals));
         } else {
           return _buildMobileList(journals);
         }

@@ -1,8 +1,11 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:image_picker_web/image_picker_web.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:journal_web/features/journal/data/models/journal_model.dart';
 import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -19,6 +22,9 @@ class _EditJournalPageState extends State<EditJournalPage> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _domainController;
+  Uint8List? _imageBytes;
+  bool _isLoading = false;
+  String? _imageUrl;
 
   @override
   void initState() {
@@ -36,11 +42,48 @@ class _EditJournalPageState extends State<EditJournalPage> {
     super.dispose();
   }
 
+  Future<void> _pickImage() async {
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all required fields before uploading an image.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final image = await ImagePickerWeb.getImageAsBytes();
+    if (image != null) {
+      setState(() {
+        _imageBytes = image;
+      });
+      await _uploadImage();
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _uploadImage() async {
+    if (_imageBytes == null) return;
+
+    final Reference storageRef = FirebaseStorage.instance.ref().child('journal_images/${_titleController.text}${_domainController.text}${DateTime.now().toIso8601String()}.png');
+    final UploadTask uploadTask = storageRef.putData(_imageBytes!);
+
+    await uploadTask.whenComplete(() async {
+      _imageUrl = await storageRef.getDownloadURL();
+    });
+  }
+
   void _submitForm(JournalModel journal) {
     if (_formKey.currentState!.validate()) {
       final updatedJournal = journal.copyWith(
         title: _titleController.text,
         domain: _domainController.text,
+        image: _imageUrl ?? journal.image,
       );
       context
           .read<JournalBloc>()
@@ -63,6 +106,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
             final journal = state.journal;
             _titleController.text = journal.title;
             _domainController.text = journal.domain;
+            _imageUrl = journal.image;
             return ResponsiveBuilder(
               builder: (context, sizingInformation) {
                 if (sizingInformation.deviceScreenType ==
@@ -132,12 +176,35 @@ class _EditJournalPageState extends State<EditJournalPage> {
             },
           ),
           const SizedBox(height: 24),
+          _buildImageSection(journal),
+          const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () => _submitForm(journal),
             child: const Text('Update Journal'),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildImageSection(JournalModel journal) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Image:', style: TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        if (_imageUrl != null)
+          Image.network(_imageUrl!, height: 200)
+        else
+          const Text('No image uploaded'),
+        const SizedBox(height: 8),
+        ElevatedButton(
+          onPressed: _isLoading ? null : _pickImage,
+          child: _isLoading
+              ? const CircularProgressIndicator()
+              : const Text('Change Image'),
+        ),
+      ],
     );
   }
 }

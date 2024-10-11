@@ -34,6 +34,7 @@ class _AllVolumesPageState extends State<AllVolumesPage> {
   String getJournalName(String journalId, List<JournalModel> journals) {
     final journal = journals.firstWhere((j) => j.id == journalId,
         orElse: () => JournalModel(
+          image: 'N/A',
             id: '', title: 'N/A', domain: '', createdAt: DateTime.now()));
     return journal.title;
   }

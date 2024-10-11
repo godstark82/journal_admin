@@ -41,8 +41,16 @@ class VolumeServices {
     final issuesCollection = FirebaseFirestore.instance.collection('issues');
     final issueSnapshot = await issuesCollection.where('volumeId', isEqualTo: id).get();
 
+    // Delete all articles where volumeId equals id
+    final articlesCollection = FirebaseFirestore.instance.collection('articles');
+    final articleSnapshot =
+        await articlesCollection.where('volumeId', isEqualTo: id).get();
+
     final batch = FirebaseFirestore.instance.batch();
     for (var doc in issueSnapshot.docs) {
+      batch.delete(doc.reference);
+    }
+    for (var doc in articleSnapshot.docs) {
       batch.delete(doc.reference);
     }
     await batch.commit();
