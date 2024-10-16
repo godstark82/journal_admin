@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:journal_web/features/pages/data/models/page_model.dart';
 import 'package:journal_web/features/pages/presentation/bloc/pages_bloc.dart';
+import 'package:journal_web/features/journal/data/models/journal_model.dart';
+import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
 
 class EditPage extends StatefulWidget {
   const EditPage({super.key});
@@ -14,12 +16,12 @@ class EditPage extends StatefulWidget {
 
 class _EditPageState extends State<EditPage> {
   final pageId = Get.parameters['pageId']!;
+  final journalId = Get.parameters['journalId']!;
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _pageNameController;
   late TextEditingController _websiteController;
   late HtmlEditorController _contentController;
-
   @override
   void initState() {
     super.initState();
@@ -43,6 +45,7 @@ class _EditPageState extends State<EditPage> {
         insertDate: DateTime.now(),
         url: _websiteController.text,
         content: content,
+        journalId: journalId,
       );
       context.read<PagesBloc>().add(UpdatePageEvent(page: updatedPage));
       Get.back();
@@ -106,6 +109,7 @@ class _EditPageState extends State<EditPage> {
                         return null;
                       },
                     ),
+                  
                     SizedBox(height: 16),
                     HtmlEditor(
                       controller: _contentController,
@@ -145,6 +149,7 @@ class _EditPageState extends State<EditPage> {
   void dispose() {
     _pageNameController.dispose();
     _websiteController.dispose();
+    _contentController.clear();
     super.dispose();
   }
 }

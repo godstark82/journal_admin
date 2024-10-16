@@ -19,8 +19,9 @@ class PagesRepoImpl implements PagesRepo {
   }
 
   @override
-  Future<DataState<List<PageModel>>> getPages() async {
-    return await pageService.getPages();
+  Future<DataState<List<PageModel>>> getPagesByJournalId(
+      String journalId) async {
+    return await pageService.getPagesByJournalId(journalId);
   }
 
   @override

@@ -4,7 +4,8 @@ class PageModel extends Equatable {
   final String id;
   final String name;
   final DateTime insertDate;
-  final String url; 
+  final String url;
+  final String journalId;
   final String content;
 
   const PageModel({
@@ -12,6 +13,7 @@ class PageModel extends Equatable {
     required this.name,
     required this.insertDate,
     required this.url,
+    required this.journalId,
     required this.content,
   });
 
@@ -21,6 +23,7 @@ class PageModel extends Equatable {
         'insertDate': insertDate.toIso8601String(),
         'url': url,
         'content': content,
+        'journalId': journalId,
       };
 
   factory PageModel.fromJson(Map<String, dynamic> json) => PageModel(
@@ -29,10 +32,12 @@ class PageModel extends Equatable {
         insertDate: DateTime.parse(json['insertDate']),
         url: json['url'],
         content: json['content'],
+        journalId: json['journalId'] ?? '',
       );
 
   //copy With
   PageModel copyWith({
+    String? journalId,
     String? id,
     String? name,
     DateTime? insertDate,
@@ -45,8 +50,9 @@ class PageModel extends Equatable {
         insertDate: insertDate ?? this.insertDate,
         url: url ?? this.url,
         content: content ?? this.content,
+        journalId: journalId ?? this.journalId,
       );
 
   @override
-  List<Object?> get props => [id, name, insertDate, url, content];
+  List<Object?> get props => [id, name, insertDate, url, content, journalId];
 }

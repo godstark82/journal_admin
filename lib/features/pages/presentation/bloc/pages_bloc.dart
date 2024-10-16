@@ -23,7 +23,7 @@ class PagesBloc extends Bloc<PagesEvent, PagesState> {
       : super(PagesInitial()) {
     //
     on<GetSinglePageEvent>(_onGetSinglePage);
-    on<GetAllPagesEvent>(_onGetAllPages);
+    on<GetAllPagesFromJournalIdEvent>(_onGetAllPages);
     on<UpdatePageEvent>(_onUpdatePage);
     on<DeletePageEvent>(_onDeletePage);
     on<AddPageEvent>(_onAddPage);
@@ -31,7 +31,7 @@ class PagesBloc extends Bloc<PagesEvent, PagesState> {
 
   Future<void> _onAddPage(AddPageEvent event, Emitter<PagesState> emit) async {
     await addPageUsecase.call(event.page);
-    add(GetAllPagesEvent());
+    add(GetAllPagesFromJournalIdEvent(event.journalId));
   }
 
   Future<void> _onGetSinglePage(
@@ -46,9 +46,9 @@ class PagesBloc extends Bloc<PagesEvent, PagesState> {
   }
 
   Future<void> _onGetAllPages(
-      GetAllPagesEvent event, Emitter<PagesState> emit) async {
+      GetAllPagesFromJournalIdEvent event, Emitter<PagesState> emit) async {
     emit(AllPagesLoadingState());
-    final pages = await getPagesUsecase.call({});
+    final pages = await getPagesUsecase.call(event.journalId);
     if (pages is DataSuccess) {
       emit(AllPagesLoadedState(pages: pages.data!));
     } else if (pages is DataFailed) {
@@ -59,12 +59,11 @@ class PagesBloc extends Bloc<PagesEvent, PagesState> {
   Future<void> _onUpdatePage(
       UpdatePageEvent event, Emitter<PagesState> emit) async {
     await editPageUsecase.call(event.page);
-    add(GetAllPagesEvent());
+    add(GetAllPagesFromJournalIdEvent(event.page.journalId));
   }
 
   Future<void> _onDeletePage(
       DeletePageEvent event, Emitter<PagesState> emit) async {
     await deletePageUsecase.call(event.id);
-    add(GetAllPagesEvent());
   }
 }

@@ -13,6 +13,7 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
+  final journalId = Get.parameters['journalId']!;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _websiteController = TextEditingController();
@@ -21,7 +22,6 @@ class _AddPageState extends State<AddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text('Add Page'),
@@ -107,10 +107,13 @@ class _AddPageState extends State<AddPage> {
         url: website,
         content: content,
         id: '1',
+        journalId: journalId,
         insertDate: DateTime.now(),
       );
 
-      context.read<PagesBloc>().add(AddPageEvent(page: page));
+      context
+          .read<PagesBloc>()
+          .add(AddPageEvent(page: page, journalId: journalId));
 
       Get.back(); // Navigate back to the previous screen
       Get.snackbar('Success', 'Page added successfully');
@@ -118,9 +121,15 @@ class _AddPageState extends State<AddPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _websiteController.dispose();
+    _contentController.clear();
     super.dispose();
   }
 }

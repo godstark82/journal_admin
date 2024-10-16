@@ -34,12 +34,16 @@ class DeletePageEvent extends PagesEvent {
   List<Object> get props => [id];
 }
 
-class GetAllPagesEvent extends PagesEvent {}
+class GetAllPagesFromJournalIdEvent extends PagesEvent {
+  final String journalId;
+  const GetAllPagesFromJournalIdEvent(this.journalId);
+}
 
 class AddPageEvent extends PagesEvent {
+  final String journalId;
   final PageModel page;
 
-  const AddPageEvent({required this.page});
+  const AddPageEvent({required this.page, required this.journalId});
 
   @override
   List<Object> get props => [page];

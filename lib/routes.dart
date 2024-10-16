@@ -11,6 +11,7 @@ import 'package:journal_web/features/journal/presentation/pages/add_journal_page
 import 'package:journal_web/features/journal/presentation/pages/edit_journal_page.dart';
 import 'package:journal_web/features/journal/presentation/pages/journal_page.dart';
 import 'package:journal_web/features/pages/presentation/pages/add_page.dart';
+import 'package:journal_web/features/pages/presentation/pages/all_pages_screen.dart';
 import 'package:journal_web/features/pages/presentation/pages/edit_page.dart';
 import 'package:journal_web/features/volume/presentation/pages/add_volume_page.dart';
 import 'package:journal_web/features/volume/presentation/pages/all_volumes_page.dart';
@@ -41,6 +42,7 @@ class Routes {
   static const String pages = '/pages';
   static const String addPage = '/add_page';
   static const String editPage = '/edit_page';
+  static const String allPages = '/all_pages';
 
   // Journal
   static const String journal = '/journal';
@@ -65,9 +67,7 @@ class Routes {
 
 List<GetPage> routes = [
   GetPage(
-      name: Routes.dashboard,
-      middlewares: [AuthGuard()],
-      page: () => Home()),
+      name: Routes.dashboard, middlewares: [AuthGuard()], page: () => Home()),
 
   //! Journal
   GetPage(
@@ -131,14 +131,21 @@ List<GetPage> routes = [
       page: () => EditEditorialPage(),
       parameters: {'memberId': ''}),
   GetPage(
-    name: Routes.pages + Routes.editPage,
+    name: Routes.pages +  Routes.editPage,
     page: () => EditPage(),
-    parameters: {'pageId': ''},
+    parameters: {'pageId': '', 'journalId': ''},
+    middlewares: [AuthGuard()],
+  ),
+  GetPage(
+    name: Routes.pages + Routes.allPages,
+    page: () => AllPagesPage(),
+    parameters: {'journalId': ''},
     middlewares: [AuthGuard()],
   ),
   GetPage(
     name: Routes.pages + Routes.addPage,
     page: () => AddPage(),
+    parameters: {'journalId': ''},
     middlewares: [AuthGuard()],
   ),
 

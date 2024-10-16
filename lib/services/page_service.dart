@@ -11,9 +11,13 @@ class PageService {
     await docRef.set(page.toJson());
   }
 
-  Future<DataState<List<PageModel>>> getPages() async {
+  Future<DataState<List<PageModel>>> getPagesByJournalId(
+      String journalId) async {
     try {
-      final snapshot = await firestore.collection('pages').get();
+      final snapshot = await firestore
+          .collection('pages')
+          .where('journalId', isEqualTo: journalId)
+          .get();
       return DataSuccess(
           snapshot.docs.map((doc) => PageModel.fromJson(doc.data())).toList());
     } catch (e) {
