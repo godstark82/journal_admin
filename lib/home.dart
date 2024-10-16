@@ -4,6 +4,7 @@ import 'package:journal_web/core/const/login_const.dart';
 import 'package:journal_web/core/const/roles.dart';
 import 'package:journal_web/features/article/presentation/pages/articles_page.dart';
 import 'package:journal_web/features/home/presentation/pages/dashboard.dart';
+import 'package:journal_web/features/home/presentation/pages/eb_home.dart';
 import 'package:journal_web/features/home/presentation/pages/editorial_board_page.dart';
 import 'package:journal_web/features/issue/presentation/pages/issues_page.dart';
 import 'package:journal_web/features/journal/presentation/pages/journal_page.dart';
@@ -40,7 +41,7 @@ class _HomeState extends State<Home> {
       'd': DashboardPage(),
       'u': UsersPage(),
       'p': PageManagementPage(),
-      'eb': EditorialBoardPage(),
+      'eb': EBHome(),
       's': SocialLinksPage(),
       'j': JournalPage(),
       'v': AllVolumesPage(),
@@ -50,7 +51,8 @@ class _HomeState extends State<Home> {
 
     return ResponsiveBuilder(
       builder: (context, sizingInfo) {
-        final bool isMobile = sizingInfo.deviceScreenType == DeviceScreenType.mobile;
+        final bool isMobile =
+            sizingInfo.deviceScreenType == DeviceScreenType.mobile;
         return Scaffold(
           key: _scaffoldKey,
           appBar: _buildAppBar(isMobile),
@@ -101,18 +103,18 @@ class _HomeState extends State<Home> {
             child: ListView(
               children: [
                 if (LoginConst.currentUser?.role == Role.admin)
-                _buildMenuItem('Dashboard', 'd', Icons.dashboard),
+                  _buildMenuItem('Dashboard', 'd', Icons.dashboard),
                 if (LoginConst.currentUser?.role == Role.admin)
-                _buildMenuItem('Journals', 'j', Icons.book),
+                  _buildMenuItem('Journals', 'j', Icons.book),
                 _buildMenuItem('Volumes', 'v', Icons.collections_bookmark),
                 _buildMenuItem('Issues', 'i', Icons.library_books),
                 _buildMenuItem('Articles', 'a', Icons.article),
                 if (LoginConst.currentUser?.role == Role.admin)
-                _buildMenuItem('Page Management', 'p', Icons.pages),
+                  _buildMenuItem('Page Management', 'p', Icons.pages),
                 if (LoginConst.currentUser?.role == Role.admin)
-                _buildMenuItem('Editorial Board', 'eb', Icons.people),
+                  _buildMenuItem('Editorial Board', 'eb', Icons.people),
                 if (LoginConst.currentUser?.role == Role.admin)
-                _buildMenuItem('Social Links', 's', Icons.link),
+                  _buildMenuItem('Social Links', 's', Icons.link),
                 if (LoginConst.currentUser?.role == Role.admin)
                   _buildMenuItem('Users', 'u', Icons.person),
               ],

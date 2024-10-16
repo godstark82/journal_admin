@@ -1,5 +1,6 @@
 class EditorialBoardModel {
   final String id;
+  final String journalId;
   final String name;
   final String email;
   final String role;
@@ -8,6 +9,7 @@ class EditorialBoardModel {
 
   EditorialBoardModel({
     required this.id,
+    required this.journalId,
     required this.name,
     required this.email,
     required this.role,
@@ -18,6 +20,7 @@ class EditorialBoardModel {
   factory EditorialBoardModel.fromJson(Map<String, dynamic> json) {
     return EditorialBoardModel(
       id: json['id'],
+      journalId: json['journalId'] ?? '',
       name: json['name'],
       email: json['email'],
       role: json['role'],
@@ -29,6 +32,7 @@ class EditorialBoardModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'journalId': journalId,
       'name': name,
       'email': email,
       'role': role,
@@ -44,6 +48,7 @@ class EditorialBoardModel {
 
   EditorialBoardModel copyWith({
     String? id,
+    String? journalId,
     String? name,
     String? email,
     String? role,
@@ -52,6 +57,7 @@ class EditorialBoardModel {
   }) {
     return EditorialBoardModel(
       id: id ?? this.id,
+      journalId: journalId ?? this.journalId,
       name: name ?? this.name,
       email: email ?? this.email,
       role: role ?? this.role,

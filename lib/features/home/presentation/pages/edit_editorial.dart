@@ -11,6 +11,7 @@ class EditEditorialPage extends StatefulWidget {
 }
 
 class _EditEditorialPageState extends State<EditEditorialPage> {
+  final String journalId = Get.parameters['journalId']!;
   final memberId = Get.parameters['memberId']!;
   final _formKey = GlobalKey<FormState>();
   final AdminServices _adminServices = AdminServices();
@@ -35,6 +36,7 @@ class _EditEditorialPageState extends State<EditEditorialPage> {
           }
 
           EditorialBoardModel member = snapshot.data!;
+          member = member.copyWith(journalId: journalId);
           return Center(
             child: SingleChildScrollView(
               child: Padding(
@@ -112,7 +114,8 @@ class _EditEditorialPageState extends State<EditEditorialPage> {
                               }).toList(),
                               onChanged: (EditorialBoardRole? newValue) {
                                 if (newValue != null) {
-                                  member = member.copyWith(role: newValue.value);
+                                  member =
+                                      member.copyWith(role: newValue.value);
                                 }
                               },
                             ),

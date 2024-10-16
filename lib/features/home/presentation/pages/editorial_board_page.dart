@@ -15,9 +15,9 @@ class _EditorialBoardPageState extends State<EditorialBoardPage> {
   @override
   Widget build(BuildContext context) {
     final adminServices = AdminServices();
+    final String journalId = Get.parameters['journalId']!;
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: Text('Editorial Board'),
         actions: [
           Padding(
@@ -25,7 +25,10 @@ class _EditorialBoardPageState extends State<EditorialBoardPage> {
             child: OutlinedButton.icon(
               onPressed: () async {
                 await Get.toNamed(
-                    Routes.editorialBoard + Routes.addEditorialBoard);
+                    Routes.editorialBoard + Routes.addEditorialBoard,
+                    parameters: {
+                      'journalId': journalId,
+                    });
                 setState(() {});
               },
               icon: Icon(Icons.add),
@@ -40,7 +43,10 @@ class _EditorialBoardPageState extends State<EditorialBoardPage> {
         ],
       ),
       body: FutureBuilder(
-          future: adminServices.getEditorialBoardMembers(),
+          future: adminServices.getEditorialBoardMembers().then((members) =>
+              members
+                  .where((member) => member.journalId == journalId)
+                  .toList()),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -85,8 +91,9 @@ class _EditorialBoardPageState extends State<EditorialBoardPage> {
                                   DataCell(Text(snapshot.data![index].name)),
                                   DataCell(Text(snapshot.data![index].email)),
                                   DataCell(Text(snapshot.data![index].role)),
-                                  DataCell(
-                                      Text(DateFormat('dd-MMMM-yyyy').format(snapshot.data![index].createdAt))),
+                                  DataCell(Text(DateFormat('dd-MMMM-yyyy')
+                                      .format(
+                                          snapshot.data![index].createdAt))),
                                   DataCell(Row(
                                     children: [
                                       OutlinedButton(
@@ -95,6 +102,8 @@ class _EditorialBoardPageState extends State<EditorialBoardPage> {
                                             Routes.editorialBoard +
                                                 Routes.editEditorialBoard,
                                             parameters: {
+                                              'journalId': snapshot
+                                                  .data![index].journalId,
                                               'memberId':
                                                   snapshot.data![index].id
                                             },

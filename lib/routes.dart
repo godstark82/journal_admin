@@ -5,6 +5,7 @@ import 'package:journal_web/features/article/presentation/pages/add_article_page
 import 'package:journal_web/features/article/presentation/pages/edit_article_page.dart';
 import 'package:journal_web/features/home/presentation/pages/add_editorial.dart';
 import 'package:journal_web/features/home/presentation/pages/edit_editorial.dart';
+import 'package:journal_web/features/home/presentation/pages/editorial_board_page.dart';
 import 'package:journal_web/features/issue/presentation/pages/add_issue_page.dart';
 import 'package:journal_web/features/issue/presentation/pages/edit_issue_page.dart';
 import 'package:journal_web/features/journal/presentation/pages/add_journal_page.dart';
@@ -121,6 +122,14 @@ List<GetPage> routes = [
       name: Routes.editorialBoard,
       page: () => Home(),
       parameters: {'i': '/editorial_board'}),
+
+  GetPage(
+    name: Routes.dashboard + Routes.editorialBoard,
+    page: () => EditorialBoardPage(),
+    parameters: {'journalId': ''},
+    middlewares: [AuthGuard()],
+  ),
+
   GetPage(
     name: Routes.editorialBoard + Routes.addEditorialBoard,
     page: () => AddEditorialPage(),
@@ -131,7 +140,7 @@ List<GetPage> routes = [
       page: () => EditEditorialPage(),
       parameters: {'memberId': ''}),
   GetPage(
-    name: Routes.pages +  Routes.editPage,
+    name: Routes.pages + Routes.editPage,
     page: () => EditPage(),
     parameters: {'pageId': '', 'journalId': ''},
     middlewares: [AuthGuard()],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:journal_web/core/models/editorial_board_model.dart';
 import 'package:journal_web/services/admin_services.dart';
 
@@ -10,6 +11,7 @@ class AddEditorialPage extends StatefulWidget {
 }
 
 class _AddEditorialPageState extends State<AddEditorialPage> {
+  final String journalId = Get.parameters['journalId']!;
   final _formKey = GlobalKey<FormState>();
   final AdminServices _adminServices = AdminServices();
 
@@ -17,7 +19,6 @@ class _AddEditorialPageState extends State<AddEditorialPage> {
   String email = '';
   EditorialBoardRole? selectedRole;
   String institution = '';
-
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +137,7 @@ class _AddEditorialPageState extends State<AddEditorialPage> {
                                 id: '1',
                                 name: name,
                                 email: email,
+                                journalId: journalId,
                                 role: selectedRole!.value,
                                 institution: institution,
                                 createdAt: DateTime.now(),

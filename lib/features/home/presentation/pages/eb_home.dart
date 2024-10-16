@@ -7,14 +7,14 @@ import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart
 import 'package:journal_web/routes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class PageManagementPage extends StatefulWidget {
-  const PageManagementPage({super.key});
+class EBHome extends StatefulWidget {
+  const EBHome({super.key});
 
   @override
-  _PageManagementPageState createState() => _PageManagementPageState();
+  _EBHomeState createState() => _EBHomeState();
 }
 
-class _PageManagementPageState extends State<PageManagementPage> {
+class _EBHomeState extends State<EBHome> {
   @override
   void initState() {
     super.initState();
@@ -25,11 +25,9 @@ class _PageManagementPageState extends State<PageManagementPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // automaticallyImplyLeading: false,
-        title: Text('Journal Management'),
-        actions: [
-         
-        ],
+        automaticallyImplyLeading: false,
+        title: Text('Editoial Board Management'),
+        actions: [],
       ),
       body: BlocBuilder<JournalBloc, JournalState>(
         builder: (context, state) {
@@ -77,12 +75,13 @@ class _PageManagementPageState extends State<PageManagementPage> {
                                     onPressed: () {
                                       // Edit functionality
                                       Get.toNamed(
-                                          Routes.pages + Routes.allPages,
+                                          Routes.dashboard +
+                                              Routes.editorialBoard,
                                           parameters: {
                                             'journalId': journal.id
                                           });
                                     },
-                                    child: Text('See Pages'),
+                                    child: Text('View'),
                                   ),
                                   SizedBox(width: 8),
                                   Visibility(
