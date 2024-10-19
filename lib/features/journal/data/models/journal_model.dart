@@ -13,7 +13,7 @@ class JournalModel extends JournalEntity {
       id: json['id'],
       title: json['title'],
       domain: json['domain'],
-      image: json['image'] ?? 'N/A',
+      image: json['image'],
       createdAt: DateTime.parse(json['createdAt']),
     );
   }

@@ -1,11 +1,12 @@
 import 'dart:developer';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:image_picker_web/image_picker_web.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker_web/image_picker_web.dart';
 import 'package:journal_web/features/journal/data/models/journal_model.dart';
 import 'package:journal_web/features/journal/presentation/bloc/journal_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -22,7 +23,6 @@ class _EditJournalPageState extends State<EditJournalPage> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _domainController;
-  Uint8List? _imageBytes;
   bool _isLoading = false;
   String? _imageUrl;
 
@@ -44,8 +44,13 @@ class _EditJournalPageState extends State<EditJournalPage> {
 
   Future<void> _pickImage() async {
     if (!_formKey.currentState!.validate()) {
+      if (kDebugMode) {
+        print('form is not valid');
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all required fields before uploading an image.')),
+        const SnackBar(
+            content: Text(
+                'Please fill in all required fields before uploading an image.')),
       );
       return;
     }
@@ -54,31 +59,31 @@ class _EditJournalPageState extends State<EditJournalPage> {
       _isLoading = true;
     });
 
-    final image = await ImagePickerWeb.getImageAsBytes();
-    if (image != null) {
-      setState(() {
-        _imageBytes = image;
+    final Uint8List? imageBytes = await ImagePickerWeb.getImageAsBytes();
+
+    if (imageBytes != null) {
+      final Reference storageRef = FirebaseStorage.instance.ref().child(
+          'journal_images/${_titleController.text}${_domainController.text}${DateTime.now().toIso8601String()}.png');
+      final UploadTask uploadTask = storageRef.putData(imageBytes);
+
+      await uploadTask.whenComplete(() async {
+        final downloadUrl = await storageRef.getDownloadURL();
+        print('downloadUrl: $downloadUrl');
+        setState(() {
+          _imageUrl = downloadUrl;
+        });
       });
-      await _uploadImage();
     }
 
     setState(() {
       _isLoading = false;
-    });
-  }
-
-  Future<void> _uploadImage() async {
-    if (_imageBytes == null) return;
-
-    final Reference storageRef = FirebaseStorage.instance.ref().child('journal_images/${_titleController.text}${_domainController.text}${DateTime.now().toIso8601String()}.png');
-    final UploadTask uploadTask = storageRef.putData(_imageBytes!);
-
-    await uploadTask.whenComplete(() async {
-      _imageUrl = await storageRef.getDownloadURL();
+      print('isLoading: $_isLoading');
+      print('imageUrl: $_imageUrl');
     });
   }
 
   void _submitForm(JournalModel journal) {
+    print(_imageUrl);
     if (_formKey.currentState!.validate()) {
       final updatedJournal = journal.copyWith(
         title: _titleController.text,
@@ -106,7 +111,8 @@ class _EditJournalPageState extends State<EditJournalPage> {
             final journal = state.journal;
             _titleController.text = journal.title;
             _domainController.text = journal.domain;
-            _imageUrl = journal.image;
+            print('journal.image: ${journal.image}');
+            // _imageUrl = journal.image;
             return ResponsiveBuilder(
               builder: (context, sizingInformation) {
                 if (sizingInformation.deviceScreenType ==
@@ -193,7 +199,9 @@ class _EditJournalPageState extends State<EditJournalPage> {
       children: [
         const Text('Image:', style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
-        if (_imageUrl != null)
+        if (journal.image != null )
+          Image.network(journal.image!, height: 200)
+        else if (_imageUrl != null)
           Image.network(_imageUrl!, height: 200)
         else
           const Text('No image uploaded'),
